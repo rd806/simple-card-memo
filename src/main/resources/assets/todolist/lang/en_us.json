@@ -1,0 +1,13 @@
+{
+    "todolist.tab.todolist": "Todo List",
+
+    "item.todolist.text_viewer": "Text Viewer",
+    "todolist.item.text_viewer.tooltip.simple": "Right click to open the viewer",
+    "todolist.item.text_viewer.tooltip.more": "Hold down Shift to view details",
+    "todolist.item.text_viewer.tooltip.local": "Local File",
+    "todolist.item.text_viewer.tooltip.web": "Web File",
+
+    "todolist.gui.viewer_screen": "View Text",
+    "todolist.gui.button.reload": "Reload text",
+    "todolist.gui.text.error": "Text Error"
+}

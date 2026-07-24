@@ -1,0 +1,13 @@
+{
+    "todolist.tab.todolist": "任务清单",
+
+    "item.todolist.text_viewer": "Text Viewer",
+    "todolist.item.text_viewer.tooltip.simple": "右键打开查看器",
+    "todolist.item.text_viewer.tooltip.more": "按住Shift查看详情",
+    "todolist.item.text_viewer.tooltip.local": "本地文件",
+    "todolist.item.text_viewer.tooltip.web": "网络文件",
+
+    "todolist.gui.viewer_screen": "查看文本",
+    "todolist.gui.button.reload": "重新加载",
+    "todolist.gui.text.error": "文本错误"
+}
