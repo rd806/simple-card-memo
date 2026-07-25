@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class TextViewerScreen extends Screen {
 
     private String filePath;
+    private String fileName;
     private boolean isLocalFile;
     // 待渲染文本
     private String renderedText;
@@ -27,23 +28,25 @@ public class TextViewerScreen extends Screen {
     private double scrollOffset = 0;
     private double maxScroll = 0;
 
-    protected TextViewerScreen(String path, boolean source) {
+    protected TextViewerScreen(String path, String name, boolean source) {
         // 界面的标题
         super(Component.translatable(Todolist.MODID + ".gui.viewer_screen"));
         // 初始化数据
-        reload(path, source);
+        reload(path, name, source);
     }
 
-    private void reload(String path, boolean source) {
+    private void reload(String path, String name, boolean source) {
         this.renderedText = TextLoader.loadText(path, source);
         if (Config.ENABLE_MARKDOWN.get()) {
             try {
                 markdownText = new MineMarkDrawable(renderedText);
             } catch (Exception e) {
                 renderedText = Component.translatable(Todolist.MODID + ".gui.text.error").toString();
+                Todolist.LOGGER.error("Couldn't load markdown text!", e);
             }
         }
         this.filePath = path;
+        this.fileName = name;
         this.isLocalFile = source;
     }
 
@@ -95,10 +98,7 @@ public class TextViewerScreen extends Screen {
         recalculate();
         this.addRenderableWidget(new Button.Builder(
                 Component.translatable(Todolist.MODID + ".gui.button.reload"),
-                button -> {
-                    this.renderedText = TextLoader.loadText(filePath, isLocalFile);
-                    reload(filePath, isLocalFile);
-                })
+                button -> reload(filePath, fileName, isLocalFile))
                 .pos(this.width / 2 - 50, (int) (this.height - footer + 5))
                 .size(100, 20)
                 .build()
@@ -111,8 +111,8 @@ public class TextViewerScreen extends Screen {
         recalculate();
         // 渲染背景（灰色半透明背景）
         this.renderBackground(graphics);
-        // 渲染文件路径
-        graphics.drawString(this.font, filePath, 10, 5, 0xAAAAAA);
+        // 渲染文件名称
+        graphics.drawString(this.font, fileName, 10, 5, 0xAAAAAA);
         // 渲染文本内容
         renderContent(graphics, mouseX, mouseY);
         // 渲染滚动条
@@ -134,9 +134,8 @@ public class TextViewerScreen extends Screen {
                 (int) contentX + (int) contentW,
                 (int) contentY + (int) contentH
         );
-
         graphics.pose().pushPose();
-        graphics.pose().translate(0, - this.scrollOffset, 0);
+        float drawY = contentY - (float) scrollOffset;
 
         // 检查文件内容
         if (this.renderedText == null) {
@@ -146,7 +145,7 @@ public class TextViewerScreen extends Screen {
         }
         // 渲染文件内容
         if (Config.ENABLE_MARKDOWN.get()) {
-            this.markdownText.draw(contentX, contentY, contentW, mouseX, mouseY, graphics);
+            this.markdownText.draw(contentX, drawY, contentW, mouseX, mouseY, graphics);
         } else {
             String[] lines = renderedText.split("\n");
             int y = (int) contentY;
@@ -170,12 +169,10 @@ public class TextViewerScreen extends Screen {
         int barH = (int) (this.height - header - footer);
 
         graphics.fill(barX, barY, barX + barW, barY + barH, 0x33FFFFFF);
-
         // 滑块
         float progress = (float) (scrollOffset / maxScroll);
         int thumbHeight = Math.max(20, (int) (barH * Math.min(1, (barH / totalHeight))));
         int thumbY = barY + (int) ((barH - thumbHeight) * progress);
-
         graphics.fill(barX, thumbY, barX + barW, thumbY + thumbHeight, 0xCCFFFFFF);
     }
 

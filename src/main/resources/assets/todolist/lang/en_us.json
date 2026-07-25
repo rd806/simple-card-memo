@@ -7,7 +7,12 @@
     "todolist.item.text_viewer.tooltip.local": "Local File",
     "todolist.item.text_viewer.tooltip.web": "Web File",
 
+    "item.todolist.text_editor": "Text Editor",
+    "todolist.item.text_editor.tooltip": "Right click to open the editor",
+
     "todolist.gui.viewer_screen": "View Text",
     "todolist.gui.button.reload": "Reload text",
-    "todolist.gui.text.error": "Text Error"
+    "todolist.gui.text.error": "Text Error",
+
+    "todolist.gui.editor_screen": "Edit Text"
 }

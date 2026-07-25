@@ -2,7 +2,7 @@
 
 Todolist is a Minecraft Java mod which introduces a text preview system to the game.
 
-## File Folder
+## File Structure
 
 ```yml
 {version folder}

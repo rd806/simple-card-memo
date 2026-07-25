@@ -44,7 +44,6 @@ public class TextViewerItem extends Item {
         boolean isLocal = getTextSource(stack);
 
         if (Screen.hasShiftDown()) {
-            tooltipComponents.add(Component.empty());
             tooltipComponents.add(Component.literal("§7§o" + name));
             // 数据来源
             Component source = isLocal ?
@@ -70,9 +69,10 @@ public class TextViewerItem extends Item {
                 setTextSource(stack, true);
             }
             String filePath = getFilePath(stack);
+            String fileName = getFileName(stack);
             boolean isLocalFile = getTextSource(stack);
             // 执行客户端代码
-            Minecraft.getInstance().setScreen(new TextViewerScreen(filePath, isLocalFile));
+            Minecraft.getInstance().setScreen(new TextViewerScreen(filePath, fileName, isLocalFile));
         }
         // 返回成功，表示物品被使用了，但避免消耗（比如不减少耐久度）
         return InteractionResultHolder.success(stack);
