@@ -1,6 +1,6 @@
-package com.github.rd806.todolist.setup;
+package com.github.rd806.simplecardmemo.setup;
 
-import com.github.rd806.todolist.Todolist;
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -8,6 +8,6 @@ public class ServerSetup {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
-        Todolist.LOGGER.info("HELLO from server starting");
+        SimpleCardMemo.LOGGER.info("HELLO from server starting");
     }
 }

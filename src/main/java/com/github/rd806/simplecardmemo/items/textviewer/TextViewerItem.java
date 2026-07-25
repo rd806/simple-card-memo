@@ -1,6 +1,6 @@
-package com.github.rd806.todolist.items.textviewer;
+package com.github.rd806.simplecardmemo.items.textviewer;
 
-import com.github.rd806.todolist.Todolist;
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
@@ -38,22 +38,21 @@ public class TextViewerItem extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable(Todolist.MODID + ".item.text_viewer.tooltip.simple"));
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.simple"));
         // 获取 NBT 数据
-        String name = getFileName(stack);
         boolean isLocal = getTextSource(stack);
 
         if (Screen.hasShiftDown()) {
-            tooltipComponents.add(Component.literal("§7§o" + name));
             // 数据来源
+            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.detail"));
             Component source = isLocal ?
-                    Component.translatable(Todolist.MODID + ".item.text_viewer.tooltip.local") :
-                    Component.translatable(Todolist.MODID + ".item.text_viewer.tooltip.web");
+                    Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.local") :
+                    Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.web");
             tooltipComponents.add(source);
 
         } else {
             // 未按 Shift 时显示提示
-            tooltipComponents.add(Component.translatable(Todolist.MODID + ".item.text_viewer.tooltip.more"));
+            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.more"));
         }
     }
 

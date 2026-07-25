@@ -1,18 +1,29 @@
 {
-    "todolist.tab.todolist": "Todo List",
+    "simplecardmemo.tab.simplecardmemo": "Todo List",
 
-    "item.todolist.text_viewer": "Text Viewer",
-    "todolist.item.text_viewer.tooltip.simple": "Right click to open the viewer",
-    "todolist.item.text_viewer.tooltip.more": "Hold down Shift to view details",
-    "todolist.item.text_viewer.tooltip.local": "Local File",
-    "todolist.item.text_viewer.tooltip.web": "Web File",
+    "item.simplecardmemo.text_viewer": "Text Viewer",
+    "simplecardmemo.item.text_viewer.tooltip.simple": "Right click to open the viewer",
+    "simplecardmemo.item.text_viewer.tooltip.more": "§7Hold down [Shift] to view details",
+    "simplecardmemo.item.text_viewer.tooltip.detail": "Detailed Information",
+    "simplecardmemo.item.text_viewer.tooltip.local": "Local File",
+    "simplecardmemo.item.text_viewer.tooltip.web": "Web File",
 
-    "item.todolist.text_editor": "Text Editor",
-    "todolist.item.text_editor.tooltip": "Right click to open the editor",
+    "item.simplecardmemo.text_editor": "Text Editor",
+    "simplecardmemo.item.text_editor.tooltip": "Right click to open the editor",
 
-    "todolist.gui.viewer_screen": "View Text",
-    "todolist.gui.button.reload": "Reload text",
-    "todolist.gui.text.error": "Text Error",
+    "simplecardmemo.gui.viewer_screen": "View Text",
+    "simplecardmemo.gui.viewer_screen.reload": "Reload text",
+    "simplecardmemo.gui.viewer_screen.error": "Text Error",
 
-    "todolist.gui.editor_screen": "Edit Text"
+    "simplecardmemo.gui.editor_screen": "Edit Text",
+    "simplecardmemo.gui.editor_screen.title": "Edit content",
+    "simplecardmemo.gui.editor_screen.hint": "Support Markdown syntax | Ctrl+S draft | Ctrl+E export",
+    "simplecardmemo.gui.editor_screen.hint.name": "File name",
+    "simplecardmemo.gui.editor_screen.hint.path": "File path",
+    "simplecardmemo.gui.editor_screen.input": "Input text",
+    "simplecardmemo.gui.editor_screen.input.error.content": "Content can't be empty!",
+    "simplecardmemo.gui.editor_screen.input.error.path": "The path is unavailable!",
+    "simplecardmemo.gui.editor_screen.save": "Temporarily store",
+    "simplecardmemo.gui.editor_screen.export": "Export item",
+    "simplecardmemo.gui.editor_screen.close": "Close editor"
 }

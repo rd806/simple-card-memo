@@ -1,7 +1,7 @@
-package com.github.rd806.todolist;
+package com.github.rd806.simplecardmemo;
 
-import com.github.rd806.todolist.init.ModCreativeModeTabs;
-import com.github.rd806.todolist.init.ModItems;
+import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
+import com.github.rd806.simplecardmemo.init.ModItems;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,15 +17,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(Todolist.MODID)
-public class Todolist {
+@Mod(SimpleCardMemo.MODID)
+public class SimpleCardMemo {
 
-    public static final String MODID = "todolist";
+    public static final String MODID = "simplecardmemo";
     public static final Logger LOGGER = LogUtils.getLogger();
     // 数据文件目录
-    public static final Path DATA_DIR = Paths.get("data/todolist");
+    public static final Path DATA_DIR = Paths.get("data/simple_card_memo");
 
-    public Todolist(FMLJavaModLoadingContext context) {
+    public SimpleCardMemo(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
 
         modEventBus.addListener(this::commonSetup);

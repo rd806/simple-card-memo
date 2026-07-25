@@ -1,15 +1,19 @@
-# Todolist
+# Simple Card Memo
 
-Todolist is a Minecraft Java mod which introduces a text preview system to the game.
+Simple Card Memo is a Minecraft Java mod which introduces a text preview system to the game.
+
+Markdown is supported!
+
+> The Markdown Text Render comes from [MineMark](https://github.com/DeDiamondPro/MineMark).
 
 ## File Structure
 
 ```yml
 {version folder}
 ├── config
-│   └── todolist-common.toml     # Client config    
+│   └── simplecardmemo-common.toml     # Client config    
 │
-├── data/todolist                # Store text files
+├── data/simple_card_memo                # Store text files
 │   ├── default.md
 │   ├── test.txt
 │   └── ...

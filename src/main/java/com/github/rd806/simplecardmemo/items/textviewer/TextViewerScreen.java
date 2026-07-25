@@ -1,7 +1,8 @@
-package com.github.rd806.todolist.items.textviewer;
+package com.github.rd806.simplecardmemo.items.textviewer;
 
-import com.github.rd806.todolist.Config;
-import com.github.rd806.todolist.Todolist;
+import com.github.rd806.simplecardmemo.Config;
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.TextLoader;
 import dev.dediamondpro.minemark.minecraft.MineMarkDrawable;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -30,7 +31,7 @@ public class TextViewerScreen extends Screen {
 
     protected TextViewerScreen(String path, String name, boolean source) {
         // 界面的标题
-        super(Component.translatable(Todolist.MODID + ".gui.viewer_screen"));
+        super(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen"));
         // 初始化数据
         reload(path, name, source);
     }
@@ -41,8 +42,8 @@ public class TextViewerScreen extends Screen {
             try {
                 markdownText = new MineMarkDrawable(renderedText);
             } catch (Exception e) {
-                renderedText = Component.translatable(Todolist.MODID + ".gui.text.error").toString();
-                Todolist.LOGGER.error("Couldn't load markdown text!", e);
+                renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
+                SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
             }
         }
         this.filePath = path;
@@ -96,8 +97,7 @@ public class TextViewerScreen extends Screen {
         // 这里可以添加按钮等交互组件
         // 添加重载组件
         recalculate();
-        this.addRenderableWidget(new Button.Builder(
-                Component.translatable(Todolist.MODID + ".gui.button.reload"),
+        this.addRenderableWidget(new Button.Builder(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.reload"),
                 button -> reload(filePath, fileName, isLocalFile))
                 .pos(this.width / 2 - 50, (int) (this.height - footer + 5))
                 .size(100, 20)
@@ -129,8 +129,8 @@ public class TextViewerScreen extends Screen {
         float contentH = this.height - header - footer;
         // 使用裁剪
         graphics.enableScissor(
-                (int) contentX,
-                (int) contentY,
+                (int) contentX - 5,
+                (int) contentY - 5,
                 (int) contentX + (int) contentW,
                 (int) contentY + (int) contentH
         );
@@ -139,7 +139,7 @@ public class TextViewerScreen extends Screen {
 
         // 检查文件内容
         if (this.renderedText == null) {
-            graphics.drawCenteredString(this.font, Component.translatable(Todolist.MODID + ".gui.text.error"),
+            graphics.drawCenteredString(this.font, Component.translatable(SimpleCardMemo.MODID + ".gui.text.error"),
                     20, (int) contentY, 0xFFFFFF);
             return;
         }

@@ -1,7 +1,6 @@
-package com.github.rd806.todolist.items.texteditor;
+package com.github.rd806.simplecardmemo.items.texteditor;
 
-import com.github.rd806.todolist.Todolist;
-import com.github.rd806.todolist.items.textviewer.TextViewerScreen;
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -24,7 +23,7 @@ public class TextEditorItem extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable(Todolist.MODID + ".item.text_editor.tooltip"));
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.text_editor.tooltip"));
     }
 
     @Override

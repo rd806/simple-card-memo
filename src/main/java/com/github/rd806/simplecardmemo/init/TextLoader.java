@@ -1,6 +1,6 @@
-package com.github.rd806.todolist.items.textviewer;
+package com.github.rd806.simplecardmemo.init;
 
-import com.github.rd806.todolist.Todolist;
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -34,7 +34,7 @@ public class TextLoader {
 
             int responseCode = connection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                Todolist.LOGGER.error("HTTP error: {} - {}", responseCode, connection.getResponseMessage());
+                SimpleCardMemo.LOGGER.error("HTTP error: {} - {}", responseCode, connection.getResponseMessage());
                 return null;
             }
 
@@ -66,7 +66,7 @@ public class TextLoader {
             return content.toString();
 
         } catch (Exception e) {
-            Todolist.LOGGER.error("Failed to load file from url: {}", urlStr);
+            SimpleCardMemo.LOGGER.error("Failed to load file from url: {}", urlStr);
             return null;
         }
     }
@@ -74,13 +74,32 @@ public class TextLoader {
     // 从本地文件中获取
     public static String loadFromLocalFiles(String filepath) {
        try {
-           Path path = Todolist.DATA_DIR.resolve(filepath);
+           Path path = SimpleCardMemo.DATA_DIR.resolve(filepath);
            if (Files.exists(path)) {
                return Files.readString(path);
            }
        } catch (Exception e) {
-           Todolist.LOGGER.error("Failed to load file from local: {}", filepath);
+           SimpleCardMemo.LOGGER.error("Failed to load file from local: {}", filepath);
        }
        return "Could not load text file from" + filepath;
+    }
+
+    // 保存到本地文件
+    public static boolean saveToLocalFiles(String filePath, String text) {
+        String safeName = sanitizeFileName(filePath);
+        Path path = SimpleCardMemo.DATA_DIR.resolve(safeName);
+        try {
+            Files.writeString(path, text);
+            SimpleCardMemo.LOGGER.info("Successfully saved text to local file: {}", safeName);
+            return true;
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Failed to save file");
+            return false;
+        }
+    }
+
+    // 移除不安全字符
+    private static String sanitizeFileName(String name) {
+        return name.replaceAll("[^a-zA-Z0-9\\-_.]", "_");
     }
 }

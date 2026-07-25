@@ -153,9 +153,9 @@ shadowJar {
     configurations = [project.configurations.shade]
 
     // 4. 重定位
-    relocate("dev.dediamondpro.minemark", "com.github.rd806.todolist.libs.minemark")
-    relocate("org.commonmark", "com.github.rd806.todolist.libs.commonmark")
-    relocate("org.ccil.cowan.tagsoup", "com.github.rd806.todolist.libs.tagsoup")
+    relocate("dev.dediamondpro.minemark", "com.github.rd806.simplecardmemo.libs.minemark")
+    relocate("org.commonmark", "com.github.rd806.simplecardmemo.libs.commonmark")
+    relocate("org.ccil.cowan.tagsoup", "com.github.rd806.simplecardmemo.libs.tagsoup")
 
     mergeServiceFiles()
 }
