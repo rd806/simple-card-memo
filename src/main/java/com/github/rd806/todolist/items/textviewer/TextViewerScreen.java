@@ -1,4 +1,4 @@
-package com.github.rd806.todolist.init.textviewer;
+package com.github.rd806.todolist.items.textviewer;
 
 import com.github.rd806.todolist.Config;
 import com.github.rd806.todolist.Todolist;
@@ -11,34 +11,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class TextViewerScreen extends Screen {
 
-    private final String filePath;
-    private final boolean isLocalFile;
+    private String filePath;
+    private boolean isLocalFile;
     // 待渲染文本
     private String renderedText;
     private MineMarkDrawable markdownText;
 
     // 页面设置
+    private float header;
+    private float margin;
     private float footer;
 
-    /**
-     * #contentX################ contentW ##################
-     * contentY
-     * #
-     * #
-     * contentH
-     * #
-     * #
-     * #
-     * #####################################################
-     **/
-
-    private float contentX;
-    private float contentY;
-    private float contentW;
-    private float contentH;
-
-    private float totalHeight;
     // 滚动设置
+    private float totalHeight;
     private double scrollOffset = 0;
     private double maxScroll = 0;
 
@@ -46,6 +31,10 @@ public class TextViewerScreen extends Screen {
         // 界面的标题
         super(Component.translatable(Todolist.MODID + ".gui.viewer_screen"));
         // 初始化数据
+        reload(path, source);
+    }
+
+    private void reload(String path, boolean source) {
         this.renderedText = TextLoader.loadText(path, source);
         if (Config.ENABLE_MARKDOWN.get()) {
             try {
@@ -61,19 +50,24 @@ public class TextViewerScreen extends Screen {
     // 设置内容左边距
     private void setContent() {
         float screenWidth = this.width;
+        float screenHeight = this.height;
         switch (Config.PAGE_MARGIN.get()) {
-            case WIDE -> this.contentX = screenWidth * ((float) 1 / 3);
-            case MEDIUM -> this.contentX =  screenWidth * ((float) 1 / 4);
-            case NARROW -> this.contentX =  screenWidth * ((float) 1 / 5);
+            case WIDE -> {
+                this.margin = screenWidth * 0.35f;
+                this.header = screenHeight * 0.2f;
+                this.footer = screenHeight * 0.2f;
+            }
+            case MEDIUM -> {
+                this.margin = screenWidth * 0.25f;
+                this.header = screenHeight * 0.15f;
+                this.footer = screenHeight * 0.15f;
+            }
+            case NARROW -> {
+                this.margin = screenWidth * 0.15f;
+                this.header = screenHeight * 0.1f;
+                this.footer = screenHeight * 0.1f;
+            }
         }
-        this.contentY = 30;
-        this.footer = 30;
-        switch (Config.PAGE_MARGIN.get()) {
-            case WIDE -> this.contentW = screenWidth * ((float) 1 / 3);
-            case MEDIUM -> this.contentW = screenWidth * ((float) 2 / 4);
-            case NARROW -> this.contentW = screenWidth * ((float) 3 / 5);
-        }
-        this.contentH = this.width - this.footer - this.contentY;
     }
 
     // 设置内容高度
@@ -90,7 +84,7 @@ public class TextViewerScreen extends Screen {
         setContent();
         setContentHeight();
 
-        this.maxScroll = Math.max(0, this.totalHeight - this.contentH);
+        this.maxScroll = Math.max(0, this.totalHeight - this.height + this.footer + this.header);
     }
 
     @Override
@@ -101,8 +95,11 @@ public class TextViewerScreen extends Screen {
         recalculate();
         this.addRenderableWidget(new Button.Builder(
                 Component.translatable(Todolist.MODID + ".gui.button.reload"),
-                button -> this.renderedText = TextLoader.loadText(filePath, isLocalFile))
-                .pos(this.width / 2 - 50, (int) (this.contentY + this.contentH + 5))
+                button -> {
+                    this.renderedText = TextLoader.loadText(filePath, isLocalFile);
+                    reload(filePath, isLocalFile);
+                })
+                .pos(this.width / 2 - 50, (int) (this.height - footer + 5))
                 .size(100, 20)
                 .build()
         );
@@ -110,8 +107,8 @@ public class TextViewerScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        recalculate();
 
+        recalculate();
         // 渲染背景（灰色半透明背景）
         this.renderBackground(graphics);
         // 渲染文件路径
@@ -126,6 +123,10 @@ public class TextViewerScreen extends Screen {
 
     // 渲染文本
     private void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+        float contentX = margin;
+        float contentY = header;
+        float contentW = this.width - 2 * margin;
+        float contentH = this.height - header - footer;
         // 使用裁剪
         graphics.enableScissor(
                 (int) contentX,
@@ -140,17 +141,17 @@ public class TextViewerScreen extends Screen {
         // 检查文件内容
         if (this.renderedText == null) {
             graphics.drawCenteredString(this.font, Component.translatable(Todolist.MODID + ".gui.text.error"),
-                    20, (int) this.contentY, 0xFFFFFF);
+                    20, (int) contentY, 0xFFFFFF);
             return;
         }
         // 渲染文件内容
         if (Config.ENABLE_MARKDOWN.get()) {
-            this.markdownText.draw(this.contentX, this.contentY, this.contentW, mouseX, mouseY, graphics);
+            this.markdownText.draw(contentX, contentY, contentW, mouseX, mouseY, graphics);
         } else {
             String[] lines = renderedText.split("\n");
-            int y = (int) this.contentY;
+            int y = (int) contentY;
             for (String line : lines) {
-                graphics.drawString(this.font, line, (int) this.contentX, y, 0xFFFFFF);
+                graphics.drawString(this.font, line, (int) contentX, y, 0xFFFFFF);
                 y += this.font.lineHeight + 2;
             }
         }
@@ -163,16 +164,16 @@ public class TextViewerScreen extends Screen {
     private void renderScrollBar(GuiGraphics graphics) {
         if (this.maxScroll <= 0) return;
 
-        int barX = (int) (contentX + contentW + 4);
-        int barY = (int) contentY;
+        int barX = (int) (this.width - margin + 4);
+        int barY = (int) footer;
         int barW = 6;
-        int barH = (int) contentH;
+        int barH = (int) (this.height - header - footer);
 
         graphics.fill(barX, barY, barX + barW, barY + barH, 0x33FFFFFF);
 
         // 滑块
         float progress = (float) (scrollOffset / maxScroll);
-        int thumbHeight = Math.max(20, (int) (barH * Math.min(1, (contentH / totalHeight))));
+        int thumbHeight = Math.max(20, (int) (barH * Math.min(1, (barH / totalHeight))));
         int thumbY = barY + (int) ((barH - thumbHeight) * progress);
 
         graphics.fill(barX, thumbY, barX + barW, thumbY + thumbHeight, 0xCCFFFFFF);
@@ -181,9 +182,9 @@ public class TextViewerScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        if (this.maxScroll > 0) {
+        if (maxScroll > 0) {
             this.scrollOffset -= amount * 20;
-            this.scrollOffset = Math.max(0, Math.min(this.scrollOffset, this.maxScroll));
+            this.scrollOffset = Math.max(0, Math.min(scrollOffset, maxScroll));
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, amount);

@@ -1,4 +1,4 @@
-package com.github.rd806.todolist.init.textviewer;
+package com.github.rd806.todolist.items.textviewer;
 
 import com.github.rd806.todolist.Todolist;
 

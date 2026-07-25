@@ -27,6 +27,7 @@ public class ModCreativeModeTabs {
                             // output.accept(...) 用于向标签中添加物品
                             .displayItems((itemDisplayParameters, output) -> {
                                 output.accept(ModItems.TEXT_VIEWER.get());
+                                output.accept(ModItems.TEXT_EDITOR.get());
                             })
                             // 构建最终的 CreativeModeTab 实例
                             .build());

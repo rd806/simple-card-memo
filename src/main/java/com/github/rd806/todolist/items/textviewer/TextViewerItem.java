@@ -1,4 +1,4 @@
-package com.github.rd806.todolist.init.textviewer;
+package com.github.rd806.todolist.items.textviewer;
 
 import com.github.rd806.todolist.Todolist;
 import net.minecraft.client.Minecraft;
@@ -22,6 +22,7 @@ public class TextViewerItem extends Item {
 
     // NBT键名
     private static final String FILE_PATH = "filePath";
+    private static final String FILE_NAME = "fileName";
     private static final String IS_LOCAL_FILE = "isLocalFile";
 
     public TextViewerItem(Properties properties) {
@@ -39,12 +40,12 @@ public class TextViewerItem extends Item {
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
         tooltipComponents.add(Component.translatable(Todolist.MODID + ".item.text_viewer.tooltip.simple"));
         // 获取 NBT 数据
-        String path = getFilePath(stack);
+        String name = getFileName(stack);
         boolean isLocal = getTextSource(stack);
 
         if (Screen.hasShiftDown()) {
             tooltipComponents.add(Component.empty());
-            tooltipComponents.add(Component.literal("§7§o" + path));
+            tooltipComponents.add(Component.literal("§7§o" + name));
             // 数据来源
             Component source = isLocal ?
                     Component.translatable(Todolist.MODID + ".item.text_viewer.tooltip.local") :
@@ -65,6 +66,7 @@ public class TextViewerItem extends Item {
             // 为空则创建
             if (stack.getTag() == null) {
                 setFilePath(stack, "default.md");
+                setFileName(stack, "Guide File");
                 setTextSource(stack, true);
             }
             String filePath = getFilePath(stack);
@@ -92,6 +94,14 @@ public class TextViewerItem extends Item {
         }
         return true;
     }
+    // 获取文件名称
+    public static String getFileName(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(FILE_NAME)) {
+            return tag.getString(FILE_NAME);
+        }
+        return "";
+    }
 
     // 设置文件路径
     public static void setFilePath(ItemStack stack, String filePath) {
@@ -100,5 +110,9 @@ public class TextViewerItem extends Item {
     // 设置文件来源
     public static void setTextSource(ItemStack stack, boolean isLocalFile) {
         stack.getOrCreateTag().putBoolean(IS_LOCAL_FILE, isLocalFile);
+    }
+    // 获取文件名称
+    public static void setFileName(ItemStack stack, String fileName) {
+        stack.getOrCreateTag().putString(FILE_NAME, fileName);
     }
 }
