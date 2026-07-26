@@ -1,15 +1,18 @@
 {
-    "simplecardmemo.tab.simplecardmemo": "任务清单",
+    "simplecardmemo.tab.simplecardmemo": "简易备忘录",
 
-    "item.simplecardmemo.text_viewer": "文本查看器",
-    "simplecardmemo.item.text_viewer.tooltip.simple": "右键打开查看器",
-    "simplecardmemo.item.text_viewer.tooltip.more": "§7按下 [Shift] 键查看详情",
-    "simplecardmemo.item.text_viewer.tooltip.detail": "详细信息",
-    "simplecardmemo.item.text_viewer.tooltip.local": "本地文件",
-    "simplecardmemo.item.text_viewer.tooltip.web": "网络文件",
+    "item.simplecardmemo.memo_viewer": "查看备忘录",
+    "simplecardmemo.item.memo_viewer.tooltip.simple": "右键打开查看器",
+    "simplecardmemo.item.memo_viewer.tooltip.more": "§7按下 [Shift] 键查看详情",
+    "simplecardmemo.item.memo_viewer.tooltip.detail": "§o ===== 详细信息 =====",
+    "simplecardmemo.item.memo_viewer.tooltip.local": "本地文件",
+    "simplecardmemo.item.memo_viewer.tooltip.web": "网络文件",
 
-    "item.simplecardmemo.text_editor": "文本编辑器",
-    "simplecardmemo.item.text_editor.tooltip": "右键打开编辑器",
+    "item.simplecardmemo.memo_editor": "编辑备忘录",
+    "simplecardmemo.item.memo_editor.tooltip": "右键打开编辑器",
+
+    "item.simplecardmemo.memo_guide": "教程文件",
+    "simplecardmemo.item.memo_guide.tooltip": "右键打开教程文件",
 
     "simplecardmemo.gui.viewer_screen": "查看文本",
     "simplecardmemo.gui.viewer_screen.reload": "重新加载",
@@ -24,6 +27,8 @@
     "simplecardmemo.gui.editor_screen.input.error.content": "内容不可为空！",
     "simplecardmemo.gui.editor_screen.input.error.path": "此路径不可用！",
     "simplecardmemo.gui.editor_screen.save": "暂存内容",
+    "simplecardmemo.gui.editor_screen.save.success": "保存成功！",
     "simplecardmemo.gui.editor_screen.export": "导出物品",
+    "simplecardmemo.gui.editor_screen.export.success": "成功导出备忘录！",
     "simplecardmemo.gui.editor_screen.close": "关闭界面"
 }

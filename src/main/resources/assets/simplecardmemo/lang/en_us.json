@@ -1,0 +1,34 @@
+{
+    "simplecardmemo.tab.simplecardmemo": "Simple Card Memo",
+
+    "item.simplecardmemo.memo_viewer": "Memo Viewer",
+    "simplecardmemo.item.memo_viewer.tooltip.simple": "Right click to open the viewer",
+    "simplecardmemo.item.memo_viewer.tooltip.more": "§7Hold down [Shift] to view details",
+    "simplecardmemo.item.memo_viewer.tooltip.detail": "§o===== Detailed Information =====",
+    "simplecardmemo.item.memo_viewer.tooltip.local": "Local File",
+    "simplecardmemo.item.memo_viewer.tooltip.web": "Web File",
+
+    "item.simplecardmemo.memo_editor": "Memo Editor",
+    "simplecardmemo.item.memo_editor.tooltip": "Right click to open the editor",
+
+    "item.simplecardmemo.memo_guide": "Guide",
+    "simplecardmemo.item.memo_guide.tooltip": "Right click to open the Guide file",
+
+    "simplecardmemo.gui.viewer_screen": "View Text",
+    "simplecardmemo.gui.viewer_screen.reload": "Reload text",
+    "simplecardmemo.gui.viewer_screen.error": "Text Error",
+
+    "simplecardmemo.gui.editor_screen": "Edit Text",
+    "simplecardmemo.gui.editor_screen.title": "Edit content",
+    "simplecardmemo.gui.editor_screen.hint": "Support Markdown syntax | Ctrl+S draft | Ctrl+E export",
+    "simplecardmemo.gui.editor_screen.hint.name": "File name",
+    "simplecardmemo.gui.editor_screen.hint.path": "File path",
+    "simplecardmemo.gui.editor_screen.input": "Input text",
+    "simplecardmemo.gui.editor_screen.input.error.content": "Content can't be empty!",
+    "simplecardmemo.gui.editor_screen.input.error.path": "The path is unavailable!",
+    "simplecardmemo.gui.editor_screen.save": "Temporarily store",
+    "simplecardmemo.gui.editor_screen.save.success": "Store file successfuly!",
+    "simplecardmemo.gui.editor_screen.export": "Export memo",
+    "simplecardmemo.gui.editor_screen.export.success": "Exported the memo successfully!",
+    "simplecardmemo.gui.editor_screen.close": "Close editor"
+}

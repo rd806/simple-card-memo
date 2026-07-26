@@ -81,7 +81,7 @@ public class TextLoader {
        } catch (Exception e) {
            SimpleCardMemo.LOGGER.error("Failed to load file from local: {}", filepath);
        }
-       return "Could not load text file from" + filepath;
+       return "Could not load text file from: " + filepath;
     }
 
     // 保存到本地文件

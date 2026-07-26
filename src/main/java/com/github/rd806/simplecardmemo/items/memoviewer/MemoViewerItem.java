@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.items.textviewer;
+package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import net.minecraft.client.Minecraft;
@@ -18,41 +18,42 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 
-public class TextViewerItem extends Item {
+public class MemoViewerItem extends Item {
 
     // NBT键名
     private static final String FILE_PATH = "filePath";
-    private static final String FILE_NAME = "fileName";
+    private static final String DISPLAY_NAME = "fileName";
     private static final String IS_LOCAL_FILE = "isLocalFile";
 
-    public TextViewerItem(Properties properties) {
+    public MemoViewerItem(Properties properties) {
         super(properties);
     }
 
     @Override
     public void onCraftedBy(@NotNull ItemStack stack, @NotNull Level level, @NotNull Player player) {
         // 第一次创建时设置NBT
-        setFilePath(stack, "default.md");
+        setFilePath(stack, "guide.md");
+        setDisplayName(stack, "Guide");
         setTextSource(stack, true);
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.simple"));
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.simple"));
         // 获取 NBT 数据
         boolean isLocal = getTextSource(stack);
 
         if (Screen.hasShiftDown()) {
             // 数据来源
-            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.detail"));
+            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.detail"));
             Component source = isLocal ?
-                    Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.local") :
-                    Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.web");
+                    Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.local") :
+                    Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.web");
             tooltipComponents.add(source);
 
         } else {
             // 未按 Shift 时显示提示
-            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.text_viewer.tooltip.more"));
+            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.more"));
         }
     }
 
@@ -63,15 +64,15 @@ public class TextViewerItem extends Item {
         if (level.isClientSide) {
             // 为空则创建
             if (stack.getTag() == null) {
-                setFilePath(stack, "default.md");
-                setFileName(stack, "Guide File");
+                setFilePath(stack, "guide.md");
+                setDisplayName(stack, "Guide File");
                 setTextSource(stack, true);
             }
             String filePath = getFilePath(stack);
-            String fileName = getFileName(stack);
+            String displayName = getDisplayName(stack);
             boolean isLocalFile = getTextSource(stack);
             // 执行客户端代码
-            Minecraft.getInstance().setScreen(new TextViewerScreen(filePath, fileName, isLocalFile));
+            Minecraft.getInstance().setScreen(new MemoViewerScreen(filePath, displayName, isLocalFile));
         }
         // 返回成功，表示物品被使用了，但避免消耗（比如不减少耐久度）
         return InteractionResultHolder.success(stack);
@@ -94,10 +95,10 @@ public class TextViewerItem extends Item {
         return true;
     }
     // 获取文件名称
-    public static String getFileName(ItemStack stack) {
+    public static String getDisplayName(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(FILE_NAME)) {
-            return tag.getString(FILE_NAME);
+        if (tag != null && tag.contains(DISPLAY_NAME)) {
+            return tag.getString(DISPLAY_NAME);
         }
         return "";
     }
@@ -111,7 +112,7 @@ public class TextViewerItem extends Item {
         stack.getOrCreateTag().putBoolean(IS_LOCAL_FILE, isLocalFile);
     }
     // 获取文件名称
-    public static void setFileName(ItemStack stack, String fileName) {
-        stack.getOrCreateTag().putString(FILE_NAME, fileName);
+    public static void setDisplayName(ItemStack stack, String displayName) {
+        stack.getOrCreateTag().putString(DISPLAY_NAME, displayName);
     }
 }

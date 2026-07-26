@@ -1,9 +1,9 @@
-package com.github.rd806.simplecardmemo.items.texteditor;
+package com.github.rd806.simplecardmemo.items.memoeditor;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.init.TextLoader;
-import com.github.rd806.simplecardmemo.items.textviewer.TextViewerItem;
+import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -14,7 +14,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class TextEditorScreen extends Screen {
+import java.nio.file.Files;
+import java.time.LocalDate;
+
+public class MemoEditorScreen extends Screen {
 
     private final String initialContent;
     private String filePath;
@@ -34,11 +37,11 @@ public class TextEditorScreen extends Screen {
     private static final int BUTTON_WIDTH = 50;
     private static final int BUTTON_HEIGHT = 20;
 
-    protected TextEditorScreen() {
+    protected MemoEditorScreen() {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.editor.title"));
         this.initialContent = TextLoader.loadFromLocalFiles("temp.md");
         // 默认名称
-        this.filePath = "todolist_" + System.currentTimeMillis() + ".md";
+        this.filePath = "memo_" + LocalDate.now() + ".md";
         this.fileName = filePath;
     }
 
@@ -108,7 +111,7 @@ public class TextEditorScreen extends Screen {
         // 保存草稿按钮
         this.saveDraftButton =
                 Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.save"),
-                                button -> exportFile("temp.md"))
+                                button -> saveDraft())
                         .pos(centerX + BUTTON_WIDTH, bottomY + 10)
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                         .build();
@@ -120,7 +123,6 @@ public class TextEditorScreen extends Screen {
                                 button -> {
                                     filePath = this.pathInput.getValue();
                                     exportFile(filePath);
-                                    setItem();
                                 })
                         .pos(centerX + BUTTON_WIDTH * 3 , bottomY + 10)
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -169,35 +171,49 @@ public class TextEditorScreen extends Screen {
         super.render(graphics, mouseX, mouseY, partialTick);
     }
 
-    // 导出内容到文件
-    private void exportFile(String path) {
-        String content = this.textInput.getValue();
-        if (content.trim().isEmpty()) {
-            this.textInput.setValue(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.content").getString());
-            return;
-        }
-        // 如果要更复杂的交互，可以再创建一个输入框界面
-        if (TextLoader.saveToLocalFiles(path, content)) {
+    // 导出内容到草稿
+    private void saveDraft() {
+        String content = textInput.getValue();
+        if (TextLoader.saveToLocalFiles("temp.md", content) && Minecraft.getInstance().player != null) {
             this.onClose();
+            Minecraft.getInstance().player.displayClientMessage(
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.save.success"),
+                    false);
         } else {
-            this.pathInput.setValue(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.path").getString());
+            SimpleCardMemo.LOGGER.error("Fail to save draft!");
         }
     }
 
-    // 设置物品
-    private void setItem() {
-        fileName = this.nameInput.getValue();
+    // 导出内容到文件
+    private void exportFile(String path) {
+        String content = textInput.getValue();
+        if (content.trim().isEmpty()) {
+            textInput.setValue(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.content").getString());
+            return;
+        }
+        // 检测没有重名文件
+        if (Files.exists(SimpleCardMemo.DATA_DIR.resolve(path))) {
+            pathInput.setValue(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.path").getString());
+        } else {
+            if (TextLoader.saveToLocalFiles(path, content) && Minecraft.getInstance().player != null) {
+                this.onClose();
+                Minecraft.getInstance().player.displayClientMessage(
+                        Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.export.success"),
+                        false);
+            }
+        }
+
+        fileName = nameInput.getValue();
         // 保存内容
-        ItemStack viewer = new ItemStack(ModItems.TEXT_VIEWER.get());
+        ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
         viewer.setHoverName(Component.literal(fileName));
-        TextViewerItem.setFileName(viewer, filePath);
-        TextViewerItem.setFilePath(viewer, fileName);
+        MemoViewerItem.setDisplayName(viewer, filePath);
+        MemoViewerItem.setFilePath(viewer, fileName);
         // 给予玩家
         if (Minecraft.getInstance().player != null) {
             Minecraft.getInstance().player.getInventory().add(viewer);
         }
     }
-
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
@@ -208,11 +224,7 @@ public class TextEditorScreen extends Screen {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         // Ctrl+S 草稿
         if (Screen.hasControlDown() && keyCode == 83) {
-            exportFile("temp.md");
-            return true;
-        }
-        // Ctrl+I 导入
-        if (Screen.hasControlDown() && keyCode == 73) {
+            saveDraft();
             return true;
         }
         // Ctrl+E 导出

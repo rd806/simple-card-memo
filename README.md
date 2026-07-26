@@ -1,6 +1,6 @@
 # Simple Card Memo
 
-Simple Card Memo is a Minecraft Java mod which introduces a text preview system to the game.
+Simple Card Memo is a Minecraft Java mod which adds memo cards to Minecraft. More specifically, it introduces a text preview system to the game.
 
 Markdown is supported!
 
@@ -13,9 +13,12 @@ Markdown is supported!
 ├── config
 │   └── simplecardmemo-common.toml     # Client config    
 │
-├── data/simple_card_memo                # Store text files
-│   ├── default.md
-│   ├── test.txt
+├── data/simple_card_memo              # Store text files
+│   ├── guide.md
+│   ├── temp.md
 │   └── ...
 └── ...
 ```
+
+## Usage
+

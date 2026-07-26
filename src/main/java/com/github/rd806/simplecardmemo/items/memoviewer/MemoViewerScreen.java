@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.items.textviewer;
+package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
@@ -10,7 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
-public class TextViewerScreen extends Screen {
+public class MemoViewerScreen extends Screen {
 
     private String filePath;
     private String fileName;
@@ -29,7 +29,7 @@ public class TextViewerScreen extends Screen {
     private double scrollOffset = 0;
     private double maxScroll = 0;
 
-    protected TextViewerScreen(String path, String name, boolean source) {
+    public MemoViewerScreen(String path, String name, boolean source) {
         // 界面的标题
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen"));
         // 初始化数据

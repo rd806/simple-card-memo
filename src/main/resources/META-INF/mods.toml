@@ -23,9 +23,9 @@ displayName = "Simple Card Memo" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
+displayURL="https://github.com/rd806/simple-card-memo" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-#logoFile="todolist.png" #optional
+logoFile="simplecardmemo_icon.png" #optional
 # A text field displayed in the mod UI
 #credits="Thanks for this example mod goes to Java" #optional
 # A text field displayed in the mod UI
@@ -39,7 +39,7 @@ authors = "RunicDolpin806" #optional
 #displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
 
 # The description text for the mod (multi line!) (#mandatory)
-description = '''${mod_description}'''
+description = '''Add memo cards to Minecraft, which introduces a text preview system to the game.'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies."simplecardmemo"]] #optional
     # the modid of the dependency
@@ -61,3 +61,6 @@ description = '''${mod_description}'''
     versionRange = "${minecraft_version_range}"
     ordering = "NONE"
     side = "BOTH"
+
+[modproperties."simplecardmemo"]
+    catalogueImageIcon="simplecardmemo_icon.png"
