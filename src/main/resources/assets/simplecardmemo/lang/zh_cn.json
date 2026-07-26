@@ -2,17 +2,17 @@
     "simplecardmemo.tab.simplecardmemo": "简易备忘录",
 
     "item.simplecardmemo.memo_viewer": "查看备忘录",
-    "simplecardmemo.item.memo_viewer.tooltip.simple": "右键打开查看器",
-    "simplecardmemo.item.memo_viewer.tooltip.more": "§7按下 [Shift] 键查看详情",
-    "simplecardmemo.item.memo_viewer.tooltip.detail": "§o ===== 详细信息 =====",
+    "simplecardmemo.item.memo_viewer.tooltip.simple": "右键打开",
+    "simplecardmemo.item.memo_viewer.tooltip.more": "按下 [Shift] 键查看详情",
+    "simplecardmemo.item.memo_viewer.tooltip.detail": "===== 详细信息 =====",
     "simplecardmemo.item.memo_viewer.tooltip.local": "本地文件",
     "simplecardmemo.item.memo_viewer.tooltip.web": "网络文件",
 
-    "item.simplecardmemo.memo_editor": "编辑备忘录",
-    "simplecardmemo.item.memo_editor.tooltip": "右键打开编辑器",
+    "item.simplecardmemo.memo_editor": "备忘录编辑器",
+    "simplecardmemo.item.memo_editor.tooltip": "右键打开",
 
-    "item.simplecardmemo.memo_guide": "教程文件",
-    "simplecardmemo.item.memo_guide.tooltip": "右键打开教程文件",
+    "simplecardmemo.item.memo_guide": "简易备忘录教程",
+    "simplecardmemo.item.minecraft_server": "如何开设Minecraft服务器",
 
     "simplecardmemo.gui.viewer_screen": "查看文本",
     "simplecardmemo.gui.viewer_screen.reload": "重新加载",

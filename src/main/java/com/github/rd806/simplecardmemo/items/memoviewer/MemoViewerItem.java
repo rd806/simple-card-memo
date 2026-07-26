@@ -1,6 +1,7 @@
 package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +24,7 @@ public class MemoViewerItem extends Item {
     // NBT键名
     private static final String FILE_PATH = "filePath";
     private static final String DISPLAY_NAME = "fileName";
+    private static final String AUTHOR = "default";
     private static final String IS_LOCAL_FILE = "isLocalFile";
 
     public MemoViewerItem(Properties properties) {
@@ -39,13 +41,17 @@ public class MemoViewerItem extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.simple"));
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.simple")
+                .withStyle(ChatFormatting.GRAY));
         // 获取 NBT 数据
         boolean isLocal = getTextSource(stack);
+        String author = getAuthor(stack);
 
         if (Screen.hasShiftDown()) {
-            // 数据来源
             tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.detail"));
+            // 作者
+            tooltipComponents.add(Component.literal(author).withStyle(ChatFormatting.BLUE));
+            // 数据来源
             Component source = isLocal ?
                     Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.local") :
                     Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.web");
@@ -53,7 +59,8 @@ public class MemoViewerItem extends Item {
 
         } else {
             // 未按 Shift 时显示提示
-            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.more"));
+            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.more")
+                    .withStyle(ChatFormatting.GRAY));
         }
     }
 
@@ -62,12 +69,6 @@ public class MemoViewerItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         // 只在客户端执行打开界面的逻辑
         if (level.isClientSide) {
-            // 为空则创建
-            if (stack.getTag() == null) {
-                setFilePath(stack, "guide.md");
-                setDisplayName(stack, "Guide File");
-                setTextSource(stack, true);
-            }
             String filePath = getFilePath(stack);
             String displayName = getDisplayName(stack);
             boolean isLocalFile = getTextSource(stack);
@@ -102,6 +103,14 @@ public class MemoViewerItem extends Item {
         }
         return "";
     }
+    // 获取文件作者
+    public static String getAuthor(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(AUTHOR)) {
+            return tag.getString(AUTHOR);
+        }
+        return "";
+    }
 
     // 设置文件路径
     public static void setFilePath(ItemStack stack, String filePath) {
@@ -114,5 +123,9 @@ public class MemoViewerItem extends Item {
     // 获取文件名称
     public static void setDisplayName(ItemStack stack, String displayName) {
         stack.getOrCreateTag().putString(DISPLAY_NAME, displayName);
+    }
+    // 获取文件作者
+    public static void setAuthor(ItemStack stack, String author) {
+        stack.getOrCreateTag().putString(AUTHOR, author);
     }
 }

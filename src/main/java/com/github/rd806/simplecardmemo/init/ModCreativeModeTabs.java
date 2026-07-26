@@ -1,6 +1,7 @@
 package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -25,13 +26,37 @@ public class ModCreativeModeTabs {
                             // 定义该标签中显示的物品内容
                             .displayItems((itemDisplayParameters, output) -> {
                                 output.accept(ModItems.MEMO_EDITOR.get());
-                                output.accept(ModItems.MEMO_VIEWER.get());
-                                output.accept(ModItems.MEMO_GUIDE.get());
+                                output.accept(memoGuide());
+                                output.accept(hostServer());
                             })
                             // 构建最终的 CreativeModeTab 实例
                             .build());
 
     public static void register(IEventBus eventBus){
         CREATIVE_MODE_TABS.register(eventBus);
+    }
+
+    // 教程文件
+    private static ItemStack memoGuide() {
+        ItemStack item = new ItemStack(ModItems.MEMO_VIEWER.get());
+        item.setHoverName(Component.translatable(SimpleCardMemo.MODID + ".item.memo_guide")
+                .withStyle(style -> style.withItalic(false)));
+        MemoViewerItem.setFilePath(item, "guide.md");
+        MemoViewerItem.setDisplayName(item, "Guide");
+        MemoViewerItem.setTextSource(item, true);
+        MemoViewerItem.setAuthor(item, "RunicDolphin806");
+        return item;
+    }
+
+    // Minecraft Java 开服教程
+    private static ItemStack hostServer() {
+        ItemStack item = new ItemStack(ModItems.MEMO_VIEWER.get());
+        item.setHoverName(Component.translatable(SimpleCardMemo.MODID + ".item.minecraft_server")
+                .withStyle(style -> style.withItalic(false)));
+        MemoViewerItem.setFilePath(item, "minecraft_server.md");
+        MemoViewerItem.setDisplayName(item, "How to Host a Minecraft Server");
+        MemoViewerItem.setTextSource(item, true);
+        MemoViewerItem.setAuthor(item, "From Internet");
+        return item;
     }
 }

@@ -194,23 +194,23 @@ public class MemoEditorScreen extends Screen {
         // 检测没有重名文件
         if (Files.exists(SimpleCardMemo.DATA_DIR.resolve(path))) {
             pathInput.setValue(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.path").getString());
-        } else {
-            if (TextLoader.saveToLocalFiles(path, content) && Minecraft.getInstance().player != null) {
-                this.onClose();
-                Minecraft.getInstance().player.displayClientMessage(
-                        Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.export.success"),
-                        false);
-            }
+            return;
         }
 
+        if (TextLoader.saveToLocalFiles(path, content) && Minecraft.getInstance().player != null) {
+            this.onClose();
+            Minecraft.getInstance().player.displayClientMessage(
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.export.success"),
+                    false);
+        }
         fileName = nameInput.getValue();
-        // 保存内容
-        ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
-        viewer.setHoverName(Component.literal(fileName));
-        MemoViewerItem.setDisplayName(viewer, filePath);
-        MemoViewerItem.setFilePath(viewer, fileName);
         // 给予玩家
         if (Minecraft.getInstance().player != null) {
+            ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
+            viewer.setHoverName(Component.literal(fileName));
+            MemoViewerItem.setDisplayName(viewer, filePath);
+            MemoViewerItem.setFilePath(viewer, fileName);
+            MemoViewerItem.setAuthor(viewer, Minecraft.getInstance().player.getName().getString());
             Minecraft.getInstance().player.getInventory().add(viewer);
         }
     }
@@ -218,6 +218,11 @@ public class MemoEditorScreen extends Screen {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         return super.mouseScrolled(mouseX, mouseY, amount);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

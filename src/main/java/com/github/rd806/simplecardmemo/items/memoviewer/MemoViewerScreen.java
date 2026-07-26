@@ -8,7 +8,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 public class MemoViewerScreen extends Screen {
 
@@ -185,6 +188,16 @@ public class MemoViewerScreen extends Screen {
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, amount);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean handleComponentClicked(@Nullable Style pStyle) {
+        return super.handleComponentClicked(pStyle);
     }
 
     @Override

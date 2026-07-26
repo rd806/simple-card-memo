@@ -1,6 +1,10 @@
 package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -8,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -15,7 +20,12 @@ public class TextLoader {
 
     public static String loadText(String string, boolean isLocalFile) {
         if (isLocalFile) {
-            return loadFromLocalFiles(string);
+            // 先尝试从资源包中获取
+            String text = loadFromResources(string);
+            if (text == null) {
+                text = loadFromLocalFiles(string);
+            }
+            return text;
         } else {
             return loadFromUrl(string);
         }
@@ -69,6 +79,32 @@ public class TextLoader {
             SimpleCardMemo.LOGGER.error("Failed to load file from url: {}", urlStr);
             return null;
         }
+    }
+
+    // 从资源包中加载文件
+    public static String loadFromResources(String filepath) {
+        try {
+            // 资源路径格式：assets/你的modid/ + filePath
+            ResourceLocation location = ResourceLocation.parse(SimpleCardMemo.MODID + ":sample/" + filepath);
+
+            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+            Resource resource = resourceManager.getResource(location).orElse(null);
+
+            if (resource != null) {
+                StringBuilder content = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        content.append(line).append("\n");
+                    }
+                }
+                return content.toString();
+            }
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Failed to load file from resources: {}", filepath);
+        }
+        return null;
     }
 
     // 从本地文件中获取
