@@ -2,14 +2,19 @@
     "simplecardmemo.tab.simplecardmemo": "简易备忘录",
 
     "item.simplecardmemo.memo_viewer": "查看备忘录",
-    "simplecardmemo.item.memo_viewer.tooltip.simple": "右键打开",
-    "simplecardmemo.item.memo_viewer.tooltip.more": "按下 [Shift] 键查看详情",
+    "simplecardmemo.item.memo_viewer.tooltip.simple": "右键打开备忘录",
+    "simplecardmemo.item.memo_viewer.tooltip.author": "作者：",
+    "simplecardmemo.item.memo_viewer.tooltip.more": "按下 [Shift] 键显示详情",
     "simplecardmemo.item.memo_viewer.tooltip.detail": "===== 详细信息 =====",
+    "simplecardmemo.item.memo_viewer.tooltip.time": "修改日期：",
     "simplecardmemo.item.memo_viewer.tooltip.local": "本地文件",
     "simplecardmemo.item.memo_viewer.tooltip.web": "网络文件",
 
     "item.simplecardmemo.memo_editor": "备忘录编辑器",
     "simplecardmemo.item.memo_editor.tooltip": "右键打开",
+
+    "item.simplecardmemo.memo_selector": "备忘录选择器",
+    "simplecardmemo.item.memo_selector.tooltip": "右键打开",
 
     "simplecardmemo.item.memo_guide": "简易备忘录教程",
     "simplecardmemo.item.minecraft_server": "如何开设Minecraft服务器",
@@ -30,5 +35,13 @@
     "simplecardmemo.gui.editor_screen.save.success": "保存成功！",
     "simplecardmemo.gui.editor_screen.export": "导出物品",
     "simplecardmemo.gui.editor_screen.export.success": "成功导出备忘录！",
-    "simplecardmemo.gui.editor_screen.close": "关闭界面"
+    "simplecardmemo.gui.editor_screen.close": "关闭界面",
+
+    "simplecardmemo.gui.selector_screen": "选择备忘录",
+    "simplecardmemo.gui.selector_screen.title": "选择备忘录",
+    "simplecardmemo.gui.selector_screen.memo_list": "文件列表",
+    "simplecardmemo.gui.selector_screen.reload": "重载",
+    "simplecardmemo.gui.selector_screen.export": "导出物品",
+    "simplecardmemo.gui.selector_screen.export.success": "成功导出备忘录！",
+    "simplecardmemo.gui.selector_screen.close": "关闭界面"
 }

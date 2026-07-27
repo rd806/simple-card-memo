@@ -15,7 +15,7 @@ public class ModCreativeModeTabs {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, SimpleCardMemo.MODID);
 
     // 注册本模组的创造模式标签
-    // "TODO_LIST_TAB" 为该标签的注册名，会作为内部 ID 使用
+    // "SIMPLE_CARD_MEMO_TAB" 为该标签的注册名，会作为内部 ID 使用
     public static final RegistryObject<CreativeModeTab> SIMPLE_CARD_MEMO_TAB =
             CREATIVE_MODE_TABS.register("simplecardmemo",
                     () -> CreativeModeTab.builder()
@@ -26,6 +26,7 @@ public class ModCreativeModeTabs {
                             // 定义该标签中显示的物品内容
                             .displayItems((itemDisplayParameters, output) -> {
                                 output.accept(ModItems.MEMO_EDITOR.get());
+                                output.accept(ModItems.MEMO_SELECTOR.get());
                                 output.accept(memoGuide());
                                 output.accept(hostServer());
                             })

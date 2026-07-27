@@ -16,6 +16,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -23,8 +25,9 @@ public class MemoViewerItem extends Item {
 
     // NBT键名
     private static final String FILE_PATH = "filePath";
-    private static final String DISPLAY_NAME = "fileName";
-    private static final String AUTHOR = "default";
+    private static final String DISPLAY_NAME = "displayName";
+    private static final String AUTHOR = "author";
+    private static final String LAST_MODIFIED = "lastModified";
     private static final String IS_LOCAL_FILE = "isLocalFile";
 
     public MemoViewerItem(Properties properties) {
@@ -41,22 +44,27 @@ public class MemoViewerItem extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
+        // 使用方法
         tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.simple")
                 .withStyle(ChatFormatting.GRAY));
-        // 获取 NBT 数据
-        boolean isLocal = getTextSource(stack);
-        String author = getAuthor(stack);
-
+        // 作者
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.author")
+                .append(Component.literal(getAuthor(stack))).withStyle(ChatFormatting.BLUE));
+        // 更多提示信息
         if (Screen.hasShiftDown()) {
             tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.detail"));
-            // 作者
-            tooltipComponents.add(Component.literal(author).withStyle(ChatFormatting.BLUE));
             // 数据来源
-            Component source = isLocal ?
+            Component source = getTextSource(stack) ?
                     Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.local") :
                     Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.web");
             tooltipComponents.add(source);
-
+            // 修改日期
+            if (getLastModified(stack) > 0) {
+                String lastModified = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(getLastModified(stack)));
+                Component time = Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.time")
+                        .append(Component.literal(lastModified)).withStyle(ChatFormatting.BLUE);
+                tooltipComponents.add(time);
+            }
         } else {
             // 未按 Shift 时显示提示
             tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.more")
@@ -111,6 +119,14 @@ public class MemoViewerItem extends Item {
         }
         return "";
     }
+    // 获取修改日期
+    public static long getLastModified(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(LAST_MODIFIED)) {
+            return tag.getLong(LAST_MODIFIED);
+        }
+        return 0;
+    }
 
     // 设置文件路径
     public static void setFilePath(ItemStack stack, String filePath) {
@@ -120,12 +136,16 @@ public class MemoViewerItem extends Item {
     public static void setTextSource(ItemStack stack, boolean isLocalFile) {
         stack.getOrCreateTag().putBoolean(IS_LOCAL_FILE, isLocalFile);
     }
-    // 获取文件名称
+    // 设置文件名称
     public static void setDisplayName(ItemStack stack, String displayName) {
         stack.getOrCreateTag().putString(DISPLAY_NAME, displayName);
     }
-    // 获取文件作者
+    // 设置文件作者
     public static void setAuthor(ItemStack stack, String author) {
         stack.getOrCreateTag().putString(AUTHOR, author);
+    }
+    // 设置修改日期
+    public static void setLastModified(ItemStack stack, long lastModified) {
+        stack.getOrCreateTag().putLong(LAST_MODIFIED, lastModified);
     }
 }

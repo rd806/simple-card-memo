@@ -2,23 +2,28 @@
     "simplecardmemo.tab.simplecardmemo": "Simple Card Memo",
 
     "item.simplecardmemo.memo_viewer": "Memo Viewer",
-    "simplecardmemo.item.memo_viewer.tooltip.simple": "Right click to open the viewer",
+    "simplecardmemo.item.memo_viewer.tooltip.simple": "Right click to open the memo",
+    "simplecardmemo.item.memo_viewer.tooltip.author": "Author: ",
     "simplecardmemo.item.memo_viewer.tooltip.more": "Hold down [Shift] to view details",
     "simplecardmemo.item.memo_viewer.tooltip.detail": "===== Detailed Information =====",
+    "simplecardmemo.item.memo_viewer.tooltip.time": "Last modified: ",
     "simplecardmemo.item.memo_viewer.tooltip.local": "Local File",
     "simplecardmemo.item.memo_viewer.tooltip.web": "Web File",
 
     "item.simplecardmemo.memo_editor": "Memo Editor",
     "simplecardmemo.item.memo_editor.tooltip": "Right click to open the editor",
 
+    "item.simplecardmemo.memo_selector": "Memo Selector",
+    "simplecardmemo.item.memo_selector.tooltip": "Right click to open the Memo Selector",
+
     "simplecardmemo.item.memo_guide": "Guide",
     "simplecardmemo.item.minecraft_server": "How to Host a Minecraft Server",
 
-    "simplecardmemo.gui.viewer_screen": "View Text",
+    "simplecardmemo.gui.viewer_screen": "View Memo",
     "simplecardmemo.gui.viewer_screen.reload": "Reload text",
     "simplecardmemo.gui.viewer_screen.error": "Text Error",
 
-    "simplecardmemo.gui.editor_screen": "Edit Text",
+    "simplecardmemo.gui.editor_screen": "Edit Memo",
     "simplecardmemo.gui.editor_screen.title": "Edit content",
     "simplecardmemo.gui.editor_screen.hint": "Support Markdown syntax | Ctrl+S draft | Ctrl+E export",
     "simplecardmemo.gui.editor_screen.hint.name": "File name",
@@ -30,5 +35,13 @@
     "simplecardmemo.gui.editor_screen.save.success": "Store file successfuly!",
     "simplecardmemo.gui.editor_screen.export": "Export memo",
     "simplecardmemo.gui.editor_screen.export.success": "Exported the memo successfully!",
-    "simplecardmemo.gui.editor_screen.close": "Close editor"
+    "simplecardmemo.gui.editor_screen.close": "Close editor",
+
+    "simplecardmemo.gui.selector_screen": "Select Memo",
+    "simplecardmemo.gui.selector_screen.title": "Select Memo",
+    "simplecardmemo.gui.selector_screen.memo_list": "Memo File List",
+    "simplecardmemo.gui.selector_screen.reload": "Reload Memo Selector",
+    "simplecardmemo.gui.selector_screen.export": "Export Memo",
+    "simplecardmemo.gui.selector_screen.export.success": "Exported the memo successfully!",
+    "simplecardmemo.gui.selector_screen.close": "Close Memo Selector"
 }

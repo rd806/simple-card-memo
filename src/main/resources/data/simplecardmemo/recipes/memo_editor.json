@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "building",
+    "key": {
+        "#": {
+            "item": "minecraft:paper"
+        }
+    },
+    "pattern": [
+        "###"
+    ],
+    "result": {
+        "item": "simplecardmemo:memo_editor"
+    },
+    "show_notification": true
+}

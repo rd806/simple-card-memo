@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.items.memoeditor.MemoEditorItem;
+import com.github.rd806.simplecardmemo.items.memoselector.MemoSelectorItem;
 import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -15,4 +16,6 @@ public class ModItems {
             ITEMS.register("memo_viewer", () -> new MemoViewerItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> MEMO_EDITOR =
             ITEMS.register("memo_editor", () -> new MemoEditorItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> MEMO_SELECTOR =
+            ITEMS.register("memo_selector", () -> new MemoSelectorItem(new Item.Properties().stacksTo(1)));
 }

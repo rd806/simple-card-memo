@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.init;
+package com.github.rd806.simplecardmemo.init.memo;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import net.minecraft.client.Minecraft;
@@ -13,10 +13,13 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TextLoader {
+public class MemoLoader {
 
     public static String loadText(String string, boolean isLocalFile) {
         if (isLocalFile) {
@@ -118,6 +121,30 @@ public class TextLoader {
            SimpleCardMemo.LOGGER.error("Failed to load file from local: {}", filepath);
        }
        return "Could not load text file from: " + filepath;
+    }
+
+    // 获取文件列表
+    public static List<MemoInfo> listAllMemos() {
+        List<MemoInfo> list = new ArrayList<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(SimpleCardMemo.DATA_DIR)) {
+            int totalEntries = 0;
+            for (Path path : stream) {
+                try {
+                    MemoInfo info = new MemoInfo();
+                    info.setMemoName(path.getFileName().toString());
+                    info.setMemoPath(path.toString());
+                    info.setLastModified(path.toFile().lastModified());
+                    list.add(info);
+                    totalEntries ++;
+                } catch (Exception e) {
+                    SimpleCardMemo.LOGGER.error("Failed to load memo file from: {}", path);
+                }
+            }
+            SimpleCardMemo.LOGGER.info("Loaded {} memos from {}", totalEntries, SimpleCardMemo.DATA_DIR);
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Failed to load memos {}", e.getMessage());
+        }
+        return list;
     }
 
     // 保存到本地文件

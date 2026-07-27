@@ -2,7 +2,7 @@ package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.TextLoader;
+import com.github.rd806.simplecardmemo.init.memo.MemoLoader;
 import dev.dediamondpro.minemark.minecraft.MineMarkDrawable;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -40,7 +40,7 @@ public class MemoViewerScreen extends Screen {
     }
 
     private void reload(String path, String name, boolean source) {
-        this.renderedText = TextLoader.loadText(path, source);
+        this.renderedText = MemoLoader.loadText(path, source);
         if (Config.ENABLE_MARKDOWN.get()) {
             try {
                 markdownText = new MineMarkDrawable(renderedText);
