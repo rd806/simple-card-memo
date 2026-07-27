@@ -7,6 +7,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,5 +166,33 @@ public class MemoLoader {
     // 移除不安全字符
     private static String sanitizeFileName(String name) {
         return name.replaceAll("[^a-zA-Z0-9\\-_.]", "_");
+    }
+
+    // 删除文件
+    public static boolean deleteLocalFiles(String filePath) {
+        try {
+            if (Files.deleteIfExists(Paths.get(filePath))) {
+                SimpleCardMemo.LOGGER.info("Successfully delete local file: {}", filePath);
+                return true;
+            } else {
+                SimpleCardMemo.LOGGER.error("Failed to delete local file: {}", filePath);
+                return false;
+            }
+        } catch (IOException e) {
+            SimpleCardMemo.LOGGER.error(e.getMessage());
+            return false;
+        }
+    }
+
+    // 创建临时文件
+    public static void createTempFile() {
+        try {
+            Path path = SimpleCardMemo.DATA_DIR.resolve("temp.md");
+            if (Files.notExists(path)) {
+                Files.writeString(path, "This is the temp file.");
+            }
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Failed to create temp.md");
+        }
     }
 }

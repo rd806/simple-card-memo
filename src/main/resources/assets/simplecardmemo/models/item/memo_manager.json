@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-        "layer0": "simplecardmemo:item/memo_selector"
+        "layer0": "simplecardmemo:item/memo_manager"
     }
 }

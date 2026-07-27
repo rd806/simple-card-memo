@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.items.memoselector;
+package com.github.rd806.simplecardmemo.items.memomanager;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import net.minecraft.ChatFormatting;
@@ -16,15 +16,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MemoSelectorItem extends Item {
+public class MemoManagerItem extends Item {
 
-    public MemoSelectorItem(Properties properties) {
+    public MemoManagerItem(Properties properties) {
         super(properties);
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_selector.tooltip")
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_manager.tooltip")
                 .withStyle(ChatFormatting.GRAY));
     }
 
@@ -33,10 +33,10 @@ public class MemoSelectorItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         // 只在客户端执行打开界面的逻辑
         if (level.isClientSide) {
-            // 打开编辑器界面
-            Minecraft.getInstance().setScreen(new MemoSelectorScreen());
+            // 打开管理器界面
+            Minecraft.getInstance().setScreen(new MemoManagerScreen());
         }
-        // 返回成功，表示物品被使用了，但避免消耗（比如不减少耐久度）
+        // 返回成功，表示物品被使用了
         return InteractionResultHolder.success(stack);
     }
 }

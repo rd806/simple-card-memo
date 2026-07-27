@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.items.memoselector;
+package com.github.rd806.simplecardmemo.items.memomanager;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.memo.MemoInfo;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MemoSelectorScreen extends Screen {
+public class MemoManagerScreen extends Screen {
 
     private List<MemoInfo> memoList;
     private MemoInfo selectedMemo;
@@ -27,13 +27,15 @@ public class MemoSelectorScreen extends Screen {
     private static int PADDING;
     private static int HEADER;
     private static int FOOTER;
+    private static int FILE_LIST_WIDTH;
     private static int FILE_LIST_HEIGHT;
+    private static int ENTRY_HEIGHT;
     // 按键常量
     private static final int BUTTON_WIDTH = 50;
     private static final int BUTTON_HEIGHT = 20;
 
-    public MemoSelectorScreen() {
-        super(Component.translatable(SimpleCardMemo.MODID + ".gui.selector_screen.title"));
+    public MemoManagerScreen() {
+        super(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.title"));
         memoList = MemoLoader.listAllMemos();
         selectedMemo = new MemoInfo();
     }
@@ -45,19 +47,32 @@ public class MemoSelectorScreen extends Screen {
         PADDING = (int) (this.width * 0.1);
         HEADER = (int) (this.height * 0.2);
         FOOTER = (int) (this.height * 0.2);
+        FILE_LIST_WIDTH = this.width - PADDING * 2;
         FILE_LIST_HEIGHT = this.height - HEADER - FOOTER;
+        ENTRY_HEIGHT = this.font.lineHeight * 2;
 
         // 关闭按钮
         this.addRenderableWidget(
-                Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.selector_screen.close"),
+                Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.close"),
                                 button -> this.onClose())
                         .pos(this.width - PADDING - BUTTON_WIDTH, 5)
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                         .build()
         );
+        // 删除按钮
+        this.addRenderableWidget(
+                Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
+                                button -> {
+                                    if (!MemoLoader.deleteLocalFiles(selectedMemo.getMemoPath())) { return; }
+                                    refreshMemoList();
+                                })
+                        .pos(PADDING, this.height - FOOTER + 10)
+                        .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+                        .build()
+        );
         // 刷新按钮
         this.addRenderableWidget(
-                Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.selector_screen.reload"),
+                Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.reload"),
                                 button -> refreshMemoList())
                         .pos(this.width - PADDING - BUTTON_WIDTH * 2 - 5, this.height - FOOTER + 10)
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -65,7 +80,7 @@ public class MemoSelectorScreen extends Screen {
         );
         // 导出按钮
         this.addRenderableWidget(
-                Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.selector_screen.export"),
+                Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export"),
                                 button -> {
                                     getItem();
                                     this.onClose();
@@ -82,7 +97,7 @@ public class MemoSelectorScreen extends Screen {
         // 渲染标题
         graphics.drawString(
                 this.font,
-                Component.translatable(SimpleCardMemo.MODID + ".gui.selector_screen.title"),
+                Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.title"),
                 PADDING,
                 8,
                 0xFFFFFF
@@ -98,7 +113,7 @@ public class MemoSelectorScreen extends Screen {
         if (memoList == null) {
             graphics.drawString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.selector_screen.memo_list"),
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.memo_list"),
                     PADDING,
                     HEADER,
                     0x888888
@@ -106,34 +121,40 @@ public class MemoSelectorScreen extends Screen {
             return;
         }
 
-        int listX = PADDING;
-        int listY = HEADER;
-        int listW = this.width - 2 * PADDING;
-        int listH = FILE_LIST_HEIGHT;
-        int entryHeight = this.font.lineHeight + 6;
-
         // 计算最大滚动
         int totalEntries = memoList.size();
-        int visibleEntries = listH / entryHeight;
+        int visibleEntries = FILE_LIST_HEIGHT / ENTRY_HEIGHT;
         memoListMaxScroll = Math.max(0, totalEntries - visibleEntries);
         if (memoListScroll > memoListMaxScroll) {
             memoListScroll = memoListMaxScroll;
         }
 
         // 绘制列表背景
-        graphics.fill(listX - 4, listY - 4, listX + listW + 4, listY + listH + 4, 0xCC000000);
-        graphics.fill(listX, listY, listX + listW, listY + listH, 0xCC222222);
+        graphics.fill(
+                PADDING - 4,
+                HEADER - 4,
+                PADDING + FILE_LIST_WIDTH + 4,
+                HEADER + FILE_LIST_HEIGHT + 4,
+                0xCC000000
+        );
+        graphics.fill(PADDING, HEADER, PADDING + FILE_LIST_WIDTH, HEADER + FILE_LIST_HEIGHT, 0xCC222222);
+
         // 绘制文件条目
         for (int i = memoListScroll; i < Math.min(totalEntries, memoListScroll + visibleEntries + 1); i++) {
             MemoInfo info = memoList.get(i);
-            int y = listY + (i - memoListScroll) * entryHeight;
+            int y = HEADER + (i - memoListScroll) * ENTRY_HEIGHT;
             // 高亮选中的文件
             if (selectedMemo != null && info.getMemoName().equals(selectedMemo.getMemoName())) {
-                graphics.fill(listX, y, listX + listW, y + entryHeight, 0x4466CC66);
+                graphics.fill(PADDING, y, PADDING + FILE_LIST_WIDTH, y + ENTRY_HEIGHT, 0x4466CC66);
             }
             // 文件图标和名称
-            String display = "📄 " + info.getMemoName();
-            graphics.drawString(this.font, Component.literal(display), listX + 4, y + 2, 0xFFFFFF);
+            graphics.drawString(
+                    this.font,
+                    Component.literal("📄 " + info.getMemoName()),
+                    PADDING + 4,
+                    y + ENTRY_HEIGHT / 4,
+                    0xFFFFFF
+            );
         }
     }
 
@@ -147,13 +168,10 @@ public class MemoSelectorScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // 点击文件列表选择文件
         if (memoList != null && !memoList.isEmpty()) {
-            int listX = PADDING;
-            int listY = HEADER;
-            int listW = this.width - PADDING * 2;
-            int entryHeight = this.font.lineHeight + 6;
             // 点击选择
-            if (mouseX >= listX && mouseX <= listX + listW && mouseY >= listY && mouseY <= listY + FILE_LIST_HEIGHT) {
-                int index = (int) ((mouseY - listY) / entryHeight) + memoListScroll;
+            if (mouseX >= PADDING && mouseX <= PADDING + FILE_LIST_WIDTH && mouseY >= HEADER &&
+                    mouseY <= HEADER + FILE_LIST_HEIGHT) {
+                int index = (int) ((mouseY - HEADER) / ENTRY_HEIGHT) + memoListScroll;
                 if (index >= 0 && index < memoList.size()) {
                     selectedMemo = memoList.get(index);
                     return true;
@@ -178,7 +196,7 @@ public class MemoSelectorScreen extends Screen {
             // 发送物品
             Minecraft.getInstance().player.getInventory().add(viewer);
             Minecraft.getInstance().player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.selector_screen.export.success"),
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export.success"),
                     false);
         }
     }

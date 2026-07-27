@@ -1,7 +1,7 @@
 {
     "simplecardmemo.tab.simplecardmemo": "Simple Card Memo",
 
-    "item.simplecardmemo.memo_viewer": "Memo Viewer",
+    "item.simplecardmemo.memo_viewer": "New Memo",
     "simplecardmemo.item.memo_viewer.tooltip.simple": "Right click to open the memo",
     "simplecardmemo.item.memo_viewer.tooltip.author": "Author: ",
     "simplecardmemo.item.memo_viewer.tooltip.more": "Hold down [Shift] to view details",
@@ -13,8 +13,8 @@
     "item.simplecardmemo.memo_editor": "Memo Editor",
     "simplecardmemo.item.memo_editor.tooltip": "Right click to open the editor",
 
-    "item.simplecardmemo.memo_selector": "Memo Selector",
-    "simplecardmemo.item.memo_selector.tooltip": "Right click to open the Memo Selector",
+    "item.simplecardmemo.memo_manager": "Memo Manager",
+    "simplecardmemo.item.memo_manager.tooltip": "Right click to open the Memo Manager",
 
     "simplecardmemo.item.memo_guide": "Guide",
     "simplecardmemo.item.minecraft_server": "How to Host a Minecraft Server",
@@ -26,22 +26,25 @@
     "simplecardmemo.gui.editor_screen": "Edit Memo",
     "simplecardmemo.gui.editor_screen.title": "Edit content",
     "simplecardmemo.gui.editor_screen.hint": "Support Markdown syntax | Ctrl+S draft | Ctrl+E export",
-    "simplecardmemo.gui.editor_screen.hint.name": "File name",
-    "simplecardmemo.gui.editor_screen.hint.path": "File path",
+    "simplecardmemo.gui.editor_screen.hint.name": "Memo display name",
+    "simplecardmemo.gui.editor_screen.hint.path": "Memo file path",
+    "simplecardmemo.gui.editor_screen.hint.author": "Memo author",
     "simplecardmemo.gui.editor_screen.input": "Input text",
     "simplecardmemo.gui.editor_screen.input.error.content": "Content can't be empty!",
     "simplecardmemo.gui.editor_screen.input.error.path": "The path is unavailable!",
-    "simplecardmemo.gui.editor_screen.save": "Temporarily store",
-    "simplecardmemo.gui.editor_screen.save.success": "Store file successfuly!",
-    "simplecardmemo.gui.editor_screen.export": "Export memo",
+    "simplecardmemo.gui.editor_screen.default": "Default",
+    "simplecardmemo.gui.editor_screen.save": "Save",
+    "simplecardmemo.gui.editor_screen.save.success": "Store file successfully!",
+    "simplecardmemo.gui.editor_screen.export": "Export",
     "simplecardmemo.gui.editor_screen.export.success": "Exported the memo successfully!",
-    "simplecardmemo.gui.editor_screen.close": "Close editor",
+    "simplecardmemo.gui.editor_screen.close": "Close",
 
-    "simplecardmemo.gui.selector_screen": "Select Memo",
-    "simplecardmemo.gui.selector_screen.title": "Select Memo",
-    "simplecardmemo.gui.selector_screen.memo_list": "Memo File List",
-    "simplecardmemo.gui.selector_screen.reload": "Reload Memo Selector",
-    "simplecardmemo.gui.selector_screen.export": "Export Memo",
-    "simplecardmemo.gui.selector_screen.export.success": "Exported the memo successfully!",
-    "simplecardmemo.gui.selector_screen.close": "Close Memo Selector"
+    "simplecardmemo.gui.manager_screen": "Manage Memo",
+    "simplecardmemo.gui.manager_screen.title": "Manage Memo",
+    "simplecardmemo.gui.manager_screen.memo_list": "Memo File List",
+    "simplecardmemo.gui.manager_screen.delete": "Delete",
+    "simplecardmemo.gui.manager_screen.reload": "Reload",
+    "simplecardmemo.gui.manager_screen.export": "Export",
+    "simplecardmemo.gui.manager_screen.export.success": "Exported the memo successfully!",
+    "simplecardmemo.gui.manager_screen.close": "Close"
 }

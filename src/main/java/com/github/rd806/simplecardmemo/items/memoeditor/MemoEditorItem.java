@@ -34,9 +34,9 @@ public class MemoEditorItem extends Item {
         // 只在客户端执行打开界面的逻辑
         if (level.isClientSide) {
             // 打开编辑器界面
-            Minecraft.getInstance().setScreen(new MemoEditorScreen());
+            Minecraft.getInstance().setScreen(new MemoEditorScreen(stack));
         }
-        // 返回成功，表示物品被使用了，但避免消耗（比如不减少耐久度）
+        // 返回成功，表示物品被使用了
         return InteractionResultHolder.success(stack);
     }
 

@@ -1,7 +1,7 @@
 {
     "simplecardmemo.tab.simplecardmemo": "简易备忘录",
 
-    "item.simplecardmemo.memo_viewer": "查看备忘录",
+    "item.simplecardmemo.memo_viewer": "新的备忘录",
     "simplecardmemo.item.memo_viewer.tooltip.simple": "右键打开备忘录",
     "simplecardmemo.item.memo_viewer.tooltip.author": "作者：",
     "simplecardmemo.item.memo_viewer.tooltip.more": "按下 [Shift] 键显示详情",
@@ -13,8 +13,8 @@
     "item.simplecardmemo.memo_editor": "备忘录编辑器",
     "simplecardmemo.item.memo_editor.tooltip": "右键打开",
 
-    "item.simplecardmemo.memo_selector": "备忘录选择器",
-    "simplecardmemo.item.memo_selector.tooltip": "右键打开",
+    "item.simplecardmemo.memo_manager": "备忘录管理器",
+    "simplecardmemo.item.memo_manager.tooltip": "右键打开",
 
     "simplecardmemo.item.memo_guide": "简易备忘录教程",
     "simplecardmemo.item.minecraft_server": "如何开设Minecraft服务器",
@@ -26,22 +26,25 @@
     "simplecardmemo.gui.editor_screen": "编辑文本",
     "simplecardmemo.gui.editor_screen.title": "编辑内容",
     "simplecardmemo.gui.editor_screen.hint": "支持 Markdown 语法 | Ctrl+S 暂存 | Ctrl+E 导出",
-    "simplecardmemo.gui.editor_screen.hint.name": "文件显示名",
-    "simplecardmemo.gui.editor_screen.hint.path": "文件路径",
+    "simplecardmemo.gui.editor_screen.hint.name": "备忘录显示名",
+    "simplecardmemo.gui.editor_screen.hint.path": "备忘录文件路径",
+    "simplecardmemo.gui.editor_screen.hint.author": "备忘录作者",
     "simplecardmemo.gui.editor_screen.input": "输入内容",
     "simplecardmemo.gui.editor_screen.input.error.content": "内容不可为空！",
     "simplecardmemo.gui.editor_screen.input.error.path": "此路径不可用！",
-    "simplecardmemo.gui.editor_screen.save": "暂存内容",
+    "simplecardmemo.gui.editor_screen.default": "默认值",
+    "simplecardmemo.gui.editor_screen.save": "暂存",
     "simplecardmemo.gui.editor_screen.save.success": "保存成功！",
-    "simplecardmemo.gui.editor_screen.export": "导出物品",
+    "simplecardmemo.gui.editor_screen.export": "导出",
     "simplecardmemo.gui.editor_screen.export.success": "成功导出备忘录！",
-    "simplecardmemo.gui.editor_screen.close": "关闭界面",
+    "simplecardmemo.gui.editor_screen.close": "关闭",
 
-    "simplecardmemo.gui.selector_screen": "选择备忘录",
-    "simplecardmemo.gui.selector_screen.title": "选择备忘录",
-    "simplecardmemo.gui.selector_screen.memo_list": "文件列表",
-    "simplecardmemo.gui.selector_screen.reload": "重载",
-    "simplecardmemo.gui.selector_screen.export": "导出物品",
-    "simplecardmemo.gui.selector_screen.export.success": "成功导出备忘录！",
-    "simplecardmemo.gui.selector_screen.close": "关闭界面"
+    "simplecardmemo.gui.manager_screen": "管理备忘录",
+    "simplecardmemo.gui.manager_screen.title": "管理备忘录",
+    "simplecardmemo.gui.manager_screen.memo_list": "文件列表",
+    "simplecardmemo.gui.manager_screen.delete": "删除",
+    "simplecardmemo.gui.manager_screen.reload": "重载",
+    "simplecardmemo.gui.manager_screen.export": "导出",
+    "simplecardmemo.gui.manager_screen.export.success": "成功导出备忘录！",
+    "simplecardmemo.gui.manager_screen.close": "关闭"
 }

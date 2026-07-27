@@ -13,7 +13,7 @@ Markdown is supported!
 ├── config
 │   └── simplecardmemo-common.toml     # Client config    
 │
-├── data/simple_card_memo              # Store text files
+├── data/simple_card_memo              # Store memo files
 │   ├── guide.md
 │   ├── temp.md
 │   └── ...
@@ -21,4 +21,10 @@ Markdown is supported!
 ```
 
 ## Usage
+
+Use the Memo Editor to edit a new memo card in the game. Please use an English path to avoid errors.
+
+Once you click the "export" button, a new memo card will be sent to you while consuming the editor.
+
+Don't worry if you lost a memo, you can get it again by the Memo Selector.
 
