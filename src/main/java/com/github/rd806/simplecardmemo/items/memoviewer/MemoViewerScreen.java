@@ -2,7 +2,7 @@ package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import dev.dediamondpro.minemark.minecraft.MineMarkDrawable;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.init.memo;
+package com.github.rd806.simplecardmemo.memo;
 
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import net.minecraft.world.item.ItemStack;

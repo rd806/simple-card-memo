@@ -17,6 +17,8 @@
 
     "item.simplecardmemo.memo_manager": "Memo Manager",
     "simplecardmemo.item.memo_manager.tooltip": "Right click to open the Memo Manager",
+    "simplecardmemo.item.memo_manager.export.success": "Export the Memo successfully!",
+    "simplecardmemo.item.memo_manager.export.fail": "Fail to export the Memo, maybe a New Memo is missing!",
 
     "simplecardmemo.item.memo_guide": "Guide",
     "simplecardmemo.item.minecraft_server": "How to Host a Minecraft Server",

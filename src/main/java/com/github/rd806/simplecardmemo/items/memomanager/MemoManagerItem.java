@@ -1,9 +1,11 @@
 package com.github.rd806.simplecardmemo.items.memomanager;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -36,7 +38,7 @@ public class MemoManagerItem extends Item {
             // 打开管理器界面
             Minecraft.getInstance().setScreen(new MemoManagerScreen());
         }
-        // 返回成功，表示物品被使用了
+        // 消耗一个背包中的 Memo Viewer
         return InteractionResultHolder.success(stack);
     }
 }

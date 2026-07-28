@@ -1,8 +1,8 @@
 package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.memo.LatestMemo;
-import com.github.rd806.simplecardmemo.init.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.LatestMemo;
+import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -41,14 +41,6 @@ public class MemoViewerItem extends Item {
     }
 
     @Override
-    public void onCraftedBy(@NotNull ItemStack stack, @NotNull Level level, @NotNull Player player) {
-        // 第一次创建时设置NBT
-        setFilePath(stack, "guide.md");
-        setDisplayName(stack, "Guide");
-        setTextSource(stack, true);
-    }
-
-    @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
         // 使用方法
         tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip")
@@ -61,7 +53,7 @@ public class MemoViewerItem extends Item {
         }
         // 作者
         tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.author")
-                .append(Component.literal(getAuthor(stack))).withStyle(ChatFormatting.BLUE));
+                .append(Component.literal(getAuthor(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
         // 更多提示信息
         if (Screen.hasShiftDown()) {
             tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.detail"));
@@ -102,7 +94,7 @@ public class MemoViewerItem extends Item {
                         content = MemoLoader.loadText(filePath, isLocalFile);
                         if (content == null) {
                             content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
-                                    .append(filePath).getString();;
+                                    .append(filePath).getString();
                         }
                     })
                     .thenAccept(data -> Minecraft.getInstance().execute(() ->

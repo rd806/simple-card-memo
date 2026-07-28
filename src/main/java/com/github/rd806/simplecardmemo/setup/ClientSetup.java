@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.setup;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

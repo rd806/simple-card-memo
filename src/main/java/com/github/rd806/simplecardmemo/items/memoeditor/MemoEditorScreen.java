@@ -2,7 +2,7 @@ package com.github.rd806.simplecardmemo.items.memoeditor;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModItems;
-import com.github.rd806.simplecardmemo.init.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

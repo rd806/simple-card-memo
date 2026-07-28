@@ -1,8 +1,7 @@
-package com.github.rd806.simplecardmemo.init.memo;
+package com.github.rd806.simplecardmemo.memo;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -21,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
 
 public class MemoLoader {
 

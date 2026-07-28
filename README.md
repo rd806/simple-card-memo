@@ -10,21 +10,22 @@ Markdown is supported!
 
 ```yml
 {version folder}
-├── config
-│   └── simplecardmemo-common.toml     # Client config    
-│
-├── data/simple_card_memo              # Store memo files
-│   ├── guide.md
-│   ├── temp.md
-│   └── ...
-└── ...
+  ├── config
+  │   └── simplecardmemo-common.toml     # Client config    
+  │
+  ├── data/simple_card_memo              # Store memo files
+  │   ├── guide.md
+  │   ├── temp.md
+  │   └── ...
+  │
+  └── ...
 ```
+
+You can add, edit or delete your Memo with any code editor.
 
 ## Usage
 
-Use the Memo Editor to edit a new memo card in the game. Please use an English path to avoid errors.
-
-Once you click the "export" button, a new memo card will be sent to you while consuming the editor.
-
-Don't worry if you lost a memo, you can get it again by the Memo Selector.
+* Memo Editor: Edit a new memo card in the game, please use an English path to avoid errors. Once you click the "export" button, a new memo card will be sent to you while consuming the editor.
+* Memo Manager: Don't worry if you lost a memo, you can get it again by the Memo Manager.
+* New Memo: This item allows you to view the last memo you've opened. For the first time it's linked to the *Guide* file.
 

@@ -17,6 +17,8 @@
 
     "item.simplecardmemo.memo_manager": "备忘录管理器",
     "simplecardmemo.item.memo_manager.tooltip": "右键打开",
+    "simplecardmemo.item.memo_manager.export.success": "导出成功！",
+    "simplecardmemo.item.memo_manager.export.fail": "导出失败，背包中可能缺少新的备忘录卡片！",
 
     "simplecardmemo.item.memo_guide": "简易备忘录教程",
     "simplecardmemo.item.minecraft_server": "如何开设Minecraft服务器",

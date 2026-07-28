@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.init.memo;
+package com.github.rd806.simplecardmemo.memo;
 
 public class MemoInfo {
     private String name;
