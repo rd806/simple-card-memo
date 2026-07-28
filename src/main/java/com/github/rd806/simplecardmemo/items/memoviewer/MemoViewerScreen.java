@@ -12,12 +12,11 @@ import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.*;
 
 public class MemoViewerScreen extends Screen {
 
     private String filePath;
-    private String fileName;
+    private String displayName;
     private boolean isLocalFile;
     // 待渲染文本
     private String renderedText;
@@ -27,9 +26,8 @@ public class MemoViewerScreen extends Screen {
     private float header;
     private float margin;
     private float footer;
-
     // 滚动设置
-    private float totalHeight;
+    private float totalHeight = 0;
     private double scrollOffset = 0;
     private double maxScroll = 0;
 
@@ -38,12 +36,7 @@ public class MemoViewerScreen extends Screen {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen"));
         // 初始化数据
         this.renderedText = content;
-        reload(path, name, source);
-    }
-
-    private void reload(String path, String name, boolean source) {
-        this.renderedText = MemoLoader.loadText(path, source);
-        if (Config.ENABLE_MARKDOWN.get()) {
+        if (Config.ENABLE_MARKDOWN.get() && renderedText != null) {
             try {
                 this.markdownText = new MineMarkDrawable(renderedText);
             } catch (Exception e) {
@@ -52,12 +45,27 @@ public class MemoViewerScreen extends Screen {
             }
         }
         this.filePath = path;
-        this.fileName = name;
+        this.displayName = name;
         this.isLocalFile = source;
     }
 
-    // 设置内容左边距
-    private void setContent() {
+    private void reload(String path, String name, boolean source) {
+        this.renderedText = MemoLoader.loadText(path, source);
+        if (Config.ENABLE_MARKDOWN.get() && renderedText != null) {
+            try {
+                this.markdownText = new MineMarkDrawable(renderedText);
+            } catch (Exception e) {
+                renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
+                SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
+            }
+        }
+        this.filePath = path;
+        this.displayName = name;
+        this.isLocalFile = source;
+    }
+
+    // 设置页面边距
+    private void resetContent() {
         float screenWidth = this.width;
         float screenHeight = this.height;
         switch (Config.PAGE_MARGIN.get()) {
@@ -77,33 +85,25 @@ public class MemoViewerScreen extends Screen {
                 this.footer = screenHeight * 0.1f;
             }
         }
-    }
-
-    // 设置内容高度
-    private void setContentHeight() {
+        // 计算高度
         if (markdownText != null) {
             this.totalHeight = markdownText.getHeight();
-        } else {
+        } else if (renderedText != null) {
             this.totalHeight = renderedText.lines().count() * 20;
+        } else {
+            this.totalHeight = this.height - header - footer;
         }
-    }
-
-    // 重新计算
-    private void recalculate() {
-        setContent();
-        setContentHeight();
-
+        // 计算滚动
         this.maxScroll = Math.max(0, this.totalHeight - this.height + this.footer + this.header);
     }
 
     @Override
     protected void init() {
         super.init();
-        // 这里可以添加按钮等交互组件
-        // 添加重载组件
-        recalculate();
+        // 重新计算
+        resetContent();
         this.addRenderableWidget(new Button.Builder(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.reload"),
-                button -> reload(filePath, fileName, isLocalFile))
+                button -> reload(filePath, displayName, isLocalFile))
                 .pos(this.width / 2 - 50, (int) (this.height - footer + 5))
                 .size(100, 20)
                 .build()
@@ -113,11 +113,11 @@ public class MemoViewerScreen extends Screen {
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 
-        recalculate();
+        resetContent();
         // 渲染背景（灰色半透明背景）
         this.renderBackground(graphics);
         // 渲染文件名称
-        graphics.drawString(this.font, fileName, 10, 5, 0xAAAAAA);
+        graphics.drawString(this.font, displayName, 10, 5, 0xAAAAAA);
         // 渲染文本内容
         renderContent(graphics, mouseX, mouseY);
         // 渲染滚动条
@@ -144,7 +144,9 @@ public class MemoViewerScreen extends Screen {
 
         // 检查文件内容
         if (this.renderedText == null) {
-            graphics.drawCenteredString(this.font, Component.translatable(SimpleCardMemo.MODID + ".gui.text.error"),
+            graphics.drawCenteredString(
+                    this.font,
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").append(filePath),
                     20, (int) contentY, 0xFFFFFF);
             return;
         }

@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo.init.memo;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -26,12 +27,7 @@ public class MemoLoader {
 
     public static String loadText(String path, boolean isLocalFile) {
         if (isLocalFile) {
-            // 本地加载保持同步
-            String content = loadFromResources(path);
-            if (content == null) {
-                content = loadFromLocalFiles(path);
-            }
-            return content;
+            return loadFromLocalFiles(path);
         } else {
             return loadFromUrl(path);
         }
@@ -83,43 +79,34 @@ public class MemoLoader {
         }
     }
 
-    // 从资源包中加载文件
-    private static String loadFromResources(String filepath) {
-        try {
-            // 资源路径格式：assets/你的modid/ + filePath
-            ResourceLocation location = ResourceLocation.parse(SimpleCardMemo.MODID + ":sample/" + filepath);
-
-            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-            Resource resource = resourceManager.getResource(location).orElse(null);
-
-            if (resource != null) {
-                StringBuilder content = new StringBuilder();
-                try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        content.append(line).append("\n");
-                    }
-                }
-                return content.toString();
-            }
-        } catch (Exception e) {
-            SimpleCardMemo.LOGGER.error("Failed to load file from resources: {}", filepath);
-        }
-        return null;
-    }
-
     // 从本地文件中获取
     public static String loadFromLocalFiles(String filepath) {
        try {
-           Path path = SimpleCardMemo.DATA_DIR.resolve(filepath);
-           if (Files.exists(path)) {
-               return Files.readString(path);
+           // 从资源包中加载
+           ResourceLocation location = ResourceLocation.parse(filepath);
+           ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+           Resource resource = resourceManager.getResource(location).orElse(null);
+           // 检查来源
+           if (resource != null) {
+               StringBuilder content = new StringBuilder();
+               try (BufferedReader reader = new BufferedReader(
+                       new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
+                   String line;
+                   while ((line = reader.readLine()) != null) {
+                       content.append(line).append("\n");
+                   }
+               }
+               return content.toString();
+           } else {
+               Path path = SimpleCardMemo.DATA_DIR.resolve(filepath);
+               if (Files.exists(path)) {
+                   return Files.readString(path);
+               }
            }
        } catch (Exception e) {
            SimpleCardMemo.LOGGER.error("Failed to load file from local: {}", filepath);
        }
-       return "Could not load text file from: " + filepath;
+       return null;
     }
 
     // 获取文件列表

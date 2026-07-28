@@ -27,6 +27,7 @@ public class ModCreativeModeTabs {
                             .displayItems((itemDisplayParameters, output) -> {
                                 output.accept(ModItems.MEMO_EDITOR.get());
                                 output.accept(ModItems.MEMO_MANAGER.get());
+                                output.accept(ModItems.MEMO_VIEWER.get());
                                 output.accept(memoGuide());
                                 output.accept(hostServer());
                             })
@@ -38,11 +39,11 @@ public class ModCreativeModeTabs {
     }
 
     // 教程文件
-    private static ItemStack memoGuide() {
+    public static ItemStack memoGuide() {
         ItemStack item = new ItemStack(ModItems.MEMO_VIEWER.get());
         item.setHoverName(Component.translatable(SimpleCardMemo.MODID + ".item.memo_guide")
                 .withStyle(style -> style.withItalic(false)));
-        MemoViewerItem.setFilePath(item, "guide.md");
+        MemoViewerItem.setFilePath(item, SimpleCardMemo.MODID + ":sample/guide.md");
         MemoViewerItem.setDisplayName(item, "Guide");
         MemoViewerItem.setTextSource(item, true);
         MemoViewerItem.setAuthor(item, "RunicDolphin806");
@@ -54,7 +55,7 @@ public class ModCreativeModeTabs {
         ItemStack item = new ItemStack(ModItems.MEMO_VIEWER.get());
         item.setHoverName(Component.translatable(SimpleCardMemo.MODID + ".item.minecraft_server")
                 .withStyle(style -> style.withItalic(false)));
-        MemoViewerItem.setFilePath(item, "minecraft_server.md");
+        MemoViewerItem.setFilePath(item, SimpleCardMemo.MODID + ":sample/minecraft_server.md");
         MemoViewerItem.setDisplayName(item, "How to Host a Minecraft Server");
         MemoViewerItem.setTextSource(item, true);
         MemoViewerItem.setAuthor(item, "From Internet");

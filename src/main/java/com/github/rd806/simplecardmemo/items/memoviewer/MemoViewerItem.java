@@ -1,6 +1,7 @@
 package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.memo.LatestMemo;
 import com.github.rd806.simplecardmemo.init.memo.MemoLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -31,8 +32,9 @@ public class MemoViewerItem extends Item {
     private static final String AUTHOR = "author";
     private static final String LAST_MODIFIED = "lastModified";
     private static final String IS_LOCAL_FILE = "isLocalFile";
-
-    private static String content;
+    // 默认内容
+    private static String content =
+            Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.default").getString();
 
     public MemoViewerItem(Properties properties) {
         super(properties);
@@ -49,8 +51,14 @@ public class MemoViewerItem extends Item {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
         // 使用方法
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.simple")
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip")
                 .withStyle(ChatFormatting.GRAY));
+        // 默认信息
+        if (stack.getTag() == null) {
+            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.default")
+                    .withStyle(ChatFormatting.GRAY));
+            return;
+        }
         // 作者
         tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.author")
                 .append(Component.literal(getAuthor(stack))).withStyle(ChatFormatting.BLUE));
@@ -79,15 +87,25 @@ public class MemoViewerItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        ItemStack newStack = stack.copy();
         // 只在客户端执行打开界面的逻辑
         if (level.isClientSide) {
-            String filePath = getFilePath(stack);
-            String displayName = getDisplayName(stack);
-            boolean isLocalFile = getTextSource(stack);
+            // 若为空物品，转换为最后一次打开的备忘录
+            if (stack.getTag() == null) {
+                newStack = LatestMemo.getMemo();
+            }
+            String filePath = getFilePath(newStack);
+            String displayName = getDisplayName(newStack);
+            boolean isLocalFile = getTextSource(newStack);
             // 异步加载
-            CompletableFuture.runAsync(() -> content = MemoLoader.loadText(filePath, isLocalFile))
-                    .thenAccept(data -> Minecraft.getInstance().execute(
-                            () ->
+            CompletableFuture.runAsync(() -> {
+                        content = MemoLoader.loadText(filePath, isLocalFile);
+                        if (content == null) {
+                            content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
+                                    .append(filePath).getString();;
+                        }
+                    })
+                    .thenAccept(data -> Minecraft.getInstance().execute(() ->
                             Minecraft.getInstance().setScreen(
                                     new MemoViewerScreen(content, filePath, displayName, isLocalFile))
                             )
@@ -97,6 +115,7 @@ public class MemoViewerItem extends Item {
                                 SimpleCardMemo.LOGGER.error("Error loading network data", e);
                                 return null;
             });
+            LatestMemo.setMemo(newStack);
         }
         // 返回成功，表示物品被使用了，但避免消耗（比如不减少耐久度）
         return InteractionResultHolder.success(stack);
