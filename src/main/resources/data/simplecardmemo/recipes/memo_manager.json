@@ -9,7 +9,7 @@
         "ABA"
     ],
     "result": {
-        "item": "simplecardmemo:memo_selector"
+        "item": "simplecardmemo:memo_manager"
     },
     "show_notification": true
 }

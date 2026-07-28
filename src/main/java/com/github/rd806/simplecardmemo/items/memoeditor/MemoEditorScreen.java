@@ -7,6 +7,7 @@ import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -26,11 +27,13 @@ public class MemoEditorScreen extends Screen {
     private String filePath;
     private String displayName;
     private String author;
+    private boolean isLocalFile;
 
     // UI 组件
     private EditBox nameInput;
     private EditBox pathInput;
     private EditBox authorInput;
+    private Checkbox sourceInput;
     private MultiLineEditBox textInput;
     // 布局常量
     private static int PADDING;
@@ -52,7 +55,8 @@ public class MemoEditorScreen extends Screen {
     private void setDefaultValues() {
         this.filePath = "memo_" + LocalDate.now() + ".md";
         this.displayName = filePath;
-        this.author = Objects.requireNonNull(Minecraft.getInstance().player).getGameProfile().getName();
+        this.author = Objects.requireNonNull(Minecraft.getInstance().player).getName().getString();
+        this.isLocalFile = true;
     }
 
     @Override
@@ -103,6 +107,17 @@ public class MemoEditorScreen extends Screen {
         this.authorInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.author"));
         this.addRenderableWidget(this.authorInput);
 
+        // 复选框
+        this.sourceInput = new Checkbox(
+                PADDING,
+                this.height - FOOTER + 20,
+                20,
+                20,
+                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.islocal"),
+                isLocalFile
+        );
+        this.addRenderableWidget(this.sourceInput);
+
         // 创建多行文本输入框
         int textInputWidth = this.width - PADDING * 2;
         int textInputHeight = this.height - HEADER - FOOTER - BUTTON_HEIGHT;
@@ -148,7 +163,8 @@ public class MemoEditorScreen extends Screen {
                             filePath = this.pathInput.getValue();
                             displayName = this.nameInput.getValue();
                             author = this.authorInput.getValue();
-                            exportFile(filePath);
+                            isLocalFile = this.sourceInput.selected();
+                            exportItem(filePath);
                         })
                         .pos(this.width - PADDING - BUTTON_WIDTH, this.height - FOOTER + 20)
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -200,25 +216,31 @@ public class MemoEditorScreen extends Screen {
     }
 
     // 导出内容到文件
-    private void exportFile(String path) {
+    private void exportItem(String path) {
         String content = textInput.getValue();
         if (content.trim().isEmpty()) {
             textInput.setValue(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.content").getString());
             return;
         }
-        // 检测重名文件
-        if (Files.exists(SimpleCardMemo.DATA_DIR.resolve(path))) {
-            pathInput.setValue("");
-            pathInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.path"));
-            return;
-        }
         // 给予玩家
-        if (MemoLoader.saveToLocalFiles(path, content) && Minecraft.getInstance().player != null) {
+        if (Minecraft.getInstance().player != null) {
             ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
+            if (isLocalFile) {
+                // 检测重名文件
+                if (Files.exists(SimpleCardMemo.DATA_DIR.resolve(path))) {
+                    pathInput.setValue("");
+                    pathInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.path"));
+                    return;
+                }
+                MemoLoader.saveToLocalFiles(path, content);
+                MemoViewerItem.setFilePath(viewer, filePath);
+            } else {
+                MemoViewerItem.setFilePath(viewer, content);
+            }
             viewer.setHoverName(Component.literal(displayName));
             MemoViewerItem.setDisplayName(viewer, displayName);
-            MemoViewerItem.setFilePath(viewer, filePath);
             MemoViewerItem.setAuthor(viewer, author);
+            MemoViewerItem.setTextSource(viewer, isLocalFile);
             MemoViewerItem.setLastModified(viewer, System.currentTimeMillis());
             Minecraft.getInstance().player.getInventory().add(viewer);
             Minecraft.getInstance().player.displayClientMessage(
@@ -252,7 +274,7 @@ public class MemoEditorScreen extends Screen {
             filePath = this.pathInput.getValue();
             displayName = this.nameInput.getValue();
             author = this.authorInput.getValue();
-            exportFile(filePath);
+            exportItem(filePath);
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);

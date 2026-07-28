@@ -1,6 +1,7 @@
 package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.memo.MemoLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 public class MemoViewerItem extends Item {
@@ -29,6 +31,8 @@ public class MemoViewerItem extends Item {
     private static final String AUTHOR = "author";
     private static final String LAST_MODIFIED = "lastModified";
     private static final String IS_LOCAL_FILE = "isLocalFile";
+
+    private static String content;
 
     public MemoViewerItem(Properties properties) {
         super(properties);
@@ -80,8 +84,19 @@ public class MemoViewerItem extends Item {
             String filePath = getFilePath(stack);
             String displayName = getDisplayName(stack);
             boolean isLocalFile = getTextSource(stack);
-            // 执行客户端代码
-            Minecraft.getInstance().setScreen(new MemoViewerScreen(filePath, displayName, isLocalFile));
+            // 异步加载
+            CompletableFuture.runAsync(() -> content = MemoLoader.loadText(filePath, isLocalFile))
+                    .thenAccept(data -> Minecraft.getInstance().execute(
+                            () ->
+                            Minecraft.getInstance().setScreen(
+                                    new MemoViewerScreen(content, filePath, displayName, isLocalFile))
+                            )
+                    )
+                    .exceptionally(
+                            e -> {
+                                SimpleCardMemo.LOGGER.error("Error loading network data", e);
+                                return null;
+            });
         }
         // 返回成功，表示物品被使用了，但避免消耗（比如不减少耐久度）
         return InteractionResultHolder.success(stack);

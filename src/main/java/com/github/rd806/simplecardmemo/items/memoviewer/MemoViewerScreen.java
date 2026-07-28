@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.*;
 
 public class MemoViewerScreen extends Screen {
 
@@ -32,10 +33,11 @@ public class MemoViewerScreen extends Screen {
     private double scrollOffset = 0;
     private double maxScroll = 0;
 
-    public MemoViewerScreen(String path, String name, boolean source) {
+    public MemoViewerScreen(String content, String path, String name, boolean source) {
         // 界面的标题
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen"));
         // 初始化数据
+        this.renderedText = content;
         reload(path, name, source);
     }
 
@@ -43,7 +45,7 @@ public class MemoViewerScreen extends Screen {
         this.renderedText = MemoLoader.loadText(path, source);
         if (Config.ENABLE_MARKDOWN.get()) {
             try {
-                markdownText = new MineMarkDrawable(renderedText);
+                this.markdownText = new MineMarkDrawable(renderedText);
             } catch (Exception e) {
                 renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
                 SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);

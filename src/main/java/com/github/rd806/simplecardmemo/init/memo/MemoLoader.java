@@ -20,24 +20,25 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 public class MemoLoader {
 
-    public static String loadText(String string, boolean isLocalFile) {
+    public static String loadText(String path, boolean isLocalFile) {
         if (isLocalFile) {
-            // 先尝试从资源包中获取
-            String text = loadFromResources(string);
-            if (text == null) {
-                text = loadFromLocalFiles(string);
+            // 本地加载保持同步
+            String content = loadFromResources(path);
+            if (content == null) {
+                content = loadFromLocalFiles(path);
             }
-            return text;
+            return content;
         } else {
-            return loadFromUrl(string);
+            return loadFromUrl(path);
         }
     }
 
     // 从网络文件中获取
-    public static String loadFromUrl(String urlStr) {
+    private static String loadFromUrl(String urlStr) {
         try {
             URI uri = new URI(urlStr);
             URL url = uri.toURL();
@@ -52,7 +53,6 @@ public class MemoLoader {
                 SimpleCardMemo.LOGGER.error("HTTP error: {} - {}", responseCode, connection.getResponseMessage());
                 return null;
             }
-
             // 获取内容类型和编码
             String contentType = connection.getContentType();
             String charset = "UTF-8"; // 默认编码
@@ -66,7 +66,6 @@ public class MemoLoader {
                     }
                 }
             }
-
             // 读取内容
             StringBuilder content = new StringBuilder();
             try (InputStream inputStream = connection.getInputStream();
@@ -77,9 +76,7 @@ public class MemoLoader {
                     content.append(line).append("\n");
                 }
             }
-
             return content.toString();
-
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error("Failed to load file from url: {}", urlStr);
             return null;
@@ -87,7 +84,7 @@ public class MemoLoader {
     }
 
     // 从资源包中加载文件
-    public static String loadFromResources(String filepath) {
+    private static String loadFromResources(String filepath) {
         try {
             // 资源路径格式：assets/你的modid/ + filePath
             ResourceLocation location = ResourceLocation.parse(SimpleCardMemo.MODID + ":sample/" + filepath);
