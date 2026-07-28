@@ -3,14 +3,13 @@ package com.github.rd806.simplecardmemo.items.memomanager;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
-import com.github.rd806.simplecardmemo.init.ModItems;
-import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
-import net.minecraft.client.Minecraft;
+import com.github.rd806.simplecardmemo.network.Channel;
+import com.github.rd806.simplecardmemo.network.create.MemoPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -186,19 +185,11 @@ public class MemoManagerScreen extends Screen {
         if (selectedMemo == null) {
             return;
         }
-        if (Minecraft.getInstance().player != null) {
-            ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
-            viewer.setHoverName(Component.literal(selectedMemo.getMemoName()));
-            MemoViewerItem.setDisplayName(viewer, selectedMemo.getMemoName());
-            MemoViewerItem.setFilePath(viewer, selectedMemo.getMemoName());
-            MemoViewerItem.setAuthor(viewer, Minecraft.getInstance().player.getName().getString());
-            MemoViewerItem.setLastModified(viewer, selectedMemo.getLastModified());
-            // 发送物品
-            Minecraft.getInstance().player.getInventory().add(viewer);
-            Minecraft.getInstance().player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export.success"),
-                    false);
-        }
+        // 发送网络包
+        Channel.CHANNEL.send(
+                PacketDistributor.SERVER.noArg(),
+                new MemoPacket(selectedMemo)
+        );
     }
 
     @Override

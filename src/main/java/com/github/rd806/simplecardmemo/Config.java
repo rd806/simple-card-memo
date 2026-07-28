@@ -18,6 +18,8 @@ public class Config {
     public static ForgeConfigSpec.BooleanValue ENABLE_MARKDOWN;
     // 页边距设置
     public static ForgeConfigSpec.EnumValue<Margin> PAGE_MARGIN;
+    // 缓冲区大小
+    public static ForgeConfigSpec.IntValue CACHE_SIZE;
 
     public static ForgeConfigSpec init() {
         ENABLE_MARKDOWN = BUILDER
@@ -26,6 +28,9 @@ public class Config {
 
         PAGE_MARGIN = BUILDER
                 .defineEnum("PageMargin", Margin.MEDIUM);
+
+        CACHE_SIZE = BUILDER
+                .defineInRange("CacheSize", 5, 5, 10);
 
         return BUILDER.build();
     }

@@ -26,6 +26,6 @@ You can add, edit or delete your Memo with any code editor.
 ## Usage
 
 * Memo Editor: Edit a new memo card in the game, please use an English path to avoid errors. Once you click the "export" button, a new memo card will be sent to you while consuming the editor.
-* Memo Manager: Don't worry if you lost a memo, you can get it again by the Memo Manager.
+* Memo Manager: Don't worry if you lost a memo, you can get it again by the Memo Manager while consuming a new viewer.
 * New Memo: This item allows you to view the last memo you've opened. For the first time it's linked to the *Guide* file.
 

@@ -117,6 +117,8 @@ public class MemoLoader {
                     MemoInfo info = new MemoInfo();
                     info.setMemoName(path.getFileName().toString());
                     info.setMemoPath(path.toString());
+                    info.setMemoAuthor("Default");
+                    info.setLocalFile(true);
                     info.setLastModified(path.toFile().lastModified());
                     list.add(info);
                     totalEntries ++;

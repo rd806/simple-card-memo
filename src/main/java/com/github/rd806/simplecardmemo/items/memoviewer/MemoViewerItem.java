@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.items.memoviewer;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.LatestMemo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -91,16 +92,22 @@ public class MemoViewerItem extends Item {
             boolean isLocalFile = getTextSource(newStack);
             // 异步加载
             CompletableFuture.runAsync(() -> {
-                        content = MemoLoader.loadText(filePath, isLocalFile);
+                        // 使用 LRU 缓存机制
+                        content = CacheSystem.get(filePath);
+                        // 未命中则加载
+                        if (content == null) {
+                            content = MemoLoader.loadText(filePath, isLocalFile);
+                        }
+                        // 更新缓冲区
                         if (content == null) {
                             content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
                                     .append(filePath).getString();
+                        } else {
+                            CacheSystem.put(filePath, content);
                         }
                     })
                     .thenAccept(data -> Minecraft.getInstance().execute(() ->
-                            Minecraft.getInstance().setScreen(
-                                    new MemoViewerScreen(content, filePath, displayName, isLocalFile))
-                            )
+                            Minecraft.getInstance().setScreen(new MemoViewerScreen(content, filePath, displayName, isLocalFile)))
                     )
                     .exceptionally(
                             e -> {
@@ -109,7 +116,7 @@ public class MemoViewerItem extends Item {
             });
             LatestMemo.setMemo(newStack);
         }
-        // 返回成功，表示物品被使用了，但避免消耗（比如不减少耐久度）
+        // 返回成功，表示物品被使用了，但避免消耗
         return InteractionResultHolder.success(stack);
     }
 
