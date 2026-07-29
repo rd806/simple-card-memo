@@ -21,7 +21,7 @@ Welcome to use Simple Card Memo! You can use it to create a simple text which bi
   └── ...
 ```
 
-You can add, edit or delete your Memo with any code editor.
+It's recommended that you can edit your Memo with a code editor.
 
 > Markdown rendering is supported, however, it is not comprehensive. 
 > 

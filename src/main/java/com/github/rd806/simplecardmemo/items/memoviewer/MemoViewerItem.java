@@ -1,7 +1,6 @@
 package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.memo.LatestMemo;
 import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -84,7 +83,7 @@ public class MemoViewerItem extends Item {
         if (level.isClientSide) {
             // 若为空物品，转换为最后一次打开的备忘录
             if (stack.getTag() == null) {
-                newStack = LatestMemo.getMemo();
+                newStack = CacheSystem.getMemo();
             }
             String filePath = getFilePath(newStack);
             String displayName = getDisplayName(newStack);
@@ -102,7 +101,7 @@ public class MemoViewerItem extends Item {
                                 SimpleCardMemo.LOGGER.error("Error loading network data", e);
                                 return null;
             });
-            LatestMemo.setMemo(newStack);
+            CacheSystem.setMemo(newStack);
         }
         // 返回成功，表示物品被使用了，但避免消耗
         return InteractionResultHolder.success(stack);

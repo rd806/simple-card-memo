@@ -1,15 +1,26 @@
 package com.github.rd806.simplecardmemo.memo.cache;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class CacheSystem {
 
-    private static final MemoLRUCache<String, String> cache = new MemoLRUCache<>();
+    private static MemoLRUCache<String, String> cache = new MemoLRUCache<>();
+    private static ItemStack lastMemo = ModCreativeModeTabs.memoGuide();
 
     private static void put(String key, String value) { cache.put(key, value); }
     private static String get(String key) { return cache.get(key); }
+
+    public static void setMemo(ItemStack memo) { CacheSystem.lastMemo = memo; }
+    public static ItemStack getMemo() { return lastMemo; }
+
+    // 刷新缓存
+    public static void clear() {
+        cache = new MemoLRUCache<>();
+    }
 
     // 带缓存的加载
     public static String getMemoContentWithCache(String filePath, boolean isLocalFile) {

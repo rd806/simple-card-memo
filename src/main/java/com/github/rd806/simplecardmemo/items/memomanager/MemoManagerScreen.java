@@ -20,6 +20,7 @@ public class MemoManagerScreen extends Screen {
 
     private List<MemoInfo> memoList;
     private MemoInfo selectedMemo;
+    private int selectIndex;
 
     // 滚动常量
     private int memoListScroll = 0;
@@ -80,9 +81,7 @@ public class MemoManagerScreen extends Screen {
         this.addRenderableWidget(
                 Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
                         button -> {
-                                MemoConfig.MEMO_LIST.remove(selectedMemo);
-                                selectedMemo.setMemoName(nameInput.getValue());
-                                MemoConfig.MEMO_LIST.add(selectedMemo);
+                                MemoConfig.MEMO_LIST.get(selectIndex).setMemoName(nameInput.getValue());
                                 MemoConfig.saveToConfig();
                                 refreshMemoList();
                         })
@@ -94,7 +93,7 @@ public class MemoManagerScreen extends Screen {
         this.addRenderableWidget(
                 Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
                                 button -> {
-                                    if (!MemoLoader.deleteLocalFiles(selectedMemo.getMemoPath())) {
+                                    if (MemoLoader.deleteLocalFiles(selectedMemo.getMemoPath())) {
                                         MemoConfig.MEMO_LIST.remove(selectedMemo);
                                         MemoConfig.saveToConfig();
                                         refreshMemoList();
@@ -212,6 +211,7 @@ public class MemoManagerScreen extends Screen {
                 int index = (int) ((mouseY - HEADER) / ENTRY_HEIGHT) + memoListScroll;
                 if (index >= 0 && index < memoList.size()) {
                     selectedMemo = memoList.get(index);
+                    selectIndex = index;
                     nameInput.setValue(selectedMemo.getMemoName());
                     return true;
                 }
@@ -237,5 +237,10 @@ public class MemoManagerScreen extends Screen {
         memoListScroll -= (int) (amount * 2);
         memoListScroll = Math.max(0, Math.min(memoListScroll, memoListMaxScroll));
         return super.mouseScrolled(mouseX, mouseY, amount);
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }

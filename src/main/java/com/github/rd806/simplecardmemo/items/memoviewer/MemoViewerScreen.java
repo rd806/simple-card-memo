@@ -259,5 +259,4 @@ public class MemoViewerScreen extends Screen {
         // 打开此界面时游戏不暂停
         return false;
     }
-
 }

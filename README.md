@@ -21,7 +21,7 @@ Markdown is supported!
   └── ...
 ```
 
-You can add, edit or delete your Memo with any code editor.
+It's recommended that you can edit your Memo with a code editor.
 
 ## Usage
 

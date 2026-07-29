@@ -1,6 +1,5 @@
 package com.github.rd806.simplecardmemo.network.get;
 
-import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
@@ -33,7 +32,7 @@ public class GetExistMemo {
         int remainingToRemove = removeAmount;
         for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
             ItemStack stack = player.getInventory().getItem(slot);
-            if (!stack.isEmpty() && stack.getItem().equals(targetItem)) {
+            if (!stack.isEmpty() && stack.getItem().equals(targetItem) && stack.getTag() == null) {
                 int stackSize = stack.getCount();
                 if (stackSize <= remainingToRemove) {
                     // 如果这个槽位的物品数量小于等于需要移除的数量，直接清空该槽位
@@ -70,10 +69,6 @@ public class GetExistMemo {
             MemoViewerItem.setLastModified(viewer, memoInfo.getLastModified());
             // 发送物品
             player.getInventory().add(viewer);
-            player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export.success"),
-                    false
-            );
         }
     }
 }

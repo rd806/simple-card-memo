@@ -10,12 +10,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(SimpleCardMemo.MODID)
@@ -24,7 +24,7 @@ public class SimpleCardMemo {
     public static final String MODID = "simplecardmemo";
     public static final Logger LOGGER = LogUtils.getLogger();
     // 数据文件目录
-    public static final Path DATA_DIR = Paths.get("data/simple_card_memo");
+    public static final Path DATA_DIR = FMLPaths.GAMEDIR.get().resolve("data/simple_card_memo");
 
     public SimpleCardMemo(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();

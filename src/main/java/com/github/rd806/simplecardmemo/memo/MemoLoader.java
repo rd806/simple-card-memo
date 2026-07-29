@@ -16,7 +16,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class MemoLoader {
 
@@ -126,7 +125,7 @@ public class MemoLoader {
     // 删除文件
     public static boolean deleteLocalFiles(String filePath) {
         try {
-            if (Files.deleteIfExists(Paths.get(filePath))) {
+            if (Files.deleteIfExists(SimpleCardMemo.DATA_DIR.resolve(filePath))) {
                 SimpleCardMemo.LOGGER.info("Successfully delete local file: {}", filePath);
                 return true;
             } else {
