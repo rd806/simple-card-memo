@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.network.create;
+package com.github.rd806.simplecardmemo.network.get;
 
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
@@ -46,13 +46,13 @@ public class MemoPacket {
             if (player == null) { return; }
             // 目标物品
             Item targetItem = ModItems.MEMO_VIEWER.get();
-            boolean consumeItem = CreateExistMemo.consumeItem(player, targetItem, 1);
+            boolean consumeItem = GetExistMemo.consumeItem(player, targetItem, 1);
             if (consumeItem) {
                 player.displayClientMessage(
                         Component.translatable("simplecardmemo.item.memo_manager.export.success"),
                         false
                 );
-                CreateExistMemo.getItem(player, memoInfo);
+                GetExistMemo.getItem(player, memoInfo);
             } else {
                 player.displayClientMessage(
                         Component.translatable("simplecardmemo.item.memo_manager.export.fail"),

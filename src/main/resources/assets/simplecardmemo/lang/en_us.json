@@ -49,6 +49,7 @@
     "simplecardmemo.gui.manager_screen.title": "Manage Memo",
     "simplecardmemo.gui.manager_screen.memo_list": "Memo File List",
     "simplecardmemo.gui.manager_screen.delete": "Delete",
+    "simplecardmemo.gui.manager_screen.edit": "Edit",
     "simplecardmemo.gui.manager_screen.reload": "Reload",
     "simplecardmemo.gui.manager_screen.export": "Export",
     "simplecardmemo.gui.manager_screen.export.success": "Exported the memo successfully!",

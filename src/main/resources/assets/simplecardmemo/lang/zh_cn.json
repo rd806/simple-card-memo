@@ -49,6 +49,7 @@
     "simplecardmemo.gui.manager_screen.title": "管理备忘录",
     "simplecardmemo.gui.manager_screen.memo_list": "文件列表",
     "simplecardmemo.gui.manager_screen.delete": "删除",
+    "simplecardmemo.gui.manager_screen.edit": "编辑",
     "simplecardmemo.gui.manager_screen.reload": "重载",
     "simplecardmemo.gui.manager_screen.export": "导出",
     "simplecardmemo.gui.manager_screen.export.success": "成功导出备忘录！",

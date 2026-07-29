@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.network.create;
+package com.github.rd806.simplecardmemo.network.get;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModItems;
@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class CreateExistMemo {
+public class GetExistMemo {
 
     public static boolean consumeItem(ServerPlayer player, Item targetItem, int removeAmount) {
         // 统计背包中该物品的总数量
@@ -64,7 +64,7 @@ public class CreateExistMemo {
             viewer.setHoverName(Component.literal(memoInfo.getMemoName()));
             // 设置 NBT 数据
             MemoViewerItem.setDisplayName(viewer, memoInfo.getMemoName());
-            MemoViewerItem.setFilePath(viewer, memoInfo.getMemoName());
+            MemoViewerItem.setFilePath(viewer, memoInfo.getMemoPath());
             MemoViewerItem.setAuthor(viewer, memoInfo.getMemoAuthor());
             MemoViewerItem.setTextSource(viewer, memoInfo.isLocalFile());
             MemoViewerItem.setLastModified(viewer, memoInfo.getLastModified());

@@ -1,12 +1,14 @@
 package com.github.rd806.simplecardmemo.items.memomanager;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.create.MemoPacket;
+import com.github.rd806.simplecardmemo.network.get.MemoPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.network.PacketDistributor;
@@ -29,14 +31,16 @@ public class MemoManagerScreen extends Screen {
     private static int FILE_LIST_WIDTH;
     private static int FILE_LIST_HEIGHT;
     private static int ENTRY_HEIGHT;
+    // 输入框
+    private EditBox nameInput;
     // 按键常量
     private static final int BUTTON_WIDTH = 50;
     private static final int BUTTON_HEIGHT = 20;
 
     public MemoManagerScreen() {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.title"));
-        memoList = MemoLoader.listAllMemos();
-        selectedMemo = new MemoInfo();
+        memoList = MemoConfig.MEMO_LIST;
+        selectedMemo = memoList.get(0);
     }
 
     @Override
@@ -50,6 +54,20 @@ public class MemoManagerScreen extends Screen {
         FILE_LIST_HEIGHT = this.height - HEADER - FOOTER;
         ENTRY_HEIGHT = this.font.lineHeight * 2;
 
+        // 创建文件名输入框
+        this.nameInput = new EditBox(
+                this.font,
+                PADDING,
+                this.height - FOOTER + 10,
+                BUTTON_WIDTH * 2,
+                BUTTON_HEIGHT,
+                Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.input")
+        );
+        this.nameInput.setBordered(true);
+        this.nameInput.setValue(selectedMemo.getMemoName());
+        this.nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.hint.name"));
+        this.addRenderableWidget(this.nameInput);
+
         // 关闭按钮
         this.addRenderableWidget(
                 Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.close"),
@@ -58,14 +76,34 @@ public class MemoManagerScreen extends Screen {
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                         .build()
         );
+        // 编辑按钮
+        this.addRenderableWidget(
+                Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
+                        button -> {
+                                MemoConfig.MEMO_LIST.remove(selectedMemo);
+                                selectedMemo.setMemoName(nameInput.getValue());
+                                MemoConfig.MEMO_LIST.add(selectedMemo);
+                                MemoConfig.saveToConfig();
+                                refreshMemoList();
+                        })
+                        .pos(PADDING + nameInput.getWidth() + 5, this.height - FOOTER + 10)
+                        .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+                        .build()
+        );
         // 删除按钮
         this.addRenderableWidget(
                 Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
                                 button -> {
-                                    if (!MemoLoader.deleteLocalFiles(selectedMemo.getMemoPath())) { return; }
+                                    if (!MemoLoader.deleteLocalFiles(selectedMemo.getMemoPath())) {
+                                        MemoConfig.MEMO_LIST.remove(selectedMemo);
+                                        MemoConfig.saveToConfig();
+                                        refreshMemoList();
+                                        return;
+                                    }
                                     refreshMemoList();
+                                    MemoConfig.saveToConfig();
                                 })
-                        .pos(PADDING, this.height - FOOTER + 10)
+                        .pos(PADDING + nameInput.getWidth() + BUTTON_WIDTH + 5, this.height - FOOTER + 10)
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                         .build()
         );
@@ -159,7 +197,8 @@ public class MemoManagerScreen extends Screen {
 
     // 刷新文件列表
     private void refreshMemoList() {
-        memoList = MemoLoader.listAllMemos();
+        MemoConfig.reload();
+        memoList = MemoConfig.MEMO_LIST;
         memoListScroll = 0;
     }
 
@@ -173,6 +212,7 @@ public class MemoManagerScreen extends Screen {
                 int index = (int) ((mouseY - HEADER) / ENTRY_HEIGHT) + memoListScroll;
                 if (index >= 0 && index < memoList.size()) {
                     selectedMemo = memoList.get(index);
+                    nameInput.setValue(selectedMemo.getMemoName());
                     return true;
                 }
             }

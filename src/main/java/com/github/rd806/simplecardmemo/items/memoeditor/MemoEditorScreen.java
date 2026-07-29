@@ -2,6 +2,8 @@ package com.github.rd806.simplecardmemo.items.memoeditor;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModItems;
+import com.github.rd806.simplecardmemo.memo.MemoConfig;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
 import net.minecraft.client.Minecraft;
@@ -165,6 +167,7 @@ public class MemoEditorScreen extends Screen {
                             author = this.authorInput.getValue();
                             isLocalFile = this.sourceInput.selected();
                             exportItem(filePath);
+                            MemoConfig.saveToConfig();
                         })
                         .pos(this.width - PADDING - BUTTON_WIDTH, this.height - FOOTER + 20)
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -235,8 +238,12 @@ public class MemoEditorScreen extends Screen {
                 MemoLoader.saveToLocalFiles(path, content);
                 MemoViewerItem.setFilePath(viewer, filePath);
             } else {
+                filePath = content;
                 MemoViewerItem.setFilePath(viewer, content);
             }
+            MemoInfo memoInfo = new MemoInfo(displayName, filePath, author, isLocalFile, System.currentTimeMillis());
+            MemoConfig.MEMO_LIST.add(memoInfo);
+            // 设置物品
             viewer.setHoverName(Component.literal(displayName));
             MemoViewerItem.setDisplayName(viewer, displayName);
             MemoViewerItem.setAuthor(viewer, author);

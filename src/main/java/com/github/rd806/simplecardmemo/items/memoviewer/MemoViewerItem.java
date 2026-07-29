@@ -2,7 +2,6 @@ package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.LatestMemo;
-import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -93,18 +92,7 @@ public class MemoViewerItem extends Item {
             // 异步加载
             CompletableFuture.runAsync(() -> {
                         // 使用 LRU 缓存机制
-                        content = CacheSystem.get(filePath);
-                        // 未命中则加载
-                        if (content == null) {
-                            content = MemoLoader.loadText(filePath, isLocalFile);
-                        }
-                        // 更新缓冲区
-                        if (content == null) {
-                            content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
-                                    .append(filePath).getString();
-                        } else {
-                            CacheSystem.put(filePath, content);
-                        }
+                        content = CacheSystem.getMemoContentWithCache(filePath, isLocalFile);
                     })
                     .thenAccept(data -> Minecraft.getInstance().execute(() ->
                             Minecraft.getInstance().setScreen(new MemoViewerScreen(content, filePath, displayName, isLocalFile)))

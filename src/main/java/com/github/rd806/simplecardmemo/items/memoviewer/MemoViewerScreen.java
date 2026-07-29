@@ -2,7 +2,7 @@ package com.github.rd806.simplecardmemo.items.memoviewer;
 
 import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import dev.dediamondpro.minemark.minecraft.MineMarkDrawable;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -30,6 +30,10 @@ public class MemoViewerScreen extends Screen {
     private float totalHeight = 0;
     private double scrollOffset = 0;
     private double maxScroll = 0;
+    // 拖动设置
+    private boolean isDragging = false;
+    private int dragStartY = 0;
+    private int dragStartOffset = 0;
 
     public MemoViewerScreen(String content, String path, String name, boolean source) {
         // 界面的标题
@@ -50,7 +54,7 @@ public class MemoViewerScreen extends Screen {
     }
 
     private void reload(String path, String name, boolean source) {
-        this.renderedText = MemoLoader.loadText(path, source);
+        this.renderedText = CacheSystem.getMemoContent(filePath, isLocalFile);
         if (Config.ENABLE_MARKDOWN.get() && renderedText != null) {
             try {
                 this.markdownText = new MineMarkDrawable(renderedText);
@@ -171,7 +175,7 @@ public class MemoViewerScreen extends Screen {
         if (this.maxScroll <= 0) return;
 
         int barX = (int) (this.width - margin + 4);
-        int barY = (int) footer;
+        int barY = (int) header;
         int barW = 6;
         int barH = (int) (this.height - header - footer);
 
@@ -181,6 +185,38 @@ public class MemoViewerScreen extends Screen {
         int thumbHeight = Math.max(20, (int) (barH * Math.min(1, (barH / totalHeight))));
         int thumbY = barY + (int) ((barH - thumbHeight) * progress);
         graphics.fill(barX, thumbY, barX + barW, thumbY + thumbHeight, 0xCCFFFFFF);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // 检查是否点击在滚动条滑块上（开始拖动）
+        if (button == 0 && maxScroll > 0) {
+            int barX = (int) (this.width - margin + 4);
+            int barY = (int) footer;
+            int barW = 6;
+            int barH = (int) (this.height - header - footer);
+
+            float visibleRatio = totalHeight / barH;
+            int thumbHeight = Math.max(20, (int)(barH * visibleRatio));
+            float progress = (float) (scrollOffset / maxScroll);
+            int thumbY = barY + (int)((barH - thumbHeight) * progress);
+
+            // 判断是否点击在滑块上
+            if (mouseX >= barX && mouseX <= barX + barW && mouseY >= thumbY && mouseY <= thumbY + thumbHeight) {
+                isDragging = true;
+                dragStartY = (int) mouseY;
+                dragStartOffset = (int) scrollOffset;
+                return true;
+            }
+            // 点击滚动条轨道，跳转到对应位置
+            if (mouseX >= barX && mouseX <= barX + barW && mouseY >= barY && mouseY <= barY + barH) {
+                float clickProgress = (float) (mouseY - barY) / barH;
+                scrollOffset = (int)(clickProgress * maxScroll);
+                scrollOffset = Math.max(0, Math.min(scrollOffset, maxScroll));
+                return true;
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
 
@@ -195,8 +231,22 @@ public class MemoViewerScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (isDragging && button == 0) {
+            int deltaY = (int) (mouseY - dragStartY);
+            int barHeight = (int) (this.height - header - footer);
+            float progress = (float) deltaY / barHeight;
+            scrollOffset = dragStartOffset + (int) (progress * maxScroll);
+            scrollOffset = Math.max(0, Math.min(scrollOffset, maxScroll));
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        isDragging = false;
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override

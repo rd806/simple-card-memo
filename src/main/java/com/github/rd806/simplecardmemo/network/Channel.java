@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.network;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.network.create.MemoPacket;
+import com.github.rd806.simplecardmemo.network.get.MemoPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -19,7 +19,7 @@ public class Channel {
     // 数据包初始id
     private static int packetId = 1;
 
-    public static void registerCreateMemo() {
+    public static void registerGetMemo() {
         CHANNEL.registerMessage(
                 packetId++,
                 MemoPacket.class,

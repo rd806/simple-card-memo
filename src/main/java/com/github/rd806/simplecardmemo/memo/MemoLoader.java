@@ -14,12 +14,9 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MemoLoader {
 
@@ -106,33 +103,7 @@ public class MemoLoader {
        }
        return null;
     }
-
-    // 获取文件列表
-    public static List<MemoInfo> listAllMemos() {
-        List<MemoInfo> list = new ArrayList<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(SimpleCardMemo.DATA_DIR)) {
-            int totalEntries = 0;
-            for (Path path : stream) {
-                try {
-                    MemoInfo info = new MemoInfo();
-                    info.setMemoName(path.getFileName().toString());
-                    info.setMemoPath(path.toString());
-                    info.setMemoAuthor("Default");
-                    info.setLocalFile(true);
-                    info.setLastModified(path.toFile().lastModified());
-                    list.add(info);
-                    totalEntries ++;
-                } catch (Exception e) {
-                    SimpleCardMemo.LOGGER.error("Failed to load memo file from: {}", path);
-                }
-            }
-            SimpleCardMemo.LOGGER.info("Loaded {} memos from {}", totalEntries, SimpleCardMemo.DATA_DIR);
-        } catch (Exception e) {
-            SimpleCardMemo.LOGGER.error("Failed to load memos {}", e.getMessage());
-        }
-        return list;
-    }
-
+    
     // 保存到本地文件
     public static boolean saveToLocalFiles(String filePath, String text) {
         String safeName = sanitizeFileName(filePath);
