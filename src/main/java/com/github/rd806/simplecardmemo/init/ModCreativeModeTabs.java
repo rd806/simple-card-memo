@@ -27,7 +27,7 @@ public class ModCreativeModeTabs {
                             .displayItems((itemDisplayParameters, output) -> {
                                 output.accept(ModItems.MEMO_EDITOR.get());
                                 output.accept(ModItems.MEMO_MANAGER.get());
-                                output.accept(ModItems.MEMO_VIEWER.get());
+                                output.accept(newMemo());
                                 output.accept(memoGuide());
                                 output.accept(hostServer());
                             })
@@ -36,6 +36,11 @@ public class ModCreativeModeTabs {
 
     public static void register(IEventBus eventBus){
         CREATIVE_MODE_TABS.register(eventBus);
+    }
+
+    // 新的备忘录
+    public static ItemStack newMemo() {
+        return new ItemStack(ModItems.MEMO_VIEWER.get());
     }
 
     // 教程文件

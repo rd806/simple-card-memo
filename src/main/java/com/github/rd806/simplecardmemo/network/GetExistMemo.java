@@ -1,22 +1,33 @@
-package com.github.rd806.simplecardmemo.network.get;
+package com.github.rd806.simplecardmemo.network;
 
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class GetExistMemo {
 
-    public static boolean consumeItem(ServerPlayer player, Item targetItem, int removeAmount) {
+    // 检查是否存在指定的 ItemStack
+    public static boolean hasItemStack(ServerPlayer player, ItemStack targetItem) {
+        for (int i = 0; i <= player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (stack.equals(targetItem, false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 消耗指定的 ItemStack
+    public static boolean consumeItemStack(ServerPlayer player, ItemStack targetItem, int removeAmount) {
         // 统计背包中该物品的总数量
         int totalCount = 0;
         // 遍历玩家主背包
         for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
             ItemStack stack = player.getInventory().getItem(slot);
-            if (!stack.isEmpty() && stack.getItem().equals(targetItem) && stack.getTag() == null) {
+            if (stack.equals(targetItem, false)) {
                 totalCount += stack.getCount();
                 // 如果已经达到需求，可以提前跳出，提高效率
                 if (totalCount >= removeAmount) {
@@ -32,7 +43,7 @@ public class GetExistMemo {
         int remainingToRemove = removeAmount;
         for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
             ItemStack stack = player.getInventory().getItem(slot);
-            if (!stack.isEmpty() && stack.getItem().equals(targetItem) && stack.getTag() == null) {
+            if (stack.equals(targetItem, false)) {
                 int stackSize = stack.getCount();
                 if (stackSize <= remainingToRemove) {
                     // 如果这个槽位的物品数量小于等于需要移除的数量，直接清空该槽位
@@ -69,6 +80,13 @@ public class GetExistMemo {
             MemoViewerItem.setLastModified(viewer, memoInfo.getLastModified());
             // 发送物品
             player.getInventory().add(viewer);
+        }
+    }
+
+    // 收取物品
+    public static void receiverItem(ServerPlayer player, ItemStack itemStack) {
+        if (player != null) {
+            player.getInventory().add(itemStack);
         }
     }
 }

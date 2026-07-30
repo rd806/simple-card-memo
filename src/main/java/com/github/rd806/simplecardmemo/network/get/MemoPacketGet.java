@@ -1,20 +1,21 @@
 package com.github.rd806.simplecardmemo.network.get;
 
-import com.github.rd806.simplecardmemo.init.ModItems;
+import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import com.github.rd806.simplecardmemo.network.GetExistMemo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MemoPacket {
+public class MemoPacketGet {
 
     private final MemoInfo memoInfo;
 
-    public MemoPacket(MemoInfo memoInfo) {
+    public MemoPacketGet(MemoInfo memoInfo) {
         this.memoInfo = memoInfo;
     }
 
@@ -28,14 +29,14 @@ public class MemoPacket {
     }
 
     // 解码：从网络缓冲区读取数据
-    public static MemoPacket decode(FriendlyByteBuf buffer) {
+    public static MemoPacketGet decode(FriendlyByteBuf buffer) {
         String memoName = buffer.readUtf();
         String memoPath = buffer.readUtf();
         String author = buffer.readUtf();
         boolean isLocalFile = buffer.readBoolean();
         long lastModified = buffer.readLong();
         MemoInfo memoInfo = new MemoInfo(memoName, memoPath, author, isLocalFile, lastModified);
-        return new MemoPacket(memoInfo);
+        return new MemoPacketGet(memoInfo);
     }
 
     // 处理方法
@@ -45,8 +46,8 @@ public class MemoPacket {
             ServerPlayer player = context.getSender();
             if (player == null) { return; }
             // 目标物品
-            Item targetItem = ModItems.MEMO_VIEWER.get();
-            boolean consumeItem = GetExistMemo.consumeItem(player, targetItem, 1);
+            ItemStack targetItem = ModCreativeModeTabs.newMemo();
+            boolean consumeItem = GetExistMemo.consumeItemStack(player, targetItem, 1);
             if (consumeItem) {
                 player.displayClientMessage(
                         Component.translatable("simplecardmemo.item.memo_manager.export.success"),

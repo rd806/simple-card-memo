@@ -11,8 +11,8 @@ public class CacheSystem {
     private static MemoLRUCache<String, String> cache = new MemoLRUCache<>();
     private static ItemStack lastMemo = ModCreativeModeTabs.memoGuide();
 
-    private static void put(String key, String value) { cache.put(key, value); }
-    private static String get(String key) { return cache.get(key); }
+    public static void put(String key, String value) { cache.put(key, value); }
+    public static String get(String key) { return cache.get(key); }
 
     public static void setMemo(ItemStack memo) { CacheSystem.lastMemo = memo; }
     public static ItemStack getMemo() { return lastMemo; }

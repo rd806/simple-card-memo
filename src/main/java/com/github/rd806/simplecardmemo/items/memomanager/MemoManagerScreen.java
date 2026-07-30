@@ -5,7 +5,7 @@ import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.get.MemoPacket;
+import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -228,7 +228,7 @@ public class MemoManagerScreen extends Screen {
         // 发送网络包
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
-                new MemoPacket(selectedMemo)
+                new MemoPacketGet(selectedMemo)
         );
     }
 
