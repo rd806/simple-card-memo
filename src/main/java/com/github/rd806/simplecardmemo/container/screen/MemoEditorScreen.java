@@ -1,11 +1,11 @@
-package com.github.rd806.simplecardmemo.items.memoeditor;
+package com.github.rd806.simplecardmemo.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
-import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
+import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -45,7 +45,7 @@ public class MemoEditorScreen extends Screen {
     private static final int BUTTON_WIDTH = 50;
     private static final int BUTTON_HEIGHT = 20;
 
-    protected MemoEditorScreen(ItemStack item) {
+    public MemoEditorScreen(ItemStack item) {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.editor.title"));
         this.initialContent = MemoLoader.loadFromLocalFiles("temp.md");
         this.item = item;

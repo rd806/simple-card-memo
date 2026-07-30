@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.network.send;
 
 import com.github.rd806.simplecardmemo.init.ModItems;
-import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
+import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import com.github.rd806.simplecardmemo.network.GetExistMemo;
 import net.minecraft.network.FriendlyByteBuf;

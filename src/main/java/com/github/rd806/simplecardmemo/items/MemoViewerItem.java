@@ -1,6 +1,7 @@
-package com.github.rd806.simplecardmemo.items.memoviewer;
+package com.github.rd806.simplecardmemo.items;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.container.screen.MemoViewerScreen;
 import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

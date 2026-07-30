@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.items.memomanager;
+package com.github.rd806.simplecardmemo.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoConfig;

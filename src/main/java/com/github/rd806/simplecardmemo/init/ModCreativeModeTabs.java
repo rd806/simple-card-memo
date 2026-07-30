@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.items.memoviewer.MemoViewerItem;
+import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -27,6 +27,7 @@ public class ModCreativeModeTabs {
                             .displayItems((itemDisplayParameters, output) -> {
                                 output.accept(ModItems.MEMO_EDITOR.get());
                                 output.accept(ModItems.MEMO_MANAGER.get());
+                                output.accept(ModItems.MEMO_SENDER.get());
                                 output.accept(newMemo());
                                 output.accept(memoGuide());
                                 output.accept(hostServer());

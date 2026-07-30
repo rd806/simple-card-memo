@@ -20,6 +20,10 @@
     "simplecardmemo.item.memo_manager.export.success": "Export the Memo successfully!",
     "simplecardmemo.item.memo_manager.export.fail": "Fail to export the Memo, maybe a New Memo is missing!",
 
+    "item.simplecardmemo.memo_sender": "Memo Mail",
+    "simplecardmemo.item.memo_sender.tooltip": "Right click to open the Memo Mail",
+    "simplecardmemo.item.memo_sender.screen": "Memo Mail",
+
     "simplecardmemo.item.memo_guide": "Guide",
     "simplecardmemo.item.minecraft_server": "How to Host a Minecraft Server",
 

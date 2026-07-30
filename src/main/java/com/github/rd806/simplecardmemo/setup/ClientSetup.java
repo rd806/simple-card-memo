@@ -1,8 +1,11 @@
 package com.github.rd806.simplecardmemo.setup;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.container.screen.MailScreen;
+import com.github.rd806.simplecardmemo.init.ModMenus;
 import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,5 +19,15 @@ public class ClientSetup {
         MemoLoader.createTempFile();
         // 获取文件列表
         MemoConfig.generateConfig();
+        // 注册GUI
+        registerScreens();
+    }
+
+    // 注册GUI
+    private static void registerScreens() {
+        MenuScreens.register(
+                ModMenus.MAIL_MENU.get(),
+                MailScreen::new
+        );
     }
 }

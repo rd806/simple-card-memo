@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo;
 
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.init.ModItems;
+import com.github.rd806.simplecardmemo.init.ModMenus;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,8 +31,9 @@ public class SimpleCardMemo {
         IEventBus modEventBus = context.getModEventBus();
 
         modEventBus.addListener(this::commonSetup);
-        // 创建物品和物品栏
-        ModItems.ITEMS.register(modEventBus);
+        // 创建物品、GUI和物品栏
+        ModItems.register(modEventBus);
+        ModMenus.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
