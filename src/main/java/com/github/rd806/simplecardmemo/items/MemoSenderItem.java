@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MemoSenderItem extends Item {
+
+    private static final String INVENTORY = "inventory";
 
     public MemoSenderItem(Properties properties) {
         super(properties);
@@ -53,5 +56,19 @@ public class MemoSenderItem extends Item {
             });
         }
         return InteractionResultHolder.success(stack);
+    }
+
+    // 从物品中获取槽位信息
+    public static ItemStackHandler getInventory(ItemStack stack) {
+        // 使用 Capability 或直接操作 NBT
+        ItemStackHandler handler = new ItemStackHandler(2);
+        handler.deserializeNBT(stack.getOrCreateTag().getCompound(INVENTORY));
+        return handler;
+    }
+
+    // 保存到物品
+    public static void setInventory(ItemStack stack) {
+        ItemStackHandler handler = getInventory(stack);
+        stack.getOrCreateTag().put(INVENTORY, handler.serializeNBT());
     }
 }

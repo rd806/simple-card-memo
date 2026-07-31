@@ -38,7 +38,7 @@ public class SimpleCardMemo {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
-        Channel.registerGetMemo();
+        Channel.register();
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         context.registerConfig(ModConfig.Type.COMMON, Config.init());
     }

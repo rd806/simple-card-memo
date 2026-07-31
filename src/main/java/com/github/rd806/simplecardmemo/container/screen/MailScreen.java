@@ -4,6 +4,7 @@ import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -13,8 +14,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class MailScreen extends AbstractContainerScreen<MailMenu> {
 
+    // 背景GUI图片
     private static final ResourceLocation MAIL_GUI =
             ResourceLocation.parse(SimpleCardMemo.MODID + ":textures/container/mail.png");
+    // 输入框
+    private EditBox receiverInput;
+    // GUI 左上角的位置，使界面居中显示
+    private int leftPos;
+    private int topPos;
 
     public MailScreen(MailMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -25,6 +32,23 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     }
 
     @Override
+    protected void init() {
+        super.init();
+        // 计算 GUI 左上角在屏幕上的位置
+        leftPos = (this.width - this.imageWidth) / 2;
+        topPos = (this.height - this.imageHeight) / 2;
+        // 创建输入框
+        this.receiverInput = new EditBox(
+                this.font,
+                leftPos + 59,
+                topPos + 21,
+                60,
+                20,
+                Component.translatable(SimpleCardMemo.MODID + ".mail.gui.message") // 提示文本
+        );
+    }
+
+    @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         // 设置渲染使用的 Shader
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -32,11 +56,10 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         // 绑定要绘制的纹理
         RenderSystem.setShaderTexture(0, MAIL_GUI);
-        // 计算 GUI 左上角的位置，使界面居中显示
-        int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
         // 绘制贴图
-        guiGraphics.blit(MAIL_GUI, x, y, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(MAIL_GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        // 绘制输入框
+        this.receiverInput.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -44,5 +67,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 绘制界面背景
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
+        // 渲染物品提示
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 }

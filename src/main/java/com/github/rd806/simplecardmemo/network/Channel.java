@@ -21,7 +21,7 @@ public class Channel {
     // 数据包初始id
     private static int packetId = 1;
 
-    public static void registerGetMemo() {
+    public static void register() {
         CHANNEL.registerMessage(
                 packetId++,
                 MemoPacketGet.class,

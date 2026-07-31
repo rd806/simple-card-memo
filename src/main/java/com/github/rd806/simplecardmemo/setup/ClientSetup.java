@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo.setup;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.screen.MailScreen;
+import com.github.rd806.simplecardmemo.container.screen.ManagerScreen;
 import com.github.rd806.simplecardmemo.init.ModMenus;
 import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
@@ -28,6 +29,10 @@ public class ClientSetup {
         MenuScreens.register(
                 ModMenus.MAIL_MENU.get(),
                 MailScreen::new
+        );
+        MenuScreens.register(
+                ModMenus.MANAGER_MENU.get(),
+                ManagerScreen::new
         );
     }
 }
