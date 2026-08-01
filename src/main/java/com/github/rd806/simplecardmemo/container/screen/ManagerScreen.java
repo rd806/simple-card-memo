@@ -6,6 +6,7 @@ import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
+import com.github.rd806.simplecardmemo.network.get.MemoPacketDestroy;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,7 +27,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     // 背景GUI图片
     private static final ResourceLocation MANAGER_GUI =
             ResourceLocation.parse(SimpleCardMemo.MODID + ":textures/container/manager.png");
-
+    // 导出信息
     private List<MemoInfo> memoList;
     private MemoInfo selectedMemo;
     private int selectIndex;
@@ -39,7 +40,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private int topPos;
     private static int PADDING;
     private static int HEADER;
-    private static int FOOTER;
     private static int FILE_LIST_WIDTH;
     private static int FILE_LIST_HEIGHT;
     private static int ENTRY_HEIGHT;
@@ -70,9 +70,8 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 布局
         PADDING = leftPos + 16;
         HEADER = topPos + 24;
-        FOOTER = topPos + 110;
         FILE_LIST_WIDTH = this.width - PADDING * 2;
-        FILE_LIST_HEIGHT = this.height - HEADER - FOOTER;
+        FILE_LIST_HEIGHT = imageHeight - 134;
         ENTRY_HEIGHT = this.font.lineHeight * 2;
 
         // 创建文件名输入框
@@ -120,8 +119,14 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .build();
         // 导出按钮
         Button exportButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export"),
-                        button -> getItem())
+                        button -> exportItem())
                 .pos(leftPos - BUTTON_WIDTH - 5, reloadButton.getY() + BUTTON_HEIGHT + 5)
+                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .build();
+        // 销毁按钮
+        Button destroyButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.destroy"),
+                        button -> destroyItem())
+                .pos(leftPos - BUTTON_WIDTH - 5, exportButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         // 绘制按钮
@@ -130,6 +135,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         addRenderableWidget(deleteButton);
         addRenderableWidget(editButton);
         addRenderableWidget(reloadButton);
+        addRenderableWidget(destroyButton);
     }
 
     @Override
@@ -187,7 +193,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                     Component.literal("📄 " + info.getMemoName()),
                     PADDING + 4,
                     y + ENTRY_HEIGHT / 4,
-                    0xFFFFFF
+                    0xFFFFFFFF
             );
         }
     }
@@ -219,14 +225,23 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     }
 
     // 获取对应的物品
-    private void getItem() {
+    private void exportItem() {
         if (selectedMemo == null) {
+            SimpleCardMemo.LOGGER.warn("There is no memo selected");
             return;
         }
         // 发送网络包
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
                 new MemoPacketGet(selectedMemo)
+        );
+    }
+
+    // 销毁物品
+    private void destroyItem() {
+        Channel.CHANNEL.send(
+                PacketDistributor.SERVER.noArg(),
+                new MemoPacketDestroy()
         );
     }
 

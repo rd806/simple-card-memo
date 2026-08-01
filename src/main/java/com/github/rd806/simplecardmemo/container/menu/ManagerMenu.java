@@ -1,68 +1,53 @@
 package com.github.rd806.simplecardmemo.container.menu;
 
-import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.init.ModMenus;
-import com.github.rd806.simplecardmemo.items.MemoManagerItem;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class ManagerMenu extends AbstractContainerMenu {
 
-
-    private final ItemStack stack;
-    private final Player player;
-    private final int slotIndex;
-    private ContainerData data;
+    // 容器
+    private final ItemStackHandler itemHandler;
     // 输入槽索引
-    private static final int INPUT_SLOT = 0;
+    public static final int INPUT_SLOT = 0;
+    public static final int OUTPUT_SLOT = 1;
     private static final int PLAYER_INVENTORY_START = 2;
 
     // 客户端
-    public ManagerMenu(int id, Inventory inventory, FriendlyByteBuf buf) {
-        this(id, inventory,
-                buf.readInt(),
-                inventory.player.getItemInHand(InteractionHand.MAIN_HAND),
-                new SimpleContainerData(1));
+    public ManagerMenu(int id, Inventory inventory, FriendlyByteBuf ignoredBuf) {
+        this(id, inventory);
     }
 
     // 服务端
-    public ManagerMenu(int id, Inventory inventory, int slotIndex, ItemStack itemStack, ContainerData data) {
+    public ManagerMenu(int id, Inventory inventory) {
         // 指定该菜单对应的 MenuType
         super(ModMenus.MANAGER_MENU.get(), id);
-        // 保存数据
-        this.player = inventory.player;
-        this.stack = itemStack;
-        this.slotIndex = slotIndex;
-        this.data = data;
-        // 注册数据同步槽
-        addDataSlots(data);
+        // 获取数据
+        this.itemHandler = new ItemStackHandler(2);
         // 添加玩家背包与快捷栏
         addPlayerInventory(inventory);
-        // 添加输入栏
-        addSendSlot(MemoManagerItem.getInventory(stack));
+        // 添加额外物品栏
+        addSlot();
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int i) {
-        Slot slot = this.slots.get(slotIndex);
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
+        Slot slot = this.slots.get(index);
         if (!slot.hasItem()) {
             return ItemStack.EMPTY;
         }
         // 获取转移的物品
         ItemStack stack = slot.getItem();
         ItemStack copy = stack.copy();
-        // 自定义槽位（0）<-> 玩家背包（1-38）
-        if (slotIndex < PLAYER_INVENTORY_START) {
+        // 自定义槽位（0-1）<-> 玩家背包（2-38）
+        if (index < PLAYER_INVENTORY_START) {
             // 从自定义槽位移到玩家背包
             if (!this.moveItemStackTo(stack, PLAYER_INVENTORY_START, this.slots.size(), true)) {
                 return ItemStack.EMPTY;
@@ -91,19 +76,19 @@ public class ManagerMenu extends AbstractContainerMenu {
     }
 
     // 创建发送槽位
-    private void addSendSlot(IItemHandler handler) {
-        this.addSlot(new SlotItemHandler(handler, INPUT_SLOT, 55, 128) {
-            @Override
-            public boolean mayPlace(@NotNull ItemStack stack) {
-                // 限制只能放入特定物品
-                return stack.equals(ModCreativeModeTabs.newMemo(), false);
-            }
-
+    private void addSlot() {
+        // 发送槽位
+        this.addSlot(new SlotItemHandler(itemHandler, INPUT_SLOT, 55, 128) {
             @Override
             public void setChanged() {
                 super.setChanged();
-                // 物品变化时保存到NBT
-                MemoManagerItem.setInventory(stack);
+            }
+        });
+        // 接收槽位
+        this.addSlot(new SlotItemHandler(itemHandler, OUTPUT_SLOT, 109, 128) {
+            @Override
+            public boolean mayPlace(@NotNull ItemStack stack) {
+                return false;
             }
         });
     }
@@ -129,5 +114,9 @@ public class ManagerMenu extends AbstractContainerMenu {
                     215
             ));
         }
+    }
+
+    public ItemStackHandler getItemHandler() {
+        return itemHandler;
     }
 }

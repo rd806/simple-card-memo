@@ -18,8 +18,6 @@
     "item.simplecardmemo.memo_manager": "备忘录管理器",
     "simplecardmemo.item.memo_manager.tooltip": "右键打开",
     "simplecardmemo.item.memo_manager.screen": "备忘录管理器",
-    "simplecardmemo.item.memo_manager.export.success": "导出成功！",
-    "simplecardmemo.item.memo_manager.export.fail": "导出失败，背包中可能缺少新的备忘录卡片！",
 
     "item.simplecardmemo.memo_sender": "信箱",
     "simplecardmemo.item.memo_sender.tooltip": "右键打开",
@@ -58,5 +56,5 @@
     "simplecardmemo.gui.manager_screen.reload": "重载",
     "simplecardmemo.gui.manager_screen.export": "导出",
     "simplecardmemo.gui.manager_screen.export.success": "成功导出备忘录！",
-    "simplecardmemo.gui.manager_screen.close": "关闭"
+    "simplecardmemo.gui.manager_screen.destroy": "销毁"
 }

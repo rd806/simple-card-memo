@@ -3,42 +3,24 @@ package com.github.rd806.simplecardmemo.network.get;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
-import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.network.GetExistMemo;
+import com.github.rd806.simplecardmemo.init.ModItems;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MemoPacketGet {
+public class MemoPacketDestroy {
 
-    private final MemoInfo memoInfo;
-
-    public MemoPacketGet(MemoInfo memoInfo) {
-        this.memoInfo = memoInfo;
-    }
+    public MemoPacketDestroy() {}
 
     // 编码：将数据写入网络缓冲区
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeUtf(memoInfo.getMemoName());
-        buffer.writeUtf(memoInfo.getMemoPath());
-        buffer.writeUtf(memoInfo.getMemoAuthor());
-        buffer.writeBoolean(memoInfo.isLocalFile());
-        buffer.writeLong(memoInfo.getLastModified());
-    }
+    public void encode(FriendlyByteBuf ignoredBuffer) {}
 
     // 解码：从网络缓冲区读取数据
-    public static MemoPacketGet decode(FriendlyByteBuf buffer) {
-        String memoName = buffer.readUtf();
-        String memoPath = buffer.readUtf();
-        String author = buffer.readUtf();
-        boolean isLocalFile = buffer.readBoolean();
-        long lastModified = buffer.readLong();
-        MemoInfo memoInfo = new MemoInfo(memoName, memoPath, author, isLocalFile, lastModified);
-        return new MemoPacketGet(memoInfo);
+    public static MemoPacketDestroy decode(FriendlyByteBuf ignoredBuffer) {
+        return new MemoPacketDestroy();
     }
 
     // 处理方法
@@ -54,7 +36,7 @@ public class MemoPacketGet {
             }
             // 检查输入槽
             ItemStack input = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.INPUT_SLOT);
-            if (!input.equals(ModCreativeModeTabs.newMemo(), false)) {
+            if (!input.getItem().equals(ModItems.MEMO_VIEWER.get())) {
                 SimpleCardMemo.LOGGER.error("Input is not valid!");
                 return;
             }
@@ -66,7 +48,7 @@ public class MemoPacketGet {
             }
             // 消耗和产出物品
             input.shrink(1);
-            managerMenu.getItemHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, GetExistMemo.setItem(player, memoInfo));
+            managerMenu.getItemHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, ModCreativeModeTabs.newMemo());
         });
         context.setPacketHandled(true);
     }

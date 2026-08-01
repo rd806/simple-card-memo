@@ -1,5 +1,6 @@
 package com.github.rd806.simplecardmemo.network;
 
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
@@ -81,6 +82,24 @@ public class GetExistMemo {
             // 发送物品
             player.getInventory().add(viewer);
         }
+    }
+
+    public static ItemStack setItem(ServerPlayer player, MemoInfo memoInfo) {
+        if (memoInfo != null && player != null) {
+            ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
+            // 设置显示名
+            viewer.setHoverName(Component.literal(memoInfo.getMemoName()));
+            // 设置 NBT 数据
+            MemoViewerItem.setDisplayName(viewer, memoInfo.getMemoName());
+            MemoViewerItem.setFilePath(viewer, memoInfo.getMemoPath());
+            MemoViewerItem.setAuthor(viewer, memoInfo.getMemoAuthor());
+            MemoViewerItem.setTextSource(viewer, memoInfo.isLocalFile());
+            MemoViewerItem.setLastModified(viewer, memoInfo.getLastModified());
+            // 发送物品
+            return viewer;
+        }
+        SimpleCardMemo.LOGGER.error("The selected Memo is null!");
+        return ItemStack.EMPTY;
     }
 
     // 收取物品

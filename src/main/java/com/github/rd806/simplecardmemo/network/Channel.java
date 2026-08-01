@@ -1,6 +1,7 @@
 package com.github.rd806.simplecardmemo.network;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.network.get.MemoPacketDestroy;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketSend;
@@ -28,6 +29,13 @@ public class Channel {
                 MemoPacketGet::encode,
                 MemoPacketGet::decode,
                 MemoPacketGet::handle
+        );
+        CHANNEL.registerMessage(
+                packetId++,
+                MemoPacketDestroy.class,
+                MemoPacketDestroy::encode,
+                MemoPacketDestroy::decode,
+                MemoPacketDestroy::handle
         );
         CHANNEL.registerMessage(
                 packetId++,
