@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo.memo.cache;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -9,13 +10,20 @@ import net.minecraft.world.item.ItemStack;
 public class CacheSystem {
 
     private static MemoLRUCache<String, String> cache = new MemoLRUCache<>();
+    // 临时文件
+    private static final MemoInfo tempMemo = new MemoInfo(
+            "temp", "temp.md", "Default", true, 0
+    );
+    // 最新文件
     private static ItemStack lastMemo = ModCreativeModeTabs.memoGuide();
 
     public static void put(String key, String value) { cache.put(key, value); }
     public static String get(String key) { return cache.get(key); }
 
-    public static void setMemo(ItemStack memo) { CacheSystem.lastMemo = memo; }
-    public static ItemStack getMemo() { return lastMemo; }
+    public static MemoInfo getTempMemo() { return tempMemo; }
+
+    public static void getLastMemo(ItemStack memo) { CacheSystem.lastMemo = memo; }
+    public static ItemStack getLastMemo() { return lastMemo; }
 
     // 刷新缓存
     public static void clear() {
@@ -23,12 +31,13 @@ public class CacheSystem {
     }
 
     // 带缓存的加载
-    public static String getMemoContentWithCache(String filePath, boolean isLocalFile) {
+    public static String getMemoContentWithCache(MemoInfo memoInfo) {
+        String filePath = memoInfo.getMemoPath();
         // 使用 LRU 缓存机制
         String content = CacheSystem.get(filePath);
         // 未命中则加载
         if (content == null) {
-            content = MemoLoader.loadText(filePath, isLocalFile);
+            content = MemoLoader.loadText(memoInfo);
         }
         // 更新缓冲区
         if (content == null) {
@@ -41,8 +50,10 @@ public class CacheSystem {
     }
 
     // 不带缓存的加载
-    public static String getMemoContent(String filePath, boolean isLocalFile) {
-        String content = MemoLoader.loadText(filePath, isLocalFile);
+    public static String getMemoContent(MemoInfo memoInfo) {
+        String filePath = memoInfo.getMemoPath();
+        // 重新获取文本
+        String content = MemoLoader.loadText(memoInfo);
         if (content == null) {
             content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
                     .append(filePath).getString();

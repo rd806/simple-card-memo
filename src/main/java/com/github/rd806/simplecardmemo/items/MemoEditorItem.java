@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.items;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.screen.MemoEditorScreen;
+import com.github.rd806.simplecardmemo.container.screen.EditorScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -35,10 +35,9 @@ public class MemoEditorItem extends Item {
         // 只在客户端执行打开界面的逻辑
         if (level.isClientSide) {
             // 打开编辑器界面
-            Minecraft.getInstance().setScreen(new MemoEditorScreen(stack));
+            Minecraft.getInstance().setScreen(new EditorScreen());
         }
         // 返回成功，表示物品被使用了
         return InteractionResultHolder.success(stack);
     }
-
 }

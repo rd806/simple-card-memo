@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo.items;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.screen.MemoViewerScreen;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -84,25 +85,29 @@ public class MemoViewerItem extends Item {
         if (level.isClientSide) {
             // 若为空物品，转换为最后一次打开的备忘录
             if (stack.getTag() == null) {
-                newStack = CacheSystem.getMemo();
+                newStack = CacheSystem.getLastMemo();
             }
-            String filePath = getFilePath(newStack);
+            // 构造 MemoInfo
             String displayName = getDisplayName(newStack);
+            String filePath = getFilePath(newStack);
+            String author = getAuthor(newStack);
             boolean isLocalFile = getTextSource(newStack);
+            long modified = getLastModified(newStack);
+            MemoInfo memoInfo = new MemoInfo(displayName, filePath, author, isLocalFile, modified);
             // 异步加载
             CompletableFuture.runAsync(() -> {
                         // 使用 LRU 缓存机制
-                        content = CacheSystem.getMemoContentWithCache(filePath, isLocalFile);
+                        content = CacheSystem.getMemoContentWithCache(memoInfo);
                     })
                     .thenAccept(data -> Minecraft.getInstance().execute(() ->
-                            Minecraft.getInstance().setScreen(new MemoViewerScreen(content, filePath, displayName, isLocalFile)))
+                            Minecraft.getInstance().setScreen(new MemoViewerScreen(content, memoInfo)))
                     )
                     .exceptionally(
                             e -> {
                                 SimpleCardMemo.LOGGER.error("Error loading network data", e);
                                 return null;
             });
-            CacheSystem.setMemo(newStack);
+            CacheSystem.getLastMemo(newStack);
         }
         // 返回成功，表示物品被使用了，但避免消耗
         return InteractionResultHolder.success(stack);

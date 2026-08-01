@@ -19,16 +19,17 @@ import java.nio.file.Path;
 
 public class MemoLoader {
 
-    public static String loadText(String path, boolean isLocalFile) {
-        if (isLocalFile) {
-            return loadFromLocalFiles(path);
+    public static String loadText(MemoInfo memoInfo) {
+        if (memoInfo.isLocalFile()) {
+            return loadFromLocalFiles(memoInfo);
         } else {
-            return loadFromUrl(path);
+            return loadFromUrl(memoInfo);
         }
     }
 
     // 从网络文件中获取
-    private static String loadFromUrl(String urlStr) {
+    private static String loadFromUrl(MemoInfo memoInfo) {
+        String urlStr = memoInfo.getMemoPath();
         try {
             URI uri = new URI(urlStr);
             URL url = uri.toURL();
@@ -74,8 +75,9 @@ public class MemoLoader {
     }
 
     // 从本地文件中获取
-    public static String loadFromLocalFiles(String filepath) {
-       try {
+    public static String loadFromLocalFiles(MemoInfo memoInfo) {
+        String filepath = memoInfo.getMemoPath();
+        try {
            // 从资源包中加载
            ResourceLocation location = ResourceLocation.parse(filepath);
            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
@@ -97,15 +99,16 @@ public class MemoLoader {
                    return Files.readString(path);
                }
            }
-       } catch (Exception e) {
+        } catch (Exception e) {
            SimpleCardMemo.LOGGER.error("Failed to load file from local: {}", filepath);
-       }
-       return null;
+        }
+        return null;
     }
     
     // 保存到本地文件
-    public static boolean saveToLocalFiles(String filePath, String text) {
-        String safeName = sanitizeFileName(filePath);
+    public static boolean saveToLocalFiles(String text, MemoInfo memoInfo) {
+        String filepath = memoInfo.getMemoPath();
+        String safeName = sanitizeFileName(filepath);
         Path path = SimpleCardMemo.DATA_DIR.resolve(safeName);
         try {
             Files.writeString(path, text);
@@ -123,9 +126,12 @@ public class MemoLoader {
     }
 
     // 删除文件
-    public static boolean deleteLocalFiles(String filePath) {
+    public static boolean deleteLocalFiles(MemoInfo memoInfo) {
         try {
+            String filePath = memoInfo.getMemoPath();
             if (Files.deleteIfExists(SimpleCardMemo.DATA_DIR.resolve(filePath))) {
+                MemoConfig.MEMO_LIST.remove(memoInfo);
+                MemoConfig.saveToConfig();
                 SimpleCardMemo.LOGGER.info("Successfully delete local file: {}", filePath);
                 return true;
             } else {

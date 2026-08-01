@@ -1,8 +1,6 @@
 package com.github.rd806.simplecardmemo.network.get;
 
-import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
-import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
+import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.network.GetExistMemo;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,11 +10,11 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MemoPacketGet {
+public class MemoPacketNew {
 
     private final MemoInfo memoInfo;
 
-    public MemoPacketGet(MemoInfo memoInfo) {
+    public MemoPacketNew(MemoInfo memoInfo) {
         this.memoInfo = memoInfo;
     }
 
@@ -30,14 +28,14 @@ public class MemoPacketGet {
     }
 
     // 解码：从网络缓冲区读取数据
-    public static MemoPacketGet decode(FriendlyByteBuf buffer) {
+    public static MemoPacketNew decode(FriendlyByteBuf buffer) {
         String memoName = buffer.readUtf();
         String memoPath = buffer.readUtf();
         String author = buffer.readUtf();
         boolean isLocalFile = buffer.readBoolean();
         long lastModified = buffer.readLong();
         MemoInfo memoInfo = new MemoInfo(memoName, memoPath, author, isLocalFile, lastModified);
-        return new MemoPacketGet(memoInfo);
+        return new MemoPacketNew(memoInfo);
     }
 
     // 处理方法
@@ -46,26 +44,10 @@ public class MemoPacketGet {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
             if (player == null) { return; }
-            // 检查是否为管理器界面
-            if (!(player.containerMenu instanceof ManagerMenu managerMenu)) {
-                SimpleCardMemo.LOGGER.error("Not a Manager Menu!");
-                return;
-            }
-            // 检查输入槽
-            ItemStack input = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.INPUT_SLOT);
-            if (!input.equals(ModCreativeModeTabs.newMemo(), false)) {
-                SimpleCardMemo.LOGGER.error("Input is not valid!");
-                return;
-            }
-            // 检查输出槽
-            ItemStack output = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.OUTPUT_SLOT);
-            if (!output.isEmpty()) {
-                SimpleCardMemo.LOGGER.error("Output is full!");
-                return;
-            }
             // 消耗和产出物品
-            input.shrink(1);
-            managerMenu.getItemHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, GetExistMemo.setItem(player, memoInfo));
+            if (GetExistMemo.consumeItemStack(player.getInventory(), new ItemStack(ModItems.MEMO_EDITOR.get()), 1)) {
+                player.getInventory().add(GetExistMemo.setItem(player, memoInfo));
+            }
         });
         context.setPacketHandled(true);
     }

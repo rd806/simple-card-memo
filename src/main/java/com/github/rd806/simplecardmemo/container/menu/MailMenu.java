@@ -12,15 +12,14 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class MailMenu extends AbstractContainerMenu {
 
     private final ItemStack stack;
-    private final Player player;
-    private final int slotIndex;
+    private final ItemStackHandler itemStackHandler = new ItemStackHandler(1);
     private ContainerData data;
 
     // 输入槽索引
@@ -30,30 +29,27 @@ public class MailMenu extends AbstractContainerMenu {
     // 客户端
     public MailMenu(int id, Inventory inventory, FriendlyByteBuf buf) {
         this(id, inventory,
-                buf.readInt(),
                 inventory.player.getItemInHand(InteractionHand.MAIN_HAND),
                 new SimpleContainerData(1));
     }
 
     // 服务端
-    public MailMenu(int id, Inventory inventory, int slotIndex, ItemStack itemStack, ContainerData data) {
+    public MailMenu(int id, Inventory inventory, ItemStack itemStack, ContainerData data) {
         // 指定该菜单对应的 MenuType
         super(ModMenus.MAIL_MENU.get(), id);
         // 保存数据
-        this.player = inventory.player;
         this.stack = itemStack;
-        this.slotIndex = slotIndex;
         this.data = data;
         // 注册数据同步槽
         addDataSlots(data);
         // 添加玩家背包与快捷栏
         addPlayerInventory(inventory);
         // 添加输入栏
-        addSendSlot(MemoSenderItem.getInventory(stack));
+        addSendSlot(itemStackHandler);
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int i) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int slotIndex) {
         Slot slot = this.slots.get(slotIndex);
         if (!slot.hasItem()) {
             return ItemStack.EMPTY;
@@ -91,7 +87,7 @@ public class MailMenu extends AbstractContainerMenu {
     }
 
     // 创建发送槽位
-    private void addSendSlot(IItemHandler handler) {
+    private void addSendSlot(ItemStackHandler handler) {
         this.addSlot(new SlotItemHandler(handler, INPUT_SLOT, 27, 36) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
@@ -129,5 +125,9 @@ public class MailMenu extends AbstractContainerMenu {
                     142
             ));
         }
+    }
+
+    public ItemStackHandler getItemStackHandler() {
+        return itemStackHandler;
     }
 }

@@ -46,7 +46,7 @@ public class MemoSenderItem extends Item {
             ContainerData data = new SimpleContainerData(slotIndex);
             // 定义菜单提供者
             SimpleMenuProvider provider = new SimpleMenuProvider(
-                    (windowId, inv, p) -> new MailMenu(windowId, inv, slotIndex, stack.copy(), data),
+                    (windowId, inv, p) -> new MailMenu(windowId, inv, stack.copy(), data),
                     Component.translatable(SimpleCardMemo.MODID + ".item.memo_sender.screen")
             );
             // 打开GUI，并额外写入槽位和ItemStack数据

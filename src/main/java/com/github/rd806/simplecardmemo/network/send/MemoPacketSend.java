@@ -1,6 +1,8 @@
 package com.github.rd806.simplecardmemo.network.send;
 
-import com.github.rd806.simplecardmemo.network.GetExistMemo;
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -42,11 +44,14 @@ public class MemoPacketSend {
         context.enqueueWork(() -> {
             ServerPlayer sender = context.getSender();
             if (sender == null) { return; }
+            // 检查是否为管理器界面
+            if (!(sender.containerMenu instanceof MailMenu mailMenu)) {
+                SimpleCardMemo.LOGGER.error("Not a Mail Menu!");
+                return;
+            }
+            ItemStack input = mailMenu.getItemStackHandler().getStackInSlot(ManagerMenu.INPUT_SLOT);
             // 目标物品
-            if (!GetExistMemo.hasItemStack(sender, memo)) { return; }
-            boolean consumeItem = GetExistMemo.consumeItemStack(sender, memo, 1);
-            // 发送物品
-            if (consumeItem) {
+            if (!input.isEmpty()) {
                 ServerMemoCache.getInstance().addMemo(sender.getUUID(), receiver, memo, content);
             }
         });

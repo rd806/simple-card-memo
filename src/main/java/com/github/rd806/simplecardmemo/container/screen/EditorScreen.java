@@ -6,6 +6,9 @@ import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
+import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
+import com.github.rd806.simplecardmemo.network.Channel;
+import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -15,15 +18,14 @@ import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class MemoEditorScreen extends Screen {
-
-    private final ItemStack item;
+public class EditorScreen extends Screen {
 
     private final String initialContent;
     private String filePath;
@@ -45,10 +47,9 @@ public class MemoEditorScreen extends Screen {
     private static final int BUTTON_WIDTH = 50;
     private static final int BUTTON_HEIGHT = 20;
 
-    public MemoEditorScreen(ItemStack item) {
+    public EditorScreen() {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.editor.title"));
-        this.initialContent = MemoLoader.loadFromLocalFiles("temp.md");
-        this.item = item;
+        this.initialContent = MemoLoader.loadFromLocalFiles(CacheSystem.getTempMemo());
         setDefaultValues();
         MemoLoader.createTempFile();
     }
@@ -97,7 +98,7 @@ public class MemoEditorScreen extends Screen {
         this.addRenderableWidget(this.pathInput);
 
         // 创建作者输入框
-        this.authorInput = new EditBox(
+        authorInput = new EditBox(
                 this.font,
                 pathInput.getX() + EDIT_BOX_WIDTH + 5,
                 HEADER,
@@ -105,12 +106,12 @@ public class MemoEditorScreen extends Screen {
                 BUTTON_HEIGHT,
                 Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input")
         );
-        this.authorInput.setBordered(true);
-        this.authorInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.author"));
-        this.addRenderableWidget(this.authorInput);
+        authorInput.setBordered(true);
+        authorInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.author"));
+        addRenderableWidget(this.authorInput);
 
         // 复选框
-        this.sourceInput = new Checkbox(
+        sourceInput = new Checkbox(
                 PADDING,
                 this.height - FOOTER + 20,
                 20,
@@ -123,7 +124,7 @@ public class MemoEditorScreen extends Screen {
         // 创建多行文本输入框
         int textInputWidth = this.width - PADDING * 2;
         int textInputHeight = this.height - HEADER - FOOTER - BUTTON_HEIGHT;
-        this.textInput = new MultiLineEditBox(
+        textInput = new MultiLineEditBox(
                 this.font,
                 PADDING,
                 HEADER + BUTTON_HEIGHT + 5,
@@ -132,10 +133,10 @@ public class MemoEditorScreen extends Screen {
                 Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input"),
                 Component.literal("")
         );
-        this.textInput.setValue(this.initialContent);
-        this.textInput.setCharacterLimit(100000);
-        this.textInput.setFocused(true);
-        this.addRenderableWidget(this.textInput);
+        textInput.setValue(this.initialContent);
+        textInput.setCharacterLimit(100000);
+        textInput.setFocused(true);
+        addRenderableWidget(this.textInput);
 
         // 使用默认值填充
         this.addRenderableWidget(
@@ -208,7 +209,7 @@ public class MemoEditorScreen extends Screen {
     // 导出内容到草稿
     private void saveDraft() {
         String content = textInput.getValue();
-        if (MemoLoader.saveToLocalFiles("temp.md", content) && Minecraft.getInstance().player != null) {
+        if (MemoLoader.saveToLocalFiles(content, CacheSystem.getTempMemo()) && Minecraft.getInstance().player != null) {
             this.onClose();
             Minecraft.getInstance().player.displayClientMessage(
                     Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.save.success"),
@@ -228,6 +229,7 @@ public class MemoEditorScreen extends Screen {
         // 给予玩家
         if (Minecraft.getInstance().player != null) {
             ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
+            MemoInfo memoInfo = new MemoInfo(displayName, filePath, author, isLocalFile, System.currentTimeMillis());
             if (isLocalFile) {
                 // 检测重名文件
                 if (Files.exists(SimpleCardMemo.DATA_DIR.resolve(path))) {
@@ -235,26 +237,25 @@ public class MemoEditorScreen extends Screen {
                     pathInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.path"));
                     return;
                 }
-                MemoLoader.saveToLocalFiles(path, content);
+                MemoLoader.saveToLocalFiles(content, memoInfo);
                 MemoViewerItem.setFilePath(viewer, filePath);
             } else {
                 filePath = content;
+                memoInfo.setMemoPath(filePath);
                 MemoViewerItem.setFilePath(viewer, content);
             }
-            MemoInfo memoInfo = new MemoInfo(displayName, filePath, author, isLocalFile, System.currentTimeMillis());
+            // 添加到列表
             MemoConfig.MEMO_LIST.add(memoInfo);
             // 设置物品
             viewer.setHoverName(Component.literal(displayName));
-            MemoViewerItem.setDisplayName(viewer, displayName);
-            MemoViewerItem.setAuthor(viewer, author);
-            MemoViewerItem.setTextSource(viewer, isLocalFile);
-            MemoViewerItem.setLastModified(viewer, System.currentTimeMillis());
-            Minecraft.getInstance().player.getInventory().add(viewer);
+            // 发送网络包
+            Channel.CHANNEL.send(
+                    PacketDistributor.SERVER.noArg(),
+                    new MemoPacketNew(memoInfo)
+            );
             Minecraft.getInstance().player.displayClientMessage(
                     Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.export.success"),
                     false);
-            // 若导出成功则消耗物品
-            item.shrink(1);
             this.onClose();
         }
     }
@@ -285,10 +286,5 @@ public class MemoEditorScreen extends Screen {
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
-    public boolean isPauseScreen() {
-        return false;
     }
 }

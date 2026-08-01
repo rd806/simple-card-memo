@@ -13,13 +13,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModMenus {
-    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, SimpleCardMemo.MODID);
+    public static final DeferredRegister<MenuType<?>> MENUS
+            = DeferredRegister.create(ForgeRegistries.MENU_TYPES, SimpleCardMemo.MODID);
 
     // 发送界面
-    public static final RegistryObject<MenuType<MailMenu>> MAIL_MENU = registerMenuType("mail_menu", MailMenu::new);
-    // 编辑界面
-    public static final RegistryObject<MenuType<ManagerMenu>> MANAGER_MENU = registerMenuType("edit_menu", ManagerMenu::new);
+    public static final RegistryObject<MenuType<MailMenu>> MAIL_MENU
+            = registerMenuType("mail_menu", MailMenu::new);
+    // 管理界面
+    public static final RegistryObject<MenuType<ManagerMenu>> MANAGER_MENU
+            = registerMenuType("manager_menu", ManagerMenu::new);
 
+    // 抽象构造方法
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory) {
         return MENUS.register(name, () -> IForgeMenuType.create(factory));
     }

@@ -100,13 +100,9 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 删除按钮
         Button deleteButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
                         button -> {
-                            if (MemoLoader.deleteLocalFiles(selectedMemo.getMemoPath())) {
-                                MemoConfig.MEMO_LIST.remove(selectedMemo);
-                                MemoConfig.saveToConfig();
+                            if (MemoLoader.deleteLocalFiles(selectedMemo)) {
                                 refreshMemoList();
                             }
-                            refreshMemoList();
-                            MemoConfig.saveToConfig();
                         })
                 .pos(leftPos - BUTTON_WIDTH - 5, editButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)

@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo.container.screen;
 
 import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import dev.dediamondpro.minemark.minecraft.MineMarkDrawable;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,9 +16,7 @@ import javax.annotation.Nullable;
 
 public class MemoViewerScreen extends Screen {
 
-    private String filePath;
-    private String displayName;
-    private boolean isLocalFile;
+    private final MemoInfo memoInfo;
     // 待渲染文本
     private String renderedText;
     private MineMarkDrawable markdownText;
@@ -35,7 +34,7 @@ public class MemoViewerScreen extends Screen {
     private int dragStartY = 0;
     private int dragStartOffset = 0;
 
-    public MemoViewerScreen(String content, String path, String name, boolean source) {
+    public MemoViewerScreen(String content, MemoInfo memoInfo) {
         // 界面的标题
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen"));
         // 初始化数据
@@ -48,13 +47,11 @@ public class MemoViewerScreen extends Screen {
                 SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
             }
         }
-        this.filePath = path;
-        this.displayName = name;
-        this.isLocalFile = source;
+        this.memoInfo = memoInfo;
     }
 
-    private void reload(String path, String name, boolean source) {
-        this.renderedText = CacheSystem.getMemoContent(filePath, isLocalFile);
+    private void reload(MemoInfo memoInfo) {
+        this.renderedText = CacheSystem.getMemoContent(memoInfo);
         if (Config.ENABLE_MARKDOWN.get() && renderedText != null) {
             try {
                 this.markdownText = new MineMarkDrawable(renderedText);
@@ -63,9 +60,6 @@ public class MemoViewerScreen extends Screen {
                 SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
             }
         }
-        this.filePath = path;
-        this.displayName = name;
-        this.isLocalFile = source;
     }
 
     // 设置页面边距
@@ -107,7 +101,7 @@ public class MemoViewerScreen extends Screen {
         // 重新计算
         resetContent();
         this.addRenderableWidget(new Button.Builder(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.reload"),
-                button -> reload(filePath, displayName, isLocalFile))
+                button -> reload(memoInfo))
                 .pos(this.width / 2 - 50, (int) (this.height - footer + 5))
                 .size(100, 20)
                 .build()
@@ -121,7 +115,7 @@ public class MemoViewerScreen extends Screen {
         // 渲染背景（灰色半透明背景）
         this.renderBackground(graphics);
         // 渲染文件名称
-        graphics.drawString(this.font, displayName, 10, 5, 0xAAAAAA);
+        graphics.drawString(this.font, memoInfo.getMemoName(), 10, 5, 0xAAAAAA);
         // 渲染文本内容
         renderContent(graphics, mouseX, mouseY);
         // 渲染滚动条
@@ -150,7 +144,8 @@ public class MemoViewerScreen extends Screen {
         if (this.renderedText == null) {
             graphics.drawCenteredString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").append(filePath),
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
+                            .append(memoInfo.getMemoPath()),
                     20, (int) contentY, 0xFFFFFF);
             return;
         }

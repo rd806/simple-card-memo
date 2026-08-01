@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.network;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketDestroy;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
+import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketSend;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +24,13 @@ public class Channel {
     private static int packetId = 1;
 
     public static void register() {
+        CHANNEL.registerMessage(
+                packetId++,
+                MemoPacketNew.class,
+                MemoPacketNew::encode,
+                MemoPacketNew::decode,
+                MemoPacketNew::handle
+        );
         CHANNEL.registerMessage(
                 packetId++,
                 MemoPacketGet.class,
