@@ -2,7 +2,6 @@ package com.github.rd806.simplecardmemo.items;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,15 +21,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MemoSenderItem extends Item implements MenuProvider {
+public class MemoMailItem extends Item implements MenuProvider {
 
-    public MemoSenderItem(Properties properties) {
+    public MemoMailItem(Properties properties) {
         super(properties);
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_sender.tooltip")
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_mail.tooltip")
                 .withStyle(ChatFormatting.GRAY));
     }
 
@@ -46,7 +45,7 @@ public class MemoSenderItem extends Item implements MenuProvider {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.translatable(SimpleCardMemo.MODID + ".item.memo_sender.screen");
+        return Component.translatable(SimpleCardMemo.MODID + ".item.memo_mail.screen");
     }
 
     // 当玩家打开界面时创建 Menu

@@ -6,7 +6,8 @@ Welcome to use Simple Card Memo! You can use it to create a simple text which bi
 
 * Memo Editor: Edit a new memo card in the game, please use an English path to avoid errors. Once you click the "export" button, a new memo card will be sent to you while consuming the editor.
 * Memo Manager: Don't worry if you lost a memo, you can get it again by the Memo Manager while consuming a new viewer.
-* New Memo: This item allows you to view the last memo you've opened. For the first time it's linked to the *Guide* file.
+* New Memo: This item allows you to view the last memo you've opened. For the first time it's linked to the *Guide* file. 
+* Memo Mail: You can send a memo to others by using it.
 
 ```yml
 {version folder}

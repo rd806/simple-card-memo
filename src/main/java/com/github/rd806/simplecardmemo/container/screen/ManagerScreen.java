@@ -71,7 +71,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         PADDING = leftPos + 16;
         HEADER = topPos + 24;
         FILE_LIST_WIDTH = this.width - PADDING * 2;
-        FILE_LIST_HEIGHT = imageHeight - 134;
+        FILE_LIST_HEIGHT = 85;
         ENTRY_HEIGHT = this.font.lineHeight * 2;
 
         // 创建文件名输入框
@@ -189,7 +189,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                     Component.literal("📄 " + info.getMemoName()),
                     PADDING + 4,
                     y + ENTRY_HEIGHT / 4,
-                    0xFFFFFFFF
+                    0x3F3F3F, false
             );
         }
     }

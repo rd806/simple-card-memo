@@ -34,6 +34,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
 
     private EditBox nameInput;
     private String target;
+    private Cases cases;
 
     public MailScreen(MailMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -41,35 +42,41 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 这些值通常需要与背景贴图尺寸保持一致
         this.mailMenu = menu;
         this.imageWidth = 175;
-        this.imageHeight = 165;
+        this.imageHeight = 210;
     }
 
     @Override
     protected void init() {
         super.init();
+        this.cases = Cases.GOOD;
         // 计算 GUI 左上角在屏幕上的位置
         leftPos = (this.width - this.imageWidth) / 2;
         topPos = (this.height - this.imageHeight) / 2;
+        this.inventoryLabelY = 115;
         // 输入框
         nameInput = new EditBox(
                 this.font,
-                leftPos + 60,
-                topPos + 6,
-                60,
-                20,
-                Component.translatable(SimpleCardMemo.MODID + ".mail.gui.message")
+                leftPos + 43,
+                topPos + 21,
+                90,
+                18,
+                Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.input")
         );
+        nameInput.setMaxLength(256);
+        nameInput.setBordered(false);
+        nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.input.hint"));
+        nameInput.setTextColor(0xF3EFE0);
         // 发送按钮
         Button sendButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.send"),
                         button -> sendMemo())
-                .pos(leftPos + 115, topPos + 32)
-                .size(40, 16)
+                .pos(leftPos + 97, topPos + 50)
+                .size(40, 18)
                 .build();
         // 接收按钮
         Button receiveButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.receive"),
                         button -> receiveMemo())
-                .pos(leftPos + 30, topPos + 54)
-                .size(40, 16)
+                .pos(leftPos + 97, topPos + 80)
+                .size(40, 18)
                 .build();
 
         addRenderableWidget(nameInput);
@@ -94,6 +101,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 绘制界面背景
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
+        renderHint(graphics, cases);
         // 渲染物品提示
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -101,10 +109,15 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     // 发送信件
     private void sendMemo() {
         this.target = nameInput.getValue();
+        if (target.isEmpty()) {
+            cases = Cases.NO_TARGET;
+            return;
+        }
         // 获取发送的文件
         ItemStack stack = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
         if (stack.isEmpty()) {
             SimpleCardMemo.LOGGER.warn("Memo not found!");
+            cases = Cases.NO_ITEM;
             return;
         }
         // 获取发送的内容
@@ -118,9 +131,37 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     // 接收信件
     private void receiveMemo() {
         this.target = nameInput.getValue();
+        if (target.isEmpty()) {
+            cases = Cases.NO_TARGET;
+            return;
+        }
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
                 new MemoPacketReceive(target)
         );
+    }
+
+    private void renderHint(GuiGraphics graphics, Cases cases) {
+        switch (cases) {
+            case NO_ITEM -> graphics.drawString(
+                    this.font,
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.no_item"),
+                    leftPos + 43, topPos + 105,
+                    0xFF5555, false
+            );
+            case NO_TARGET -> graphics.drawString(
+                    this.font,
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.no_target"),
+                    leftPos + 43, topPos + 105,
+                    0xFF5555, false
+            );
+            case GOOD -> {}
+        }
+    }
+
+    private enum Cases {
+        NO_ITEM,
+        NO_TARGET,
+        GOOD
     }
 }

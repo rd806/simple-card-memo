@@ -27,7 +27,7 @@ public class ModCreativeModeTabs {
                             .displayItems((itemDisplayParameters, output) -> {
                                 output.accept(ModItems.MEMO_EDITOR.get());
                                 output.accept(ModItems.MEMO_MANAGER.get());
-                                output.accept(ModItems.MEMO_SENDER.get());
+                                output.accept(ModItems.MEMO_MAIL.get());
                                 output.accept(newMemo());
                                 output.accept(memoGuide());
                                 output.accept(hostServer());

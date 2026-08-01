@@ -19,9 +19,9 @@
     "simplecardmemo.item.memo_manager.tooltip": "右键打开",
     "simplecardmemo.item.memo_manager.screen": "备忘录管理器",
 
-    "item.simplecardmemo.memo_sender": "信箱",
-    "simplecardmemo.item.memo_sender.tooltip": "右键打开",
-    "simplecardmemo.item.memo_sender.screen": "信箱",
+    "item.simplecardmemo.memo_mail": "信箱",
+    "simplecardmemo.item.memo_mail.tooltip": "右键打开",
+    "simplecardmemo.item.memo_mail.screen": "信箱",
 
     "simplecardmemo.item.memo_guide": "简易备忘录教程",
     "simplecardmemo.item.minecraft_server": "如何开设Minecraft服务器",
@@ -58,6 +58,10 @@
     "simplecardmemo.gui.manager_screen.export.success": "成功导出备忘录！",
     "simplecardmemo.gui.manager_screen.destroy": "销毁",
 
+    "simplecardmemo.gui.mail_screen.input": "输入框",
+    "simplecardmemo.gui.mail_screen.input.hint": "请输入目标玩家名",
     "simplecardmemo.gui.mail_screen.send": "发送",
-    "simplecardmemo.gui.mail_screen.receive": "接收"
+    "simplecardmemo.gui.mail_screen.receive": "接收",
+    "simplecardmemo.gui.mail_screen.message.no_target": "请输入一个玩家名！",
+    "simplecardmemo.gui.mail_screen.message.no_item": "请放入一个有效的备忘录！"
 }
