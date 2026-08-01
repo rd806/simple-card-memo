@@ -56,5 +56,8 @@
     "simplecardmemo.gui.manager_screen.reload": "Reload",
     "simplecardmemo.gui.manager_screen.export": "Export",
     "simplecardmemo.gui.manager_screen.export.success": "Exported the memo successfully!",
-    "simplecardmemo.gui.manager_screen.destroy": "Destroy"
+    "simplecardmemo.gui.manager_screen.destroy": "Destroy",
+
+    "simplecardmemo.gui.mail_screen.send": "Send",
+    "simplecardmemo.gui.mail_screen.receive": "Receive"
 }

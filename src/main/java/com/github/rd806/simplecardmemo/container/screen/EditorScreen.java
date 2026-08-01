@@ -41,8 +41,6 @@ public class EditorScreen extends Screen {
     private MultiLineEditBox textInput;
     // 布局常量
     private static int PADDING;
-    private static int HEADER;
-    private static int FOOTER;
     // 按钮常量
     private static final int BUTTON_WIDTH = 50;
     private static final int BUTTON_HEIGHT = 20;
@@ -65,69 +63,18 @@ public class EditorScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-
+        // 初始化布局
         PADDING = (int) (this.width * 0.15);
-        HEADER = (int) (this.height * 0.2);
-        FOOTER = (int) (this.height * 0.2);
-        int EDIT_BOX_WIDTH = (this.width - 2 * PADDING) / 4;
-
-        // 创建文件名输入框
-        this.nameInput = new EditBox(
-                this.font,
-                PADDING,
-                HEADER,
-                EDIT_BOX_WIDTH,
-                BUTTON_HEIGHT,
-                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input")
-        );
-        this.nameInput.setBordered(true);
-        this.nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.name"));
-        this.addRenderableWidget(this.nameInput);
-
-        // 创建文件路径输入框
-        this.pathInput = new EditBox(
-                this.font,
-                nameInput.getX() + EDIT_BOX_WIDTH + 5,
-                HEADER,
-                EDIT_BOX_WIDTH,
-                BUTTON_HEIGHT,
-                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input")
-        );
-        this.pathInput.setBordered(true);
-        this.pathInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.path"));
-        this.addRenderableWidget(this.pathInput);
-
-        // 创建作者输入框
-        authorInput = new EditBox(
-                this.font,
-                pathInput.getX() + EDIT_BOX_WIDTH + 5,
-                HEADER,
-                EDIT_BOX_WIDTH,
-                BUTTON_HEIGHT,
-                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input")
-        );
-        authorInput.setBordered(true);
-        authorInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.author"));
-        addRenderableWidget(this.authorInput);
-
-        // 复选框
-        sourceInput = new Checkbox(
-                PADDING,
-                this.height - FOOTER + 20,
-                20,
-                20,
-                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.islocal"),
-                isLocalFile
-        );
-        this.addRenderableWidget(this.sourceInput);
+        int HEADER = (int) (this.height * 0.2);
+        int FOOTER = (int) (this.height * 0.2);
 
         // 创建多行文本输入框
-        int textInputWidth = this.width - PADDING * 2;
+        int textInputWidth = this.width - PADDING * 2 - BUTTON_WIDTH * 2 - 5;
         int textInputHeight = this.height - HEADER - FOOTER - BUTTON_HEIGHT;
         textInput = new MultiLineEditBox(
                 this.font,
                 PADDING,
-                HEADER + BUTTON_HEIGHT + 5,
+                HEADER,
                 textInputWidth,
                 textInputHeight,
                 Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input"),
@@ -138,6 +85,56 @@ public class EditorScreen extends Screen {
         textInput.setFocused(true);
         addRenderableWidget(this.textInput);
 
+        // 创建文件名输入框
+        nameInput = new EditBox(
+                this.font,
+                textInput.getX() + textInput.getWidth() + 5,
+                HEADER,
+                BUTTON_WIDTH * 2,
+                BUTTON_HEIGHT,
+                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input")
+        );
+        nameInput.setBordered(true);
+        nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.name"));
+        addRenderableWidget(this.nameInput);
+
+        // 创建文件路径输入框
+        pathInput = new EditBox(
+                this.font,
+                nameInput.getX(),
+                nameInput.getY() + BUTTON_HEIGHT + 5,
+                BUTTON_WIDTH * 2,
+                BUTTON_HEIGHT,
+                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input")
+        );
+        pathInput.setBordered(true);
+        pathInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.path"));
+        addRenderableWidget(this.pathInput);
+
+        // 创建作者输入框
+        authorInput = new EditBox(
+                this.font,
+                nameInput.getX(),
+                pathInput.getY() + BUTTON_HEIGHT + 5,
+                BUTTON_WIDTH * 2,
+                BUTTON_HEIGHT,
+                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input")
+        );
+        authorInput.setBordered(true);
+        authorInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.hint.author"));
+        addRenderableWidget(this.authorInput);
+
+        // 复选框
+        sourceInput = new Checkbox(
+                nameInput.getX(),
+                authorInput.getY() + BUTTON_HEIGHT + 5,
+                20,
+                20,
+                Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.islocal"),
+                isLocalFile
+        );
+        this.addRenderableWidget(this.sourceInput);
+
         // 使用默认值填充
         this.addRenderableWidget(
                 Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.default"),
@@ -147,7 +144,7 @@ public class EditorScreen extends Screen {
                                     this.pathInput.setValue(this.filePath);
                                     this.authorInput.setValue(this.author);
                                 })
-                        .pos(authorInput.getX() + EDIT_BOX_WIDTH + 5, HEADER)
+                        .pos(nameInput.getX(), sourceInput.getY() + 25)
                         .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                         .build()
         );
@@ -219,7 +216,7 @@ public class EditorScreen extends Screen {
         }
     }
 
-    // 导出内容到文件
+    // 导出内容到物品
     private void exportItem(String path) {
         String content = textInput.getValue();
         if (content.trim().isEmpty()) {
@@ -251,7 +248,7 @@ public class EditorScreen extends Screen {
             // 发送网络包
             Channel.CHANNEL.send(
                     PacketDistributor.SERVER.noArg(),
-                    new MemoPacketNew(memoInfo)
+                    new MemoPacketNew(viewer)
             );
             Minecraft.getInstance().player.displayClientMessage(
                     Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.export.success"),

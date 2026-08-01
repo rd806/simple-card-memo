@@ -5,14 +5,13 @@ import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 public class GetExistMemo {
 
     // 消耗指定的 ItemStack
-    public static boolean consumeItemStack(Inventory inventory, ItemStack targetItem, int removeAmount) {
+    public static boolean consumeItem(Inventory inventory, ItemStack targetItem, int removeAmount) {
         // 统计背包中该物品的总数量
         int totalCount = 0;
         // 遍历玩家主背包
@@ -55,8 +54,8 @@ public class GetExistMemo {
     }
 
     // 设置物品
-    public static ItemStack setItem(ServerPlayer player, MemoInfo memoInfo) {
-        if (memoInfo != null && player != null) {
+    public static ItemStack setMemo(MemoInfo memoInfo) {
+        if (memoInfo != null) {
             ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
             // 设置显示名
             viewer.setHoverName(Component.literal(memoInfo.getMemoName()));
@@ -69,14 +68,7 @@ public class GetExistMemo {
             // 发送物品
             return viewer;
         }
-        SimpleCardMemo.LOGGER.error("The selected Memo is null!");
+        SimpleCardMemo.LOGGER.error("The target Memo is null!");
         return ItemStack.EMPTY;
-    }
-
-    // 收取物品
-    public static void receiverItem(ServerPlayer player, ItemStack itemStack) {
-        if (player != null) {
-            player.getInventory().add(itemStack);
-        }
     }
 }

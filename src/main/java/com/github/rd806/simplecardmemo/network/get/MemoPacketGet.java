@@ -65,7 +65,7 @@ public class MemoPacketGet {
             }
             // 消耗和产出物品
             input.shrink(1);
-            managerMenu.getItemHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, GetExistMemo.setItem(player, memoInfo));
+            managerMenu.getItemHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, GetExistMemo.setMemo(memoInfo));
         });
         context.setPacketHandled(true);
     }

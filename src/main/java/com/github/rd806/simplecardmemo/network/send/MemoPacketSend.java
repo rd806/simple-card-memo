@@ -2,40 +2,40 @@ package com.github.rd806.simplecardmemo.network.send;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
+import com.github.rd806.simplecardmemo.items.MemoViewerItem;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MemoPacketSend {
 
-    private final ItemStack memo;
+    private final ItemStack stack;
     private final String content;
-    private final UUID receiver;
+    private final String receiver;
 
-    public MemoPacketSend(ItemStack memo, String content, UUID receiver) {
-        this.memo = memo;
+    public MemoPacketSend(ItemStack stack, String content, String receiver) {
+        this.stack = stack;
         this.content = content;
         this.receiver = receiver;
     }
 
     // 编码：将数据写入网络缓冲区
     public void encode(FriendlyByteBuf buffer) {
-        buffer.writeItemStack(memo, false);
+        buffer.writeItemStack(stack, false);
         buffer.writeUtf(content);
-        buffer.writeUUID(receiver);
+        buffer.writeUtf(receiver);
     }
 
     // 解码：从网络缓冲区读取数据
     public static MemoPacketSend decode(FriendlyByteBuf buffer) {
-        ItemStack memo = buffer.readItem();
+        ItemStack stack = buffer.readItem();
         String content = buffer.readUtf();
-        UUID receiver = buffer.readUUID();
-        return new MemoPacketSend(memo, content, receiver);
+        String receiver = buffer.readUtf();
+        return new MemoPacketSend(stack, content, receiver);
     }
 
     // 处理方法
@@ -49,10 +49,16 @@ public class MemoPacketSend {
                 SimpleCardMemo.LOGGER.error("Not a Mail Menu!");
                 return;
             }
-            ItemStack input = mailMenu.getItemStackHandler().getStackInSlot(ManagerMenu.INPUT_SLOT);
+            ItemStack input = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
+            MemoInfo memoInfo = MemoViewerItem.getMemoInfo(input);
             // 目标物品
             if (!input.isEmpty()) {
-                ServerMemoCache.getInstance().addMemo(sender.getUUID(), receiver, memo, content);
+                String key = sender.getDisplayName().getString() + ":" + receiver;
+                ServerMemoCache.getInstance().addMemo(key, memoInfo, content);
+                SimpleCardMemo.LOGGER.info("Memo {} has been added!", key);
+                input.shrink(1);
+            } else {
+                SimpleCardMemo.LOGGER.error("The input memo is empty!");
             }
         });
         context.setPacketHandled(true);

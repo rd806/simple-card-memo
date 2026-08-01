@@ -22,7 +22,7 @@ public class CacheSystem {
 
     public static MemoInfo getTempMemo() { return tempMemo; }
 
-    public static void getLastMemo(ItemStack memo) { CacheSystem.lastMemo = memo; }
+    public static void setLastMemo(ItemStack memo) { CacheSystem.lastMemo = memo; }
     public static ItemStack getLastMemo() { return lastMemo; }
 
     // 刷新缓存

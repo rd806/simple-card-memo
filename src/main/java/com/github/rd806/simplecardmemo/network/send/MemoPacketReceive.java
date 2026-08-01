@@ -1,7 +1,9 @@
 package com.github.rd806.simplecardmemo.network.send;
 
-import com.github.rd806.simplecardmemo.init.ModItems;
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
 import com.github.rd806.simplecardmemo.network.GetExistMemo;
 import net.minecraft.network.FriendlyByteBuf;
@@ -9,23 +11,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MemoPacketReceive {
 
-    private final UUID sender;
+    private final String sender;
 
-    public MemoPacketReceive(UUID sender) {
+    public MemoPacketReceive(String sender) {
         this.sender = sender;
     }
 
     public void encode(FriendlyByteBuf buffer) {
-        buffer.writeUUID(sender);
+        buffer.writeUtf(sender);
     }
 
     public static MemoPacketReceive decode(FriendlyByteBuf buffer) {
-        return new MemoPacketReceive(buffer.readUUID());
+        String sender = buffer.readUtf();
+        return new MemoPacketReceive(sender);
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
@@ -34,19 +36,28 @@ public class MemoPacketReceive {
             ServerPlayer receiver = contextSupplier.get().getSender();
             if (receiver == null) { return; }
             ServerMemoCache cache = ServerMemoCache.getInstance();
-            // 获取物品信息
-            ItemStack memo = cache.retrieveMemoItem(sender, receiver.getUUID());
-            if (!memo.getItem().equals(ModItems.MEMO_VIEWER.get())) {
+            // 检查是否为信箱界面
+            if (!(receiver.containerMenu instanceof MailMenu mailMenu)) {
+                SimpleCardMemo.LOGGER.error("Not a Mail Menu!");
                 return;
-            } else {
-                boolean isLocal = MemoViewerItem.getTextSource(memo);
-                String filePath = MemoViewerItem.getFilePath(memo);
-                String content = cache.retrieveMemoContent(sender, receiver.getUUID());
-                if (isLocal) {
-                    CacheSystem.put(filePath, content);
-                }
             }
-            GetExistMemo.receiverItem(receiver, memo);
+            // 获取物品信息
+            String key = sender + ":" + receiver.getDisplayName().getString();
+            MemoInfo memoInfo = cache.retrieveMemoItem(key);
+            if (memoInfo == null) {
+                SimpleCardMemo.LOGGER.error("Memo not found: {}", key);
+            }
+            ItemStack output = GetExistMemo.setMemo(memoInfo);
+            // 设置物品
+            mailMenu.getItemStackHandler().setStackInSlot(MailMenu.OUTPUT_SLOT, output);
+            // 设置内容缓存
+            boolean isLocal = MemoViewerItem.getTextSource(output);
+            String filePath = MemoViewerItem.getFilePath(output);
+            String content = cache.retrieveMemoContent(key);
+            if (isLocal) {
+                CacheSystem.put(filePath, content);
+            }
+            cache.clearMemo(sender, receiver.getName().getString());
         });
         context.setPacketHandled(true);
     }

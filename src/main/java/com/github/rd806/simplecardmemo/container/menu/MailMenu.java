@@ -2,14 +2,10 @@ package com.github.rd806.simplecardmemo.container.menu;
 
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.init.ModMenus;
-import com.github.rd806.simplecardmemo.items.MemoSenderItem;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
@@ -18,30 +14,23 @@ import org.jetbrains.annotations.NotNull;
 
 public class MailMenu extends AbstractContainerMenu {
 
-    private final ItemStack stack;
-    private final ItemStackHandler itemStackHandler = new ItemStackHandler(1);
-    private ContainerData data;
+    private final ItemStackHandler itemStackHandler = new ItemStackHandler(2);
 
     // 输入槽索引
-    private static final int INPUT_SLOT = 0;
-    private static final int PLAYER_INVENTORY_START = 1;
+    public static final int INPUT_SLOT = 0;
+    public static final int OUTPUT_SLOT = 1;
+    public static final int PLAYER_INVENTORY_START = 2;
 
     // 客户端
-    public MailMenu(int id, Inventory inventory, FriendlyByteBuf buf) {
-        this(id, inventory,
-                inventory.player.getItemInHand(InteractionHand.MAIN_HAND),
-                new SimpleContainerData(1));
+    public MailMenu(int id, Inventory inventory, FriendlyByteBuf ignoredBuf) {
+        this(id, inventory);
     }
 
     // 服务端
-    public MailMenu(int id, Inventory inventory, ItemStack itemStack, ContainerData data) {
+    public MailMenu(int id, Inventory inventory) {
         // 指定该菜单对应的 MenuType
         super(ModMenus.MAIL_MENU.get(), id);
         // 保存数据
-        this.stack = itemStack;
-        this.data = data;
-        // 注册数据同步槽
-        addDataSlots(data);
         // 添加玩家背包与快捷栏
         addPlayerInventory(inventory);
         // 添加输入栏
@@ -86,20 +75,21 @@ public class MailMenu extends AbstractContainerMenu {
         return true;
     }
 
-    // 创建发送槽位
+    // 创建槽位
     private void addSendSlot(ItemStackHandler handler) {
-        this.addSlot(new SlotItemHandler(handler, INPUT_SLOT, 27, 36) {
+        // 发送槽位
+        this.addSlot(new SlotItemHandler(handler, INPUT_SLOT, 44, 33) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 // 限制只能放入特定物品
                 return stack.getItem().equals(ModItems.MEMO_VIEWER.get());
             }
-
+        });
+        // 接收槽位
+        this.addSlot(new SlotItemHandler(handler, OUTPUT_SLOT, 116, 54) {
             @Override
-            public void setChanged() {
-                super.setChanged();
-                // 物品变化时保存到NBT
-                MemoSenderItem.setInventory(stack);
+            public boolean mayPlace(@NotNull ItemStack stack) {
+                return false;
             }
         });
     }

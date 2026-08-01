@@ -30,6 +30,10 @@ public class MemoLoader {
     // 从网络文件中获取
     private static String loadFromUrl(MemoInfo memoInfo) {
         String urlStr = memoInfo.getMemoPath();
+        if (urlStr == null) {
+            SimpleCardMemo.LOGGER.error("The Memo URL is null!");
+            return null;
+        }
         try {
             URI uri = new URI(urlStr);
             URL url = uri.toURL();
@@ -77,6 +81,10 @@ public class MemoLoader {
     // 从本地文件中获取
     public static String loadFromLocalFiles(MemoInfo memoInfo) {
         String filepath = memoInfo.getMemoPath();
+        if (filepath == null) {
+            SimpleCardMemo.LOGGER.error("The Memo Path is null!");
+            return null;
+        }
         try {
            // 从资源包中加载
            ResourceLocation location = ResourceLocation.parse(filepath);

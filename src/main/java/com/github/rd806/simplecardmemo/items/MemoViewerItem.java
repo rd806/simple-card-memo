@@ -88,12 +88,7 @@ public class MemoViewerItem extends Item {
                 newStack = CacheSystem.getLastMemo();
             }
             // 构造 MemoInfo
-            String displayName = getDisplayName(newStack);
-            String filePath = getFilePath(newStack);
-            String author = getAuthor(newStack);
-            boolean isLocalFile = getTextSource(newStack);
-            long modified = getLastModified(newStack);
-            MemoInfo memoInfo = new MemoInfo(displayName, filePath, author, isLocalFile, modified);
+            MemoInfo memoInfo = getMemoInfo(newStack);
             // 异步加载
             CompletableFuture.runAsync(() -> {
                         // 使用 LRU 缓存机制
@@ -104,10 +99,10 @@ public class MemoViewerItem extends Item {
                     )
                     .exceptionally(
                             e -> {
-                                SimpleCardMemo.LOGGER.error("Error loading network data", e);
+                                SimpleCardMemo.LOGGER.error("Error loading content data", e);
                                 return null;
             });
-            CacheSystem.getLastMemo(newStack);
+            CacheSystem.setLastMemo(newStack);
         }
         // 返回成功，表示物品被使用了，但避免消耗
         return InteractionResultHolder.success(stack);
@@ -152,6 +147,20 @@ public class MemoViewerItem extends Item {
             return tag.getLong(LAST_MODIFIED);
         }
         return 0;
+    }
+    // 获取完整的MemoInfo
+    public static MemoInfo getMemoInfo(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null) {
+            SimpleCardMemo.LOGGER.warn("The Memo Info may be null!");
+            return new MemoInfo();
+        }
+        String displayName = getDisplayName(stack);
+        String filePath = getFilePath(stack);
+        String author = getAuthor(stack);
+        boolean isLocalFile = getTextSource(stack);
+        long modified = getLastModified(stack);
+        return new MemoInfo(displayName, filePath, author, isLocalFile, modified);
     }
 
     // 设置文件路径

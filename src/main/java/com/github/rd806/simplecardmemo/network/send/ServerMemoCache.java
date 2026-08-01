@@ -1,15 +1,14 @@
 package com.github.rd806.simplecardmemo.network.send;
 
-import net.minecraft.world.item.ItemStack;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerMemoCache {
 
     private static final ServerMemoCache INSTANCE = new ServerMemoCache();
-    private final Map<String, ItemStack> memoCache = new ConcurrentHashMap<>();
+    private final Map<String, MemoInfo> memoCache = new ConcurrentHashMap<>();
     private final Map<String, String> contentCache = new ConcurrentHashMap<>();
 
     public static ServerMemoCache getInstance() {
@@ -17,20 +16,24 @@ public class ServerMemoCache {
     }
 
     // 添加
-    public void addMemo(UUID senderId, UUID receiverId, ItemStack memo, String content) {
-        String key = senderId.toString() + ":" + receiverId.toString();
-        memoCache.put(key, memo);
+    public void addMemo(String key, MemoInfo memoInfo, String content) {
+        memoCache.put(key, memoInfo);
         contentCache.put(key, content);
     }
 
     // 取出
-    public ItemStack retrieveMemoItem(UUID senderId, UUID receiverId) {
-        String key = senderId.toString() + ":" + receiverId.toString();
-        return memoCache.remove(key);
+    public MemoInfo retrieveMemoItem(String key) {
+        return memoCache.get(key);
     }
 
-    public String retrieveMemoContent(UUID senderId, UUID receiverId) {
-        String key = senderId.toString() + ":" + receiverId.toString();
-        return contentCache.remove(contentCache.remove(key));
+    public String retrieveMemoContent(String key) {
+        return contentCache.get(key);
+    }
+
+    // 清除
+    public void clearMemo(String senderId, String receiverId) {
+        String key = senderId + ":" + receiverId;
+        memoCache.remove(key);
+        contentCache.remove(contentCache.remove(key));
     }
 }
