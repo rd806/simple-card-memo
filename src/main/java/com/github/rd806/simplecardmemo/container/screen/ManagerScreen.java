@@ -40,8 +40,8 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private int topPos;
     private static int PADDING;
     private static int HEADER;
-    private static int FILE_LIST_WIDTH;
-    private static int FILE_LIST_HEIGHT;
+    private static final int FILE_LIST_WIDTH = 142;
+    private static final int FILE_LIST_HEIGHT = 85;
     private static int ENTRY_HEIGHT;
     // 输入框
     private EditBox nameInput;
@@ -70,8 +70,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 布局
         PADDING = leftPos + 16;
         HEADER = topPos + 24;
-        FILE_LIST_WIDTH = this.width - PADDING * 2;
-        FILE_LIST_HEIGHT = 85;
         ENTRY_HEIGHT = this.font.lineHeight * 2;
 
         // 创建文件名输入框
@@ -86,7 +84,13 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         nameInput.setBordered(true);
         nameInput.setValue(selectedMemo.getMemoName());
         nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.hint.name"));
+        addRenderableWidget(nameInput);
 
+        renderButton();
+    }
+
+    // 绘制按钮
+    private void renderButton() {
         // 编辑按钮
         Button editButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
                         button -> {
@@ -97,6 +101,8 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .pos(leftPos - BUTTON_WIDTH - 5, nameInput.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
+        addRenderableWidget(editButton);
+
         // 删除按钮
         Button deleteButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
                         button -> {
@@ -107,30 +113,30 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .pos(leftPos - BUTTON_WIDTH - 5, editButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
+        addRenderableWidget(deleteButton);
+
         // 刷新按钮
         Button reloadButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.reload"),
                         button -> refreshMemoList())
                 .pos(leftPos - BUTTON_WIDTH - 5, deleteButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
+        addRenderableWidget(reloadButton);
+
         // 导出按钮
         Button exportButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export"),
                         button -> exportItem())
                 .pos(leftPos - BUTTON_WIDTH - 5, reloadButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
+        addRenderableWidget(exportButton);
+
         // 销毁按钮
         Button destroyButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.destroy"),
                         button -> destroyItem())
                 .pos(leftPos - BUTTON_WIDTH - 5, exportButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
-        // 绘制按钮
-        addRenderableWidget(nameInput);
-        addRenderableWidget(exportButton);
-        addRenderableWidget(deleteButton);
-        addRenderableWidget(editButton);
-        addRenderableWidget(reloadButton);
         addRenderableWidget(destroyButton);
     }
 

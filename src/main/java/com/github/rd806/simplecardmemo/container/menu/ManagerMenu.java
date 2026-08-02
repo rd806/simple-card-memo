@@ -1,5 +1,6 @@
 package com.github.rd806.simplecardmemo.container.menu;
 
+import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.init.ModMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -78,14 +79,15 @@ public class ManagerMenu extends AbstractContainerMenu {
     // 创建发送槽位
     private void addSlot() {
         // 发送槽位
-        this.addSlot(new SlotItemHandler(itemHandler, INPUT_SLOT, 55, 128) {
+        this.addSlot(new SlotItemHandler(itemHandler, INPUT_SLOT, 55, 125) {
             @Override
-            public void setChanged() {
-                super.setChanged();
+            public boolean mayPlace(@NotNull ItemStack stack) {
+                // 只允许放入 Memo Viewer
+                return stack.getItem().equals(ModItems.MEMO_VIEWER.get());
             }
         });
         // 接收槽位
-        this.addSlot(new SlotItemHandler(itemHandler, OUTPUT_SLOT, 109, 128) {
+        this.addSlot(new SlotItemHandler(itemHandler, OUTPUT_SLOT, 109, 125) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return false;

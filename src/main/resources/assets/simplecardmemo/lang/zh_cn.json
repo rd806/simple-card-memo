@@ -62,6 +62,6 @@
     "simplecardmemo.gui.mail_screen.input.hint": "请输入目标玩家名",
     "simplecardmemo.gui.mail_screen.send": "发送",
     "simplecardmemo.gui.mail_screen.receive": "接收",
-    "simplecardmemo.gui.mail_screen.message.no_target": "请输入一个玩家名！",
-    "simplecardmemo.gui.mail_screen.message.no_item": "请放入一个有效的备忘录！"
+    "simplecardmemo.gui.mail_screen.message.no_target": "请输入玩家名！",
+    "simplecardmemo.gui.mail_screen.message.no_item": "请放入有效的备忘录！"
 }

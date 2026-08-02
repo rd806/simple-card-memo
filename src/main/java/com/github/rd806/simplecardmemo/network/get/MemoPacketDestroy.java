@@ -2,8 +2,6 @@ package com.github.rd806.simplecardmemo.network.get;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
-import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
-import com.github.rd806.simplecardmemo.init.ModItems;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -36,19 +34,12 @@ public class MemoPacketDestroy {
             }
             // 检查输入槽
             ItemStack input = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.INPUT_SLOT);
-            if (!input.getItem().equals(ModItems.MEMO_VIEWER.get())) {
-                SimpleCardMemo.LOGGER.error("Input is not valid!");
-                return;
-            }
+            if (input.isEmpty()) { return; }
             // 检查输出槽
             ItemStack output = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.OUTPUT_SLOT);
-            if (!output.isEmpty()) {
-                SimpleCardMemo.LOGGER.error("Output is full!");
-                return;
-            }
-            // 消耗和产出物品
+            if (!output.isEmpty()) { return; }
+            // 消耗物品
             input.shrink(1);
-            managerMenu.getItemHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, ModCreativeModeTabs.newMemo());
         });
         context.setPacketHandled(true);
     }

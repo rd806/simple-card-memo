@@ -2,7 +2,6 @@ package com.github.rd806.simplecardmemo.network.get;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
-import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.network.GetExistMemo;
 import net.minecraft.network.FriendlyByteBuf;
@@ -53,16 +52,10 @@ public class MemoPacketGet {
             }
             // 检查输入槽
             ItemStack input = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.INPUT_SLOT);
-            if (!input.equals(ModCreativeModeTabs.newMemo(), false)) {
-                SimpleCardMemo.LOGGER.error("Input is not valid!");
-                return;
-            }
+            if (input.isEmpty()) { return; }
             // 检查输出槽
             ItemStack output = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.OUTPUT_SLOT);
-            if (!output.isEmpty()) {
-                SimpleCardMemo.LOGGER.error("Output is full!");
-                return;
-            }
+            if (!output.isEmpty()) { return; }
             // 消耗和产出物品
             input.shrink(1);
             managerMenu.getItemHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, GetExistMemo.setMemo(memoInfo));

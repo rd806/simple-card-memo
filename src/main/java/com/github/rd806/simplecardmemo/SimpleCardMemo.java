@@ -29,17 +29,16 @@ public class SimpleCardMemo {
 
     public SimpleCardMemo(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
-
         modEventBus.addListener(this::commonSetup);
         // 创建物品、GUI和物品栏
         ModItems.register(modEventBus);
         ModMenus.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
-
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        // 注册网络
         Channel.register();
-        // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
+        // 注册配置文件
         context.registerConfig(ModConfig.Type.COMMON, Config.init());
     }
 

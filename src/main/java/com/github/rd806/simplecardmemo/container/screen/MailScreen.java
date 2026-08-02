@@ -8,6 +8,7 @@ import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketSend;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -64,19 +65,20 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         );
         nameInput.setMaxLength(256);
         nameInput.setBordered(false);
-        nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.input.hint"));
+        nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.input.hint")
+                            .withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
         nameInput.setTextColor(0xF3EFE0);
         // 发送按钮
         Button sendButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.send"),
                         button -> sendMemo())
-                .pos(leftPos + 97, topPos + 50)
-                .size(40, 18)
+                .pos(leftPos + 97, topPos + 46)
+                .size(50, 18)
                 .build();
         // 接收按钮
         Button receiveButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.receive"),
                         button -> receiveMemo())
-                .pos(leftPos + 97, topPos + 80)
-                .size(40, 18)
+                .pos(leftPos + 97, topPos + 75)
+                .size(50, 18)
                 .build();
 
         addRenderableWidget(nameInput);
@@ -146,13 +148,13 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
             case NO_ITEM -> graphics.drawString(
                     this.font,
                     Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.no_item"),
-                    leftPos + 43, topPos + 105,
+                    leftPos + 43, topPos + 100,
                     0xFF5555, false
             );
             case NO_TARGET -> graphics.drawString(
                     this.font,
                     Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.no_target"),
-                    leftPos + 43, topPos + 105,
+                    leftPos + 43, topPos + 100,
                     0xFF5555, false
             );
             case GOOD -> {}

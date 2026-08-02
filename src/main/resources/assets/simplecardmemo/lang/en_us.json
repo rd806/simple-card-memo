@@ -59,9 +59,9 @@
     "simplecardmemo.gui.manager_screen.destroy": "Destroy",
 
     "simplecardmemo.gui.mail_screen.input": "Name Input Box",
-    "simplecardmemo.gui.mail_screen.input.hint": "Input your target user",
+    "simplecardmemo.gui.mail_screen.input.hint": "Input target user",
     "simplecardmemo.gui.mail_screen.send": "Send",
     "simplecardmemo.gui.mail_screen.receive": "Receive",
-    "simplecardmemo.gui.mail_screen.message.no_target": "Please input a target player!",
-    "simplecardmemo.gui.mail_screen.message.no_item": "Please put a valid Memo Viewer in the slot!"
+    "simplecardmemo.gui.mail_screen.message.no_target": "No target player!",
+    "simplecardmemo.gui.mail_screen.message.no_item": "No valid Memo Viewer!"
 }

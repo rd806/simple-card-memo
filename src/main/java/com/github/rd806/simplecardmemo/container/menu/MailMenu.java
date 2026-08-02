@@ -78,7 +78,7 @@ public class MailMenu extends AbstractContainerMenu {
     // 创建槽位
     private void addSendSlot(ItemStackHandler handler) {
         // 发送槽位
-        this.addSlot(new SlotItemHandler(handler, INPUT_SLOT, 26, 50) {
+        this.addSlot(new SlotItemHandler(handler, INPUT_SLOT, 26, 47) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 // 限制只能放入特定物品
@@ -86,7 +86,7 @@ public class MailMenu extends AbstractContainerMenu {
             }
         });
         // 接收槽位
-        this.addSlot(new SlotItemHandler(handler, OUTPUT_SLOT, 61, 80) {
+        this.addSlot(new SlotItemHandler(handler, OUTPUT_SLOT, 61, 76) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return false;
