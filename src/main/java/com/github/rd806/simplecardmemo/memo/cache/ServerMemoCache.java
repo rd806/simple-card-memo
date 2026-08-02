@@ -1,10 +1,13 @@
-package com.github.rd806.simplecardmemo.network.send;
+package com.github.rd806.simplecardmemo.memo.cache;
 
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class ServerMemoCache {
 
     private static final ServerMemoCache INSTANCE = new ServerMemoCache();

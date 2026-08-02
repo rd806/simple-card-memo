@@ -3,7 +3,7 @@ package com.github.rd806.simplecardmemo.container.screen;
 import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
 import dev.dediamondpro.minemark.minecraft.MineMarkDrawable;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -51,7 +51,7 @@ public class MemoViewerScreen extends Screen {
     }
 
     private void reload(MemoInfo memoInfo) {
-        this.renderedText = CacheSystem.getMemoContent(memoInfo);
+        this.renderedText = ClientMemoCache.getMemoContent(memoInfo);
         if (Config.ENABLE_MARKDOWN.get() && renderedText != null) {
             try {
                 this.markdownText = new MineMarkDrawable(renderedText);

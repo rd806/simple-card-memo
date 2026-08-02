@@ -1,26 +1,26 @@
 {
     "simplecardmemo.tab.simplecardmemo": "Simple Card Memo",
 
+    "simplecardmemo.item.general.tooltip": "Right click",
+
     "item.simplecardmemo.memo_viewer": "New Memo",
-    "item.simplecardmemo.memo_viewer.default": "It seems that you haven't opened any Memo yet.",
-    "simplecardmemo.item.memo_viewer.tooltip": "Right click to open the memo",
     "simplecardmemo.item.memo_viewer.tooltip.default": "The last opened memo",
     "simplecardmemo.item.memo_viewer.tooltip.author": "Author: ",
     "simplecardmemo.item.memo_viewer.tooltip.more": "Hold down [Shift] to view details",
-    "simplecardmemo.item.memo_viewer.tooltip.detail": "===== Detailed Information =====",
+    "simplecardmemo.item.memo_viewer.tooltip.source": "Source: ",
     "simplecardmemo.item.memo_viewer.tooltip.time": "Last modified: ",
     "simplecardmemo.item.memo_viewer.tooltip.local": "Local File",
     "simplecardmemo.item.memo_viewer.tooltip.web": "Web File",
 
     "item.simplecardmemo.memo_editor": "Memo Editor",
-    "simplecardmemo.item.memo_editor.tooltip": "Right click to open the editor",
+    "simplecardmemo.item.memo_editor.tooltip": "Edit a new memo",
 
     "item.simplecardmemo.memo_manager": "Memo Manager",
-    "simplecardmemo.item.memo_manager.tooltip": "Right click to open the Memo Manager",
+    "simplecardmemo.item.memo_manager.tooltip": "Manage local memo files",
     "simplecardmemo.item.memo_manager.screen": "Memo Manager",
 
     "item.simplecardmemo.memo_mail": "Memo Mail",
-    "simplecardmemo.item.memo_mail.tooltip": "Right click to open the Memo Mail",
+    "simplecardmemo.item.memo_mail.tooltip": "Send and receive memos",
     "simplecardmemo.item.memo_mail.screen": "Memo Mail",
 
     "simplecardmemo.item.memo_guide": "Guide",

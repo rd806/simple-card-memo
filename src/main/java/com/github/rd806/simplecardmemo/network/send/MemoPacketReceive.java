@@ -4,8 +4,9 @@ import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
-import com.github.rd806.simplecardmemo.network.GetExistMemo;
+import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
+import com.github.rd806.simplecardmemo.memo.GetExistMemo;
+import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -55,7 +56,7 @@ public class MemoPacketReceive {
             String filePath = MemoViewerItem.getFilePath(output);
             String content = cache.retrieveMemoContent(key);
             if (isLocal) {
-                CacheSystem.put(filePath, content);
+                ClientMemoCache.put(filePath, content);
             }
             cache.clearMemo(sender, receiver.getName().getString());
         });

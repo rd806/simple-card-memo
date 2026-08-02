@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.network.get;
 
 import com.github.rd806.simplecardmemo.init.ModItems;
-import com.github.rd806.simplecardmemo.network.GetExistMemo;
+import com.github.rd806.simplecardmemo.memo.GetExistMemo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;

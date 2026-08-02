@@ -39,7 +39,7 @@ public class SimpleCardMemo {
         // 注册网络
         Channel.register();
         // 注册配置文件
-        context.registerConfig(ModConfig.Type.COMMON, Config.init());
+        context.registerConfig(ModConfig.Type.CLIENT, Config.init());
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

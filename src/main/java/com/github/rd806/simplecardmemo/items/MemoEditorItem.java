@@ -27,6 +27,8 @@ public class MemoEditorItem extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
+                .withStyle(ChatFormatting.GRAY));
         tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_editor.tooltip")
                 .withStyle(ChatFormatting.GRAY));
     }

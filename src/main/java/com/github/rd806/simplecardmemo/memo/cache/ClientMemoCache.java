@@ -6,14 +6,16 @@ import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class CacheSystem {
+@OnlyIn(Dist.CLIENT)
+public class ClientMemoCache {
 
     private static MemoLRUCache<String, String> cache = new MemoLRUCache<>();
     // 临时文件
     private static final MemoInfo tempMemo = new MemoInfo(
-            "temp", "temp.md", "Default", true, 0
-    );
+            "temp", "temp.md", "Default", true, 0);
     // 最新文件
     private static ItemStack lastMemo = ModCreativeModeTabs.memoGuide();
 
@@ -22,7 +24,7 @@ public class CacheSystem {
 
     public static MemoInfo getTempMemo() { return tempMemo; }
 
-    public static void setLastMemo(ItemStack memo) { CacheSystem.lastMemo = memo; }
+    public static void setLastMemo(ItemStack memo) { ClientMemoCache.lastMemo = memo; }
     public static ItemStack getLastMemo() { return lastMemo; }
 
     // 刷新缓存
@@ -34,7 +36,7 @@ public class CacheSystem {
     public static String getMemoContentWithCache(MemoInfo memoInfo) {
         String filePath = memoInfo.getMemoPath();
         // 使用 LRU 缓存机制
-        String content = CacheSystem.get(filePath);
+        String content = get(filePath);
         // 未命中则加载
         if (content == null) {
             content = MemoLoader.loadText(memoInfo);
@@ -44,7 +46,7 @@ public class CacheSystem {
             content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
                     .append(filePath).getString();
         } else {
-            CacheSystem.put(filePath, content);
+            put(filePath, content);
         }
         return content;
     }
@@ -58,7 +60,7 @@ public class CacheSystem {
             content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
                     .append(filePath).getString();
         } else {
-            CacheSystem.put(filePath, content);
+            put(filePath, content);
         }
         return content;
     }

@@ -3,7 +3,7 @@ package com.github.rd806.simplecardmemo.container.screen;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
-import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketSend;
@@ -123,7 +123,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
             return;
         }
         // 获取发送的内容
-        String content = CacheSystem.getMemoContentWithCache(MemoViewerItem.getMemoInfo(stack));
+        String content = ClientMemoCache.getMemoContentWithCache(MemoViewerItem.getMemoInfo(stack));
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
                 new MemoPacketSend(stack, content, target)

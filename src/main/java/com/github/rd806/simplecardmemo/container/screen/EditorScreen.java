@@ -6,7 +6,7 @@ import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
-import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
 import net.minecraft.client.Minecraft;
@@ -47,7 +47,7 @@ public class EditorScreen extends Screen {
 
     public EditorScreen() {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.editor.title"));
-        this.initialContent = MemoLoader.loadFromLocalFiles(CacheSystem.getTempMemo());
+        this.initialContent = MemoLoader.loadFromLocalFiles(ClientMemoCache.getTempMemo());
         setDefaultValues();
         MemoLoader.createTempFile();
     }
@@ -206,7 +206,7 @@ public class EditorScreen extends Screen {
     // 导出内容到草稿
     private void saveDraft() {
         String content = textInput.getValue();
-        if (MemoLoader.saveToLocalFiles(content, CacheSystem.getTempMemo()) && Minecraft.getInstance().player != null) {
+        if (MemoLoader.saveToLocalFiles(content, ClientMemoCache.getTempMemo()) && Minecraft.getInstance().player != null) {
             this.onClose();
             Minecraft.getInstance().player.displayClientMessage(
                     Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.save.success"),

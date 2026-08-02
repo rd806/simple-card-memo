@@ -6,6 +6,7 @@ import com.github.rd806.simplecardmemo.memo.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
+import com.github.rd806.simplecardmemo.memo.GetExistMemo;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketDestroy;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,9 +42,10 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private int topPos;
     private static int PADDING;
     private static int HEADER;
+    // 文件列表
     private static final int FILE_LIST_WIDTH = 142;
-    private static final int FILE_LIST_HEIGHT = 85;
-    private static int ENTRY_HEIGHT;
+    private static final int FILE_LIST_HEIGHT = 80;
+    private static final int ENTRY_HEIGHT = 16;
     // 输入框
     private EditBox nameInput;
     // 按键常量
@@ -70,7 +73,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 布局
         PADDING = leftPos + 16;
         HEADER = topPos + 24;
-        ENTRY_HEIGHT = this.font.lineHeight * 2;
 
         // 创建文件名输入框
         nameInput = new EditBox(
@@ -160,9 +162,10 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         renderFileList(graphics);
         // 绘制物品提示
         renderTooltip(graphics, mouseX, mouseY);
+        renderCustomTooltip(graphics, mouseX, mouseY);
     }
 
-    // 文件列表
+    // 绘制文件列表
     private void renderFileList(GuiGraphics graphics) {
         if (memoList == null) {
             graphics.drawString(
@@ -182,7 +185,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
             memoListScroll = memoListMaxScroll;
         }
         // 绘制文件条目
-        for (int i = memoListScroll; i < Math.min(totalEntries, memoListScroll + visibleEntries + 1); i++) {
+        for (int i = memoListScroll; i < Math.min(totalEntries, memoListScroll + visibleEntries); i++) {
             MemoInfo info = memoList.get(i);
             int y = HEADER + (i - memoListScroll) * ENTRY_HEIGHT;
             // 高亮选中的文件
@@ -200,11 +203,28 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         }
     }
 
-    // 刷新文件列表
-    private void refreshMemoList() {
-        MemoConfig.reload();
-        memoList = MemoConfig.MEMO_LIST;
-        memoListScroll = 0;
+    // 悬浮提示信息
+    private void renderCustomTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        // 检测鼠标是否在某个矩形区域内
+        if (isMouseOver(mouseX, mouseY, PADDING, HEADER)) {
+            int index = ((mouseY - HEADER) / ENTRY_HEIGHT) + memoListScroll;
+            if (index >= 0 && index < memoList.size()) {
+                // 获取对应的物品
+                ItemStack stack = GetExistMemo.setMemo(memoList.get(index));
+                // 显示单行文本
+                graphics.renderTooltip(
+                        this.font,
+                        stack,
+                        mouseX, mouseY
+                );
+            }
+        }
+    }
+
+    // 检查鼠标位置
+    private boolean isMouseOver(int mouseX, int mouseY, int x, int y) {
+        return mouseX >= x && mouseX <= x + ManagerScreen.FILE_LIST_WIDTH &&
+                mouseY >= y && mouseY <= y + ManagerScreen.FILE_LIST_HEIGHT;
     }
 
     @Override
@@ -226,6 +246,20 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        memoListScroll -= (int) (amount * 2);
+        memoListScroll = Math.max(0, Math.min(memoListScroll, memoListMaxScroll));
+        return super.mouseScrolled(mouseX, mouseY, amount);
+    }
+
+    // 刷新文件列表
+    private void refreshMemoList() {
+        MemoConfig.reload();
+        memoList = MemoConfig.MEMO_LIST;
+        memoListScroll = 0;
+    }
+
     // 获取对应的物品
     private void exportItem() {
         if (selectedMemo == null) {
@@ -245,12 +279,5 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 PacketDistributor.SERVER.noArg(),
                 new MemoPacketDestroy()
         );
-    }
-
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        memoListScroll -= (int) (amount * 2);
-        memoListScroll = Math.max(0, Math.min(memoListScroll, memoListMaxScroll));
-        return super.mouseScrolled(mouseX, mouseY, amount);
     }
 }

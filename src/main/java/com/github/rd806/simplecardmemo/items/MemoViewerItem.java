@@ -1,12 +1,15 @@
 package com.github.rd806.simplecardmemo.items;
 
+import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.screen.MemoViewerScreen;
+import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -22,8 +25,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -36,8 +43,8 @@ public class MemoViewerItem extends Item {
     private static final String LAST_MODIFIED = "lastModified";
     private static final String IS_LOCAL_FILE = "isLocalFile";
     // 默认内容
-    private static String content =
-            Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.default").getString();
+    private static String content = "Default Text";
+    private final String prefix = "§a▍ §r";
 
     public MemoViewerItem(Properties properties) {
         super(properties);
@@ -47,31 +54,24 @@ public class MemoViewerItem extends Item {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
         // 使用方法
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip")
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
                 .withStyle(ChatFormatting.GRAY));
-        // 默认信息
-        if (stack.getTag() == null) {
+        // 为空展示默认信息
+        if (stack.equals(ModCreativeModeTabs.newMemo(), false)) {
             tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.default")
                     .withStyle(ChatFormatting.GRAY));
             return;
         }
-        // 作者
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.author")
-                .append(Component.literal(getAuthor(stack))).withStyle(ChatFormatting.LIGHT_PURPLE));
         // 更多提示信息
         if (Screen.hasShiftDown()) {
-            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.detail"));
+            // 作者名称
+            tooltipComponents.add(Component.literal(getAuthorString(stack)));
             // 数据来源
-            Component source = getTextSource(stack) ?
-                    Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.local") :
-                    Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.web");
-            tooltipComponents.add(source);
+            tooltipComponents.add(Component.literal(getSourceString(stack)));
             // 修改日期
-            if (getLastModified(stack) > 0) {
-                String lastModified = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(getLastModified(stack)));
-                Component time = Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.time")
-                        .append(Component.literal(lastModified)).withStyle(ChatFormatting.BLUE);
-                tooltipComponents.add(time);
+            long timestamp = getLastModified(stack);
+            if (timestamp > 0) {
+                tooltipComponents.add(Component.literal(getDateString(timestamp)));
             }
         } else {
             // 未按 Shift 时显示提示
@@ -89,14 +89,14 @@ public class MemoViewerItem extends Item {
         if (level.isClientSide) {
             // 若为空物品，转换为最后一次打开的备忘录
             if (stack.getTag() == null) {
-                newStack = CacheSystem.getLastMemo();
+                newStack = ClientMemoCache.getLastMemo();
             }
             // 构造 MemoInfo
             MemoInfo memoInfo = getMemoInfo(newStack);
             // 异步加载
             CompletableFuture.runAsync(() -> {
                         // 使用 LRU 缓存机制
-                        content = CacheSystem.getMemoContentWithCache(memoInfo);
+                        content = ClientMemoCache.getMemoContentWithCache(memoInfo);
                     })
                     .thenAccept(data -> Minecraft.getInstance().execute(() ->
                             Minecraft.getInstance().setScreen(new MemoViewerScreen(content, memoInfo)))
@@ -106,7 +106,7 @@ public class MemoViewerItem extends Item {
                                 SimpleCardMemo.LOGGER.error("Error loading content data", e);
                                 return null;
             });
-            CacheSystem.setLastMemo(newStack);
+            ClientMemoCache.setLastMemo(newStack);
         }
         // 返回成功，表示物品被使用了，但避免消耗
         return InteractionResultHolder.success(stack);
@@ -186,5 +186,34 @@ public class MemoViewerItem extends Item {
     // 设置修改日期
     public static void setLastModified(ItemStack stack, long lastModified) {
         stack.getOrCreateTag().putLong(LAST_MODIFIED, lastModified);
+    }
+
+    // 获取文件作者信息
+    private String getAuthorString(ItemStack stack) {
+        String author = I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.author") + getAuthor(stack);
+        return prefix + author;
+    }
+    // 获取文件来源信息
+    private String getSourceString(ItemStack stack) {
+        // 数据来源
+        String source = getTextSource(stack) ?
+                I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.local") :
+                I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.web");
+        return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.source") + source;
+    }
+    // 获取格式化的时间字符串
+    @OnlyIn(Dist.CLIENT)
+    private String getDateString(long timestamp) {
+        Instant instant = Instant.ofEpochMilli(timestamp);
+        String lastModified = "";
+        switch (Config.DATE_FORMAT.get()) {
+            case ISO_LOCAL_DATE -> lastModified = DateTimeFormatter.ISO_LOCAL_DATE.
+                    format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()));
+            case ISO_LOCAL_DATE_TIME -> lastModified = DateTimeFormatter.ISO_LOCAL_DATE_TIME.
+                    format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).withNano(0));
+            case RFC_1123_DATE_TIME -> lastModified = DateTimeFormatter.RFC_1123_DATE_TIME.withLocale(Locale.US).
+                    format(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));
+        }
+        return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.time") + lastModified;
     }
 }
