@@ -46,6 +46,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private static final int FILE_LIST_WIDTH = 142;
     private static final int FILE_LIST_HEIGHT = 80;
     private static final int ENTRY_HEIGHT = 16;
+    private static int TOTAL_HEIGHT;
     // 输入框
     private EditBox nameInput;
     // 按键常量
@@ -73,7 +74,14 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 布局
         PADDING = leftPos + 16;
         HEADER = topPos + 24;
+        TOTAL_HEIGHT = memoList.size() * ENTRY_HEIGHT;
 
+        renderEditBox();
+        renderButton();
+    }
+
+    // 绘制输入框
+    private void renderEditBox() {
         // 创建文件名输入框
         nameInput = new EditBox(
                 this.font,
@@ -87,10 +95,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         nameInput.setValue(selectedMemo.getMemoName());
         nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.hint.name"));
         addRenderableWidget(nameInput);
-
-        renderButton();
     }
-
     // 绘制按钮
     private void renderButton() {
         // 编辑按钮
@@ -104,7 +109,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         addRenderableWidget(editButton);
-
         // 删除按钮
         Button deleteButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
                         button -> {
@@ -116,7 +120,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         addRenderableWidget(deleteButton);
-
         // 刷新按钮
         Button reloadButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.reload"),
                         button -> refreshMemoList())
@@ -124,7 +127,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         addRenderableWidget(reloadButton);
-
         // 导出按钮
         Button exportButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export"),
                         button -> exportItem())
@@ -132,7 +134,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         addRenderableWidget(exportButton);
-
         // 销毁按钮
         Button destroyButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.destroy"),
                         button -> destroyItem())
@@ -161,18 +162,17 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 渲染文件列表
         renderFileList(graphics);
         // 绘制物品提示
-        renderTooltip(graphics, mouseX, mouseY);
-        renderCustomTooltip(graphics, mouseX, mouseY);
+        this.renderTooltip(graphics, mouseX, mouseY);
+        renderFileTooltip(graphics, mouseX, mouseY);
+        renderScrollBar(graphics);
     }
 
     // 绘制文件列表
     private void renderFileList(GuiGraphics graphics) {
         if (memoList == null) {
             graphics.drawString(
-                    this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.memo_list"),
-                    PADDING,
-                    HEADER,
+                    this.font, Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.memo_list"),
+                    PADDING, HEADER,
                     0x888888
             );
             return;
@@ -194,37 +194,51 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
             }
             // 文件图标和名称
             graphics.drawString(
-                    this.font,
-                    Component.literal("📄 " + info.getMemoName()),
-                    PADDING + 4,
-                    y + ENTRY_HEIGHT / 4,
+                    this.font, Component.literal("📄 " + info.getMemoName()),
+                    PADDING + 4, y + ENTRY_HEIGHT / 4,
                     0x3F3F3F, false
             );
         }
     }
 
     // 悬浮提示信息
-    private void renderCustomTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+    private void renderFileTooltip(GuiGraphics graphics, double mouseX, double mouseY) {
         // 检测鼠标是否在某个矩形区域内
-        if (isMouseOver(mouseX, mouseY, PADDING, HEADER)) {
-            int index = ((mouseY - HEADER) / ENTRY_HEIGHT) + memoListScroll;
+        if (isMouseOver(mouseX, mouseY)) {
+            int index = (int) ((mouseY - HEADER) / ENTRY_HEIGHT) + memoListScroll;
             if (index >= 0 && index < memoList.size()) {
                 // 获取对应的物品
                 ItemStack stack = GetExistMemo.setMemo(memoList.get(index));
                 // 显示单行文本
                 graphics.renderTooltip(
-                        this.font,
-                        stack,
-                        mouseX, mouseY
+                        this.font, stack,
+                        (int) mouseX, (int) mouseY
                 );
             }
         }
     }
 
+    // 渲染滚动条
+    private void renderScrollBar(GuiGraphics graphics) {
+        if (memoListMaxScroll <= 0) return;
+        // 滑块轨道
+        int barX = PADDING + FILE_LIST_WIDTH - 3;
+        int barY = HEADER;
+        int barW = 3;
+        int barH = FILE_LIST_HEIGHT;
+        graphics.fill(barX, barY, barX + barW, barY + barH, 0x33FFFFFF);
+        // 滑块
+        float progress = (float) (memoListScroll / memoListMaxScroll);
+        int thumbHeight = Math.max(20, barH * Math.min(1, (barH / TOTAL_HEIGHT)));
+        int thumbY = barY + (int) ((barH - thumbHeight) * progress);
+        graphics.fill(barX, thumbY, barX + barW, thumbY + thumbHeight, 0xCCFFFFFF);
+    }
+
     // 检查鼠标位置
-    private boolean isMouseOver(int mouseX, int mouseY, int x, int y) {
-        return mouseX >= x && mouseX <= x + ManagerScreen.FILE_LIST_WIDTH &&
-                mouseY >= y && mouseY <= y + ManagerScreen.FILE_LIST_HEIGHT;
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return mouseX >= PADDING && mouseX <= PADDING + FILE_LIST_WIDTH
+                && mouseY >= HEADER && mouseY <= HEADER + FILE_LIST_HEIGHT;
     }
 
     @Override
@@ -232,8 +246,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 点击文件列表选择文件
         if (memoList != null && !memoList.isEmpty()) {
             // 点击选择
-            if (mouseX >= PADDING && mouseX <= PADDING + FILE_LIST_WIDTH && mouseY >= HEADER &&
-                    mouseY <= HEADER + FILE_LIST_HEIGHT) {
+            if (isMouseOver(mouseX, mouseY)) {
                 int index = (int) ((mouseY - HEADER) / ENTRY_HEIGHT) + memoListScroll;
                 if (index >= 0 && index < memoList.size()) {
                     selectedMemo = memoList.get(index);

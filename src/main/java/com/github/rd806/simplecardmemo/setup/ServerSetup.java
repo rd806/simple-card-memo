@@ -8,6 +8,6 @@ public class ServerSetup {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
-        SimpleCardMemo.LOGGER.info("HELLO from server starting");
+        SimpleCardMemo.LOGGER.info("Start SimpleCardMemo on the server!");
     }
 }

@@ -20,8 +20,6 @@ public class Config {
         RFC_1123_DATE_TIME
     }
 
-    // 是否启用 Markdown 渲染
-    public static ForgeConfigSpec.BooleanValue ENABLE_MARKDOWN;
     // 页边距设置
     public static ForgeConfigSpec.EnumValue<Margin> PAGE_MARGIN;
     // 缓冲区大小
@@ -30,17 +28,16 @@ public class Config {
     public static ForgeConfigSpec.EnumValue<DateFormat> DATE_FORMAT;
 
     public static ForgeConfigSpec init() {
-        ENABLE_MARKDOWN = BUILDER
-                .comment("Whether to enable markdown rendering.")
-                .define("EnableMarkdown", true);
-
         PAGE_MARGIN = BUILDER
+                .translation(SimpleCardMemo.MODID + ".config.page_margin")
                 .defineEnum("PageMargin", Margin.MEDIUM);
 
         CACHE_SIZE = BUILDER
+                .translation(SimpleCardMemo.MODID + ".config.cache")
                 .defineInRange("CacheSize", 5, 5, 10);
 
         DATE_FORMAT = BUILDER
+                .translation(SimpleCardMemo.MODID + ".config.date_format")
                 .defineEnum("DateFormat", DateFormat.ISO_LOCAL_DATE);
 
         return BUILDER.build();

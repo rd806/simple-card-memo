@@ -34,6 +34,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     private int topPos;
 
     private EditBox nameInput;
+
     private String target;
     private Cases cases;
 
@@ -49,11 +50,16 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     @Override
     protected void init() {
         super.init();
-        this.cases = Cases.GOOD;
+        cases = Cases.GOOD;
         // 计算 GUI 左上角在屏幕上的位置
         leftPos = (this.width - this.imageWidth) / 2;
         topPos = (this.height - this.imageHeight) / 2;
         this.inventoryLabelY = 115;
+        // 绘制按钮
+        renderButton();
+    }
+
+    private void renderButton() {
         // 输入框
         nameInput = new EditBox(
                 this.font,
@@ -66,23 +72,22 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         nameInput.setMaxLength(256);
         nameInput.setBordered(false);
         nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.input.hint")
-                            .withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+                .withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
         nameInput.setTextColor(0xF3EFE0);
+        addRenderableWidget(nameInput);
         // 发送按钮
         Button sendButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.send"),
                         button -> sendMemo())
                 .pos(leftPos + 97, topPos + 46)
                 .size(50, 18)
                 .build();
+        addRenderableWidget(sendButton);
         // 接收按钮
         Button receiveButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.receive"),
                         button -> receiveMemo())
                 .pos(leftPos + 97, topPos + 75)
                 .size(50, 18)
                 .build();
-
-        addRenderableWidget(nameInput);
-        addRenderableWidget(sendButton);
         addRenderableWidget(receiveButton);
     }
 

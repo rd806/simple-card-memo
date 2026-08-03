@@ -72,3 +72,7 @@ You can also preview texts which come from the Internet. However, it may take mo
 | Memo Mail    | You can send a memo to other players by using it.                                                      |
 
 > Please note that **Memo Editor** is still under development. It's recommended to edit your Memos with a code editor.
+
+| Commands                      | Function                  |
+|-------------------------------|---------------------------|
+| `/simplecardmemo clear_cache` | Clear local content cache |

@@ -126,10 +126,8 @@ public class EditorScreen extends Screen {
 
         // 复选框
         sourceInput = new Checkbox(
-                nameInput.getX(),
-                authorInput.getY() + BUTTON_HEIGHT + 5,
-                20,
-                20,
+                nameInput.getX(), authorInput.getY() + BUTTON_HEIGHT + 5,
+                20, 20,
                 Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.islocal"),
                 isLocalFile
         );

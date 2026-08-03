@@ -9,10 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
 
 public class MemoViewerScreen extends Screen {
 
@@ -39,26 +36,22 @@ public class MemoViewerScreen extends Screen {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen"));
         // 初始化数据
         this.renderedText = content;
-        if (Config.ENABLE_MARKDOWN.get() && renderedText != null) {
-            try {
-                this.markdownText = new MineMarkDrawable(renderedText);
-            } catch (Exception e) {
-                renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
-                SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
-            }
-        }
         this.memoInfo = memoInfo;
+        try {
+            this.markdownText = new MineMarkDrawable(renderedText);
+        } catch (Exception e) {
+            renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
+            SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
+        }
     }
 
     private void reload(MemoInfo memoInfo) {
         this.renderedText = ClientMemoCache.getMemoContent(memoInfo);
-        if (Config.ENABLE_MARKDOWN.get() && renderedText != null) {
-            try {
-                this.markdownText = new MineMarkDrawable(renderedText);
-            } catch (Exception e) {
-                renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
-                SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
-            }
+        try {
+            this.markdownText = new MineMarkDrawable(renderedText);
+        } catch (Exception e) {
+            renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
+            SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
         }
     }
 
@@ -83,16 +76,19 @@ public class MemoViewerScreen extends Screen {
                 this.footer = screenHeight * 0.1f;
             }
         }
+    }
+
+    private void calculateScrollOffset() {
         // 计算高度
         if (markdownText != null) {
-            this.totalHeight = markdownText.getHeight();
+            totalHeight = markdownText.getHeight();
         } else if (renderedText != null) {
-            this.totalHeight = renderedText.lines().count() * 20;
+            totalHeight = renderedText.lines().count() * 20;
         } else {
-            this.totalHeight = this.height - header - footer;
+            totalHeight = height - header - footer;
         }
         // 计算滚动
-        this.maxScroll = Math.max(0, this.totalHeight - this.height + this.footer + this.header);
+        this.maxScroll = Math.max(0, totalHeight - height + footer + header);
     }
 
     @Override
@@ -100,6 +96,7 @@ public class MemoViewerScreen extends Screen {
         super.init();
         // 重新计算
         resetContent();
+        calculateScrollOffset();
         this.addRenderableWidget(new Button.Builder(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.reload"),
                 button -> reload(memoInfo))
                 .pos(this.width / 2 - 50, (int) (this.height - footer + 5))
@@ -110,53 +107,51 @@ public class MemoViewerScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-
-        resetContent();
         // 渲染背景（灰色半透明背景）
         this.renderBackground(graphics);
+        // 渲染其他组件（如果有）
+        super.render(graphics, mouseX, mouseY, partialTick);
+        // 计算滚动
+        calculateScrollOffset();
         // 渲染文件名称
         graphics.drawString(this.font, memoInfo.getMemoName(), 10, 5, 0xAAAAAA);
         // 渲染文本内容
         renderContent(graphics, mouseX, mouseY);
         // 渲染滚动条
         renderScrollBar(graphics);
-        // 渲染其他组件（如果有）
-        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     // 渲染文本
     private void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        float contentX = margin;
-        float contentY = header;
-        float contentW = this.width - 2 * margin;
-        float contentH = this.height - header - footer;
+        int contentX = (int) margin;
+        int contentY = (int) header;
+        int contentW = (int) (this.width - 2 * margin);
+        int contentH = (int) (this.height - header - footer);
         // 使用裁剪
         graphics.enableScissor(
-                (int) contentX - 5,
-                (int) contentY - 5,
-                (int) contentX + (int) contentW,
-                (int) contentY + (int) contentH
+                contentX - 5, contentY - 5,
+                contentX + contentW, contentY + contentH
         );
         graphics.pose().pushPose();
         float drawY = contentY - (float) scrollOffset;
-
         // 检查文件内容
         if (this.renderedText == null) {
             graphics.drawCenteredString(
                     this.font,
                     Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
                             .append(memoInfo.getMemoPath()),
-                    20, (int) contentY, 0xFFFFFF);
+                    20, contentY, 0xFFFFFF);
             return;
         }
         // 渲染文件内容
-        if (Config.ENABLE_MARKDOWN.get()) {
+        try {
             this.markdownText.draw(contentX, drawY, contentW, mouseX, mouseY, graphics);
-        } else {
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Couldn't render markdown text!", e);
             String[] lines = renderedText.split("\n");
-            int y = (int) contentY;
+            int y = contentY;
             for (String line : lines) {
-                graphics.drawString(this.font, line, (int) contentX, y, 0xFFFFFF);
+                graphics.drawString(this.font, line, contentX, y, 0xFFFFFF);
                 y += this.font.lineHeight + 2;
             }
         }
@@ -242,11 +237,6 @@ public class MemoViewerScreen extends Screen {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         isDragging = false;
         return super.mouseReleased(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean handleComponentClicked(@Nullable Style pStyle) {
-        return super.handleComponentClicked(pStyle);
     }
 
     @Override

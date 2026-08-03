@@ -5,8 +5,12 @@ import com.github.rd806.simplecardmemo.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -58,10 +62,32 @@ public class MemoPacketSend {
                 ServerMemoCache.getInstance().addMemo(key, memoInfo, content);
                 SimpleCardMemo.LOGGER.info("Memo {} has been added!", key);
                 input.shrink(1);
+                sendMessage(sender, receiver);
             } else {
                 SimpleCardMemo.LOGGER.error("The input memo is empty!");
             }
         });
         context.setPacketHandled(true);
+    }
+
+    // 向目标玩家发送消息
+    private void sendMessage(ServerPlayer sender, String target) {
+        // 获取 MinecraftServer 实例
+        MinecraftServer server = sender.getServer();
+        if (server == null) {
+            SimpleCardMemo.LOGGER.error("The server is null!");
+            return;
+        }
+        // 获取 PlayerList（管理所有玩家的类）
+        PlayerList playerList = server.getPlayerList();
+        // 遍历所有在线玩家并比对名称（不区分大小写）
+        for (ServerPlayer player : playerList.getPlayers()) {
+            if (player.getName().getString().equalsIgnoreCase(target)) {
+                // 构造发送消息
+                String message = I18n.get(SimpleCardMemo.MODID + ".memo_mail.send");
+                message = sender.getName().getString() + message;
+                player.displayClientMessage(Component.translatable(message), false);
+            }
+        }
     }
 }

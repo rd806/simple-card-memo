@@ -63,5 +63,13 @@
     "simplecardmemo.gui.mail_screen.send": "发送",
     "simplecardmemo.gui.mail_screen.receive": "接收",
     "simplecardmemo.gui.mail_screen.message.no_target": "请输入玩家名！",
-    "simplecardmemo.gui.mail_screen.message.no_item": "请放入有效的备忘录！"
+    "simplecardmemo.gui.mail_screen.message.no_item": "请放入有效的备忘录！",
+
+    "simplecardmemo.memo_mail.send": "向你发送了一个备忘录。",
+
+    "simplecardmemo.command.clear_cache": "本地内容缓存已被清理！",
+
+    "simplecardmemo.config.page_margin": "页边距",
+    "simplecardmemo.config.cache": "本地缓存容量",
+    "simplecardmemo.config.date_format": "日期格式"
 }

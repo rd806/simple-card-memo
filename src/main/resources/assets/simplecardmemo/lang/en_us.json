@@ -63,5 +63,13 @@
     "simplecardmemo.gui.mail_screen.send": "Send",
     "simplecardmemo.gui.mail_screen.receive": "Receive",
     "simplecardmemo.gui.mail_screen.message.no_target": "No target player!",
-    "simplecardmemo.gui.mail_screen.message.no_item": "No valid Memo Viewer!"
+    "simplecardmemo.gui.mail_screen.message.no_item": "No valid Memo Viewer!",
+
+    "simplecardmemo.memo_mail.send": "send a memo to you.",
+
+    "simplecardmemo.command.clear_cache": "Client cache has been cleared!",
+
+    "simplecardmemo.config.page_margin": "Page Margin",
+    "simplecardmemo.config.cache": "Cache Size",
+    "simplecardmemo.config.date_format": "Date Format"
 }
