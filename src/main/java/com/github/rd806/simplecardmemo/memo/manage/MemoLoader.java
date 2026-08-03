@@ -1,6 +1,7 @@
-package com.github.rd806.simplecardmemo.memo;
+package com.github.rd806.simplecardmemo.memo.manage;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;

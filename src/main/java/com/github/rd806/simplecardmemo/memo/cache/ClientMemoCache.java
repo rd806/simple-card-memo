@@ -3,23 +3,18 @@ package com.github.rd806.simplecardmemo.memo.cache;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class ClientMemoCache {
 
     private static MemoLRUCache<String, String> cache = new MemoLRUCache<>();
-    // 临时文件
-    private static final MemoInfo tempMemo = new MemoInfo(
-            "temp", "temp.md", "Default", true, 0);
     // 最新文件
     private static ItemStack lastMemo = ModCreativeModeTabs.memoGuide();
 
     public static void put(String key, String value) { cache.put(key, value); }
     public static String get(String key) { return cache.get(key); }
-
-    public static MemoInfo getTempMemo() { return tempMemo; }
 
     public static void setLastMemo(ItemStack memo) { ClientMemoCache.lastMemo = memo; }
     public static ItemStack getLastMemo() { return lastMemo; }

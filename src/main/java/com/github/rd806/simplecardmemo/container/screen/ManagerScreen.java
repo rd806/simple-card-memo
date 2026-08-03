@@ -2,9 +2,9 @@ package com.github.rd806.simplecardmemo.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
-import com.github.rd806.simplecardmemo.memo.MemoConfig;
+import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketDestroy;

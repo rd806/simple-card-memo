@@ -1,6 +1,7 @@
 package com.github.rd806.simplecardmemo.network;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.network.command.MemoCacheClear;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketDestroy;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
@@ -24,40 +25,25 @@ public class Channel {
     private static int packetId = 1;
 
     public static void register() {
+        // 物品数据包
         CHANNEL.registerMessage(
                 packetId++,
-                MemoPacketNew.class,
-                MemoPacketNew::encode,
-                MemoPacketNew::decode,
-                MemoPacketNew::handle
-        );
+                MemoPacketNew.class, MemoPacketNew::encode, MemoPacketNew::decode, MemoPacketNew::handle);
         CHANNEL.registerMessage(
                 packetId++,
-                MemoPacketGet.class,
-                MemoPacketGet::encode,
-                MemoPacketGet::decode,
-                MemoPacketGet::handle
-        );
+                MemoPacketGet.class, MemoPacketGet::encode, MemoPacketGet::decode, MemoPacketGet::handle);
         CHANNEL.registerMessage(
                 packetId++,
-                MemoPacketDestroy.class,
-                MemoPacketDestroy::encode,
-                MemoPacketDestroy::decode,
-                MemoPacketDestroy::handle
-        );
+                MemoPacketDestroy.class, MemoPacketDestroy::encode, MemoPacketDestroy::decode, MemoPacketDestroy::handle);
         CHANNEL.registerMessage(
                 packetId++,
-                MemoPacketSend.class,
-                MemoPacketSend::encode,
-                MemoPacketSend::decode,
-                MemoPacketSend::handle
-        );
+                MemoPacketSend.class, MemoPacketSend::encode, MemoPacketSend::decode, MemoPacketSend::handle);
         CHANNEL.registerMessage(
                 packetId++,
-                MemoPacketReceive.class,
-                MemoPacketReceive::encode,
-                MemoPacketReceive::decode,
-                MemoPacketReceive::handle
-        );
+                MemoPacketReceive.class, MemoPacketReceive::encode, MemoPacketReceive::decode, MemoPacketReceive::handle);
+        // 命令数据包
+        CHANNEL.registerMessage(
+                packetId++,
+                MemoCacheClear.class, MemoCacheClear::encode, MemoCacheClear::decode, MemoCacheClear::handle);
     }
 }

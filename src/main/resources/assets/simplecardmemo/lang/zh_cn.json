@@ -67,7 +67,12 @@
 
     "simplecardmemo.memo_mail.send": "向你发送了一个备忘录。",
 
-    "simplecardmemo.command.clear_cache": "本地内容缓存已被清理！",
+    "simplecardmemo.command.cache.empty": "无文件缓存！",
+    "simplecardmemo.command.cache.info": "已缓存以下文件：",
+    "simplecardmemo.command.cache.clear": "本地内容缓存已被清理！",
+    "simplecardmemo.command.mail.empty": "服务器无信件可用！",
+    "simplecardmemo.command.mail.info": "服务器存在以下信件：",
+    "simplecardmemo.command.mail.clear": "所有信件已被清理！",
 
     "simplecardmemo.config.page_margin": "页边距",
     "simplecardmemo.config.cache": "本地缓存容量",

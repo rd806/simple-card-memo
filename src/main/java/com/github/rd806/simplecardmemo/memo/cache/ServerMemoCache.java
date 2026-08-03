@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.memo.cache;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerMemoCache {
@@ -28,6 +29,11 @@ public class ServerMemoCache {
 
     public String retrieveMemoContent(String key) {
         return contentCache.get(key);
+    }
+
+    // 显示所有信件
+    public Set<String> getMemoKeys() {
+        return memoCache.keySet();
     }
 
     // 清除

@@ -2,11 +2,10 @@ package com.github.rd806.simplecardmemo.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.ModItems;
-import com.github.rd806.simplecardmemo.memo.MemoConfig;
+import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.MemoLoader;
+import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
-import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
 import net.minecraft.client.Minecraft;
@@ -27,6 +26,8 @@ import java.util.Objects;
 
 public class EditorScreen extends Screen {
 
+    private static final MemoInfo tempMemo = new MemoInfo(
+            "temp", "temp.md", "Default", true, 0);
     private final String initialContent;
     private String filePath;
     private String displayName;
@@ -47,7 +48,7 @@ public class EditorScreen extends Screen {
 
     public EditorScreen() {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.editor.title"));
-        this.initialContent = MemoLoader.loadFromLocalFiles(ClientMemoCache.getTempMemo());
+        this.initialContent = MemoLoader.loadFromLocalFiles(tempMemo);
         setDefaultValues();
         MemoLoader.createTempFile();
     }
@@ -204,7 +205,7 @@ public class EditorScreen extends Screen {
     // 导出内容到草稿
     private void saveDraft() {
         String content = textInput.getValue();
-        if (MemoLoader.saveToLocalFiles(content, ClientMemoCache.getTempMemo()) && Minecraft.getInstance().player != null) {
+        if (MemoLoader.saveToLocalFiles(content, tempMemo) && Minecraft.getInstance().player != null) {
             this.onClose();
             Minecraft.getInstance().player.displayClientMessage(
                     Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.save.success"),

@@ -5,7 +5,6 @@ import com.github.rd806.simplecardmemo.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -84,9 +83,9 @@ public class MemoPacketSend {
         for (ServerPlayer player : playerList.getPlayers()) {
             if (player.getName().getString().equalsIgnoreCase(target)) {
                 // 构造发送消息
-                String message = I18n.get(SimpleCardMemo.MODID + ".memo_mail.send");
-                message = sender.getName().getString() + message;
-                player.displayClientMessage(Component.translatable(message), false);
+                String message = Component.translatable(SimpleCardMemo.MODID + ".memo_mail.send").getString();
+                message = sender.getName().getString() + " " + message;
+                player.displayClientMessage(Component.literal(message), false);
             }
         }
     }

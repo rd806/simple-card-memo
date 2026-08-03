@@ -67,7 +67,12 @@
 
     "simplecardmemo.memo_mail.send": "send a memo to you.",
 
-    "simplecardmemo.command.clear_cache": "Client cache has been cleared!",
+    "simplecardmemo.command.cache.empty": "No file is in the cache!",
+    "simplecardmemo.command.cache.info": "The following files have been cached:",
+    "simplecardmemo.command.cache.clear": "Client cache has been cleared!",
+    "simplecardmemo.command.mail.empty": "No Mail is on the server!",
+    "simplecardmemo.command.mail.info": "The following mails are available:",
+    "simplecardmemo.command.mail.clear": "Mails have been cleared!",
 
     "simplecardmemo.config.page_margin": "Page Margin",
     "simplecardmemo.config.cache": "Cache Size",
