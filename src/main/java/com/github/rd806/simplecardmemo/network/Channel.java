@@ -2,10 +2,12 @@ package com.github.rd806.simplecardmemo.network;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.network.command.MemoCacheClear;
+import com.github.rd806.simplecardmemo.network.command.MemoCacheInfo;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketDestroy;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
+import com.github.rd806.simplecardmemo.network.send.MemoPacketSave;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketSend;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
@@ -41,7 +43,14 @@ public class Channel {
         CHANNEL.registerMessage(
                 packetId++,
                 MemoPacketReceive.class, MemoPacketReceive::encode, MemoPacketReceive::decode, MemoPacketReceive::handle);
+        // 缓存数据包
+        CHANNEL.registerMessage(
+                packetId++,
+                MemoPacketSave.class, MemoPacketSave::encode, MemoPacketSave::decode, MemoPacketSave::handle);
         // 命令数据包
+        CHANNEL.registerMessage(
+                packetId++,
+                MemoCacheInfo.class, MemoCacheInfo::encode, MemoCacheInfo::decode, MemoCacheInfo::handle);
         CHANNEL.registerMessage(
                 packetId++,
                 MemoCacheClear.class, MemoCacheClear::encode, MemoCacheClear::decode, MemoCacheClear::handle);

@@ -1,6 +1,6 @@
 package com.github.rd806.simplecardmemo.memo.cache;
 
-import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 import java.util.Set;
@@ -8,38 +8,32 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerMemoCache {
 
-    private static final ServerMemoCache INSTANCE = new ServerMemoCache();
-    private final Map<String, MemoInfo> memoCache = new ConcurrentHashMap<>();
-    private final Map<String, String> contentCache = new ConcurrentHashMap<>();
-
-    public static ServerMemoCache getInstance() {
-        return INSTANCE;
-    }
+    private static final Map<String, ItemStack> memoCache = new ConcurrentHashMap<>();
+    private static final Map<String, String> contentCache = new ConcurrentHashMap<>();
 
     // 添加
-    public void addMemo(String key, MemoInfo memoInfo, String content) {
-        memoCache.put(key, memoInfo);
+    public static void addMemo(String key, ItemStack stack, String content) {
+        memoCache.put(key, stack);
         contentCache.put(key, content);
     }
 
     // 取出
-    public MemoInfo retrieveMemoItem(String key) {
+    public static ItemStack retrieveMemoItem(String key) {
         return memoCache.get(key);
     }
 
-    public String retrieveMemoContent(String key) {
+    public static String retrieveMemoContent(String key) {
         return contentCache.get(key);
     }
 
     // 显示所有信件
-    public Set<String> getMemoKeys() {
+    public static Set<String> getMemoKeys() {
         return memoCache.keySet();
     }
 
     // 清除
-    public void clearMemo(String senderId, String receiverId) {
-        String key = senderId + ":" + receiverId;
+    public static void clearMemo(String key) {
         memoCache.remove(key);
-        contentCache.remove(contentCache.remove(key));
+        contentCache.remove(key);
     }
 }

@@ -2,8 +2,6 @@ package com.github.rd806.simplecardmemo.network.send;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.items.MemoViewerItem;
-import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -20,11 +18,13 @@ public class MemoPacketSend {
     private final ItemStack stack;
     private final String content;
     private final String receiver;
+    private final String message;
 
-    public MemoPacketSend(ItemStack stack, String content, String receiver) {
+    public MemoPacketSend(ItemStack stack, String content, String receiver, String message) {
         this.stack = stack;
         this.content = content;
         this.receiver = receiver;
+        this.message = message;
     }
 
     // 编码：将数据写入网络缓冲区
@@ -32,6 +32,7 @@ public class MemoPacketSend {
         buffer.writeItemStack(stack, false);
         buffer.writeUtf(content);
         buffer.writeUtf(receiver);
+        buffer.writeUtf(message);
     }
 
     // 解码：从网络缓冲区读取数据
@@ -39,7 +40,8 @@ public class MemoPacketSend {
         ItemStack stack = buffer.readItem();
         String content = buffer.readUtf();
         String receiver = buffer.readUtf();
-        return new MemoPacketSend(stack, content, receiver);
+        String message = buffer.readUtf();
+        return new MemoPacketSend(stack, content, receiver, message);
     }
 
     // 处理方法
@@ -49,28 +51,24 @@ public class MemoPacketSend {
             ServerPlayer sender = context.getSender();
             if (sender == null) { return; }
             // 检查是否为管理器界面
-            if (!(sender.containerMenu instanceof MailMenu mailMenu)) {
-                SimpleCardMemo.LOGGER.error("Not a Mail Menu!");
+            MailMenu mailMenu = (MailMenu) sender.containerMenu;
+            ItemStack input = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
+            // 目标物品
+            if (input.isEmpty()) {
+                SimpleCardMemo.LOGGER.error("Memo is empty: {}", input);
                 return;
             }
-            ItemStack input = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
-            MemoInfo memoInfo = MemoViewerItem.getMemoInfo(input);
-            // 目标物品
-            if (!input.isEmpty()) {
-                String key = sender.getDisplayName().getString() + ":" + receiver;
-                ServerMemoCache.getInstance().addMemo(key, memoInfo, content);
-                SimpleCardMemo.LOGGER.info("Memo {} has been added!", key);
-                input.shrink(1);
-                sendMessage(sender, receiver);
-            } else {
-                SimpleCardMemo.LOGGER.error("The input memo is empty!");
-            }
+            String key = sender.getName().getString() + "->" + receiver;
+            ServerMemoCache.addMemo(key, stack, content);
+            SimpleCardMemo.LOGGER.info("Memo {}:{} has been added!", key, input.getHoverName().getString());
+            input.shrink(1);
+            sendMessage(sender, receiver, message);
         });
         context.setPacketHandled(true);
     }
 
     // 向目标玩家发送消息
-    private void sendMessage(ServerPlayer sender, String target) {
+    private void sendMessage(ServerPlayer sender, String target, String message) {
         // 获取 MinecraftServer 实例
         MinecraftServer server = sender.getServer();
         if (server == null) {
@@ -83,8 +81,6 @@ public class MemoPacketSend {
         for (ServerPlayer player : playerList.getPlayers()) {
             if (player.getName().getString().equalsIgnoreCase(target)) {
                 // 构造发送消息
-                String message = Component.translatable(SimpleCardMemo.MODID + ".memo_mail.send").getString();
-                message = sender.getName().getString() + " " + message;
                 player.displayClientMessage(Component.literal(message), false);
             }
         }

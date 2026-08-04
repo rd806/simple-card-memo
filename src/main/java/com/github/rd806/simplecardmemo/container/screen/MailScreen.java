@@ -9,14 +9,17 @@ import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketSend;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -122,16 +125,21 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         }
         // 获取发送的文件
         ItemStack stack = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
-        if (stack.isEmpty()) {
-            SimpleCardMemo.LOGGER.warn("Memo not found!");
+        if (stack.equals(ItemStack.EMPTY)) {
+            SimpleCardMemo.LOGGER.warn("Memo is empty!");
             cases = Cases.NO_ITEM;
             return;
         }
         // 获取发送的内容
         String content = ClientMemoCache.getMemoContentWithCache(MemoViewerItem.getMemoInfo(stack));
+        String message = "";
+        Player player = Minecraft.getInstance().player;
+        if (player != null) {
+            message = player.getName().getString() + " " + I18n.get(SimpleCardMemo.MODID + ".memo_mail.send");
+        }
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
-                new MemoPacketSend(stack, content, target)
+                new MemoPacketSend(stack, content, target, message)
         );
     }
 

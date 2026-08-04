@@ -74,6 +74,7 @@
     "simplecardmemo.command.mail.info": "服务器存在以下信件：",
     "simplecardmemo.command.mail.clear": "所有信件已被清理！",
 
+    "simplecardmemo.config.load_local_files": "读取本地文件",
     "simplecardmemo.config.page_margin": "页边距",
     "simplecardmemo.config.cache": "本地缓存容量",
     "simplecardmemo.config.date_format": "日期格式"

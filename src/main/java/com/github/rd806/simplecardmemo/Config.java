@@ -20,6 +20,8 @@ public class Config {
         RFC_1123_DATE_TIME
     }
 
+    // 读取本地文件
+    public static ForgeConfigSpec.BooleanValue LOAD_LOCAL_FILES;
     // 页边距设置
     public static ForgeConfigSpec.EnumValue<Margin> PAGE_MARGIN;
     // 缓冲区大小
@@ -28,17 +30,21 @@ public class Config {
     public static ForgeConfigSpec.EnumValue<DateFormat> DATE_FORMAT;
 
     public static ForgeConfigSpec init() {
+        LOAD_LOCAL_FILES = BUILDER
+                .translation(SimpleCardMemo.MODID + ".config.load_local_files")
+                .define("Load Local Files", true);
+
         PAGE_MARGIN = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.page_margin")
-                .defineEnum("PageMargin", Margin.MEDIUM);
+                .defineEnum("Page Margin", Margin.MEDIUM);
 
         CACHE_SIZE = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.cache")
-                .defineInRange("CacheSize", 5, 5, 10);
+                .defineInRange("Cache Size", 5, 5, 10);
 
         DATE_FORMAT = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.date_format")
-                .defineEnum("DateFormat", DateFormat.ISO_LOCAL_DATE);
+                .defineEnum("Date Format", DateFormat.ISO_LOCAL_DATE);
 
         return BUILDER.build();
     }

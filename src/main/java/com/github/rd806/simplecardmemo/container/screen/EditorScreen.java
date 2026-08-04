@@ -48,7 +48,7 @@ public class EditorScreen extends Screen {
 
     public EditorScreen() {
         super(Component.translatable(SimpleCardMemo.MODID + ".gui.editor.title"));
-        this.initialContent = MemoLoader.loadFromLocalFiles(tempMemo);
+        this.initialContent = MemoLoader.loadText(tempMemo);
         setDefaultValues();
         MemoLoader.createTempFile();
     }

@@ -42,7 +42,7 @@ public class MemoLoader {
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(30000);
-            connection.setRequestProperty("User-Agent", "Todolist");
+            connection.setRequestProperty("User-Agent", "SimpleCardMemo");
 
             int responseCode = connection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {

@@ -4,6 +4,7 @@ import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.command.MemoCacheClear;
+import com.github.rd806.simplecardmemo.network.command.MemoCacheInfo;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -31,9 +32,25 @@ public class SimpleCardMemoCommand {
         LiteralArgumentBuilder<CommandSourceStack> info = Commands.literal(INFO);
         LiteralArgumentBuilder<CommandSourceStack> clear = Commands.literal(CLEAR);
 
+        root.then(cache.then(info.executes(SimpleCardMemoCommand::showCache)));
         root.then(cache.then(clear.executes(SimpleCardMemoCommand::clearCache)));
         root.then(mail.then(info.executes(SimpleCardMemoCommand::showMail)));
         return root;
+    }
+
+    // 查看缓存
+    private static int showCache(CommandContext<CommandSourceStack> context) {
+        try {
+            // 发送网络包
+            ServerPlayer player = context.getSource().getPlayer();
+            Channel.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> player),
+                    new MemoCacheInfo()
+            );
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error(e.getMessage());
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
     // 清理缓存
@@ -45,13 +62,6 @@ public class SimpleCardMemoCommand {
                     PacketDistributor.PLAYER.with(() -> player),
                     new MemoCacheClear()
             );
-            // 提示信息
-            if (player != null) {
-                player.displayClientMessage(
-                        Component.translatable(SimpleCardMemo.MODID + ".command.cache.clear"),
-                        false
-                );
-            }
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());
         }
@@ -62,7 +72,7 @@ public class SimpleCardMemoCommand {
     private static int showMail(CommandContext<CommandSourceStack> context) {
         try {
             ServerPlayer player = context.getSource().getPlayer();
-            Set<String> set = ServerMemoCache.getInstance().getMemoKeys();
+            Set<String> set = ServerMemoCache.getMemoKeys();
             // 显示列表
             if (set.isEmpty()) {
                 SimpleCardMemo.LOGGER.info("No Mail is on the server!");
@@ -90,5 +100,4 @@ public class SimpleCardMemoCommand {
         }
         return Command.SINGLE_SUCCESS;
     }
-
 }

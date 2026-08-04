@@ -36,13 +36,13 @@ public class SimpleCardMemo {
         ModCreativeModeTabs.register(modEventBus);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
-        // 注册网络
-        Channel.register();
         // 注册配置文件
         context.registerConfig(ModConfig.Type.CLIENT, Config.init());
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        // 注册网络
+        Channel.register();
         // 创建文件目录
         try {
             Files.createDirectories(DATA_DIR);

@@ -1,5 +1,6 @@
 package com.github.rd806.simplecardmemo.memo.manage;
 
+import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.google.gson.Gson;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MemoConfig {
+public class  MemoConfig {
     // 配置 JSON 文件
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String CONFIG = SimpleCardMemo.MODID + "-memo.json";
@@ -51,7 +52,9 @@ public class MemoConfig {
                 createDefaultConfig();
             }
             loadFromJson();
-            localFilesToJson();
+            if (Config.LOAD_LOCAL_FILES.get()) {
+                localFilesToJson();
+            }
             SimpleCardMemo.LOGGER.info("Loaded {} memos", MEMO_MAP.size());
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error("Couldn't create directory at {}", CONFIG_PATH);

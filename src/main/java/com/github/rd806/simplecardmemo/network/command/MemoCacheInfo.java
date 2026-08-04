@@ -8,19 +8,19 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MemoCacheClear {
+public class MemoCacheInfo {
 
-    public MemoCacheClear() {}
+    public MemoCacheInfo() {}
 
     public void encode(FriendlyByteBuf ignoredBuffer) {}
 
-    public static MemoCacheClear decode(FriendlyByteBuf ignoredBuffer) {
-        return new MemoCacheClear();
+    public static MemoCacheInfo decode(FriendlyByteBuf ignoredBuffer) {
+        return new MemoCacheInfo();
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientMemoCache::clear));
+        context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ClientMemoCache::getInfo));
         context.setPacketHandled(true);
     }
 }
