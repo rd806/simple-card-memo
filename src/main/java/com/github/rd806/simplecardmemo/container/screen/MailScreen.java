@@ -2,7 +2,9 @@ package com.github.rd806.simplecardmemo.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.init.MailStatus;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
@@ -24,6 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
+
 public class MailScreen extends AbstractContainerScreen<MailMenu> {
 
     // 背景GUI图片
@@ -39,7 +43,9 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     private EditBox nameInput;
 
     private String target;
-    private Cases cases;
+    private static MailStatus status;
+    private static String content;
+    private static String message;
 
     public MailScreen(MailMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -48,12 +54,12 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         this.mailMenu = menu;
         this.imageWidth = 175;
         this.imageHeight = 210;
+        status = MailStatus.DEFAULT;
     }
 
     @Override
     protected void init() {
         super.init();
-        cases = Cases.GOOD;
         // 计算 GUI 左上角在屏幕上的位置
         leftPos = (this.width - this.imageWidth) / 2;
         topPos = (this.height - this.imageHeight) / 2;
@@ -111,43 +117,52 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 绘制界面背景
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
-        renderHint(graphics, cases);
+        renderHint(graphics, status);
         // 渲染物品提示
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     // 发送信件
     private void sendMemo() {
-        this.target = nameInput.getValue();
+        status = MailStatus.DEFAULT;
+        target = nameInput.getValue();
         if (target.isEmpty()) {
-            cases = Cases.NO_TARGET;
+            status = MailStatus.NO_TARGET;
             return;
         }
         // 获取发送的文件
         ItemStack stack = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
         if (stack.equals(ItemStack.EMPTY)) {
-            SimpleCardMemo.LOGGER.warn("Memo is empty!");
-            cases = Cases.NO_ITEM;
+            SimpleCardMemo.LOGGER.warn("The memo sent is empty!");
+            status = MailStatus.EMPTY_SEND;
             return;
         }
-        // 获取发送的内容
-        String content = ClientMemoCache.getMemoContentWithCache(MemoViewerItem.getMemoInfo(stack));
-        String message = "";
+        // 构造发送信息
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             message = player.getName().getString() + " " + I18n.get(SimpleCardMemo.MODID + ".memo_mail.send");
         }
-        Channel.CHANNEL.send(
-                PacketDistributor.SERVER.noArg(),
-                new MemoPacketSend(stack, content, target, message)
-        );
+        // 获取发送的内容
+        MemoInfo memoInfo = MemoViewerItem.getMemoInfo(stack);
+        // 异步加载
+        CompletableFuture.runAsync(() -> content = ClientMemoCache.getMemoContentWithCache(memoInfo))
+                .thenAccept(data -> Minecraft.getInstance().execute(() ->
+                        Channel.CHANNEL.send(
+                                PacketDistributor.SERVER.noArg(),
+                                new MemoPacketSend(content, target, message)
+                        )))
+                .exceptionally(e -> {
+                            SimpleCardMemo.LOGGER.error("Error on sending mail", e);
+                            return null;
+                        });
     }
 
     // 接收信件
     private void receiveMemo() {
+        status = MailStatus.DEFAULT;
         this.target = nameInput.getValue();
         if (target.isEmpty()) {
-            cases = Cases.NO_TARGET;
+            status = MailStatus.NO_TARGET;
             return;
         }
         Channel.CHANNEL.send(
@@ -156,11 +171,30 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         );
     }
 
-    private void renderHint(GuiGraphics graphics, Cases cases) {
+    // 渲染屏幕提示文字
+    private void renderHint(GuiGraphics graphics, MailStatus cases) {
         switch (cases) {
-            case NO_ITEM -> graphics.drawString(
+            case SUCCESS_SEND -> graphics.drawString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.no_item"),
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.success_send"),
+                    leftPos + 43, topPos + 100,
+                    0x008000, false
+            );
+            case SUCCESS_RECEIVE -> graphics.drawString(
+                    this.font,
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.success_receive"),
+                    leftPos + 43, topPos + 100,
+                    0x008000, false
+            );
+            case EMPTY_SEND -> graphics.drawString(
+                    this.font,
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.empty_send"),
+                    leftPos + 43, topPos + 100,
+                    0xFF5555, false
+            );
+            case EMPTY_RECEIVE -> graphics.drawString(
+                    this.font,
+                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.empty_receive"),
                     leftPos + 43, topPos + 100,
                     0xFF5555, false
             );
@@ -170,13 +204,11 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
                     leftPos + 43, topPos + 100,
                     0xFF5555, false
             );
-            case GOOD -> {}
+            case DEFAULT -> {}
         }
     }
 
-    private enum Cases {
-        NO_ITEM,
-        NO_TARGET,
-        GOOD
+    public static void setStatus(MailStatus status1) {
+        status = status1;
     }
 }

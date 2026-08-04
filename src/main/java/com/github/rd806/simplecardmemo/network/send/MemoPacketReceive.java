@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo.network.send;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.init.MailStatus;
 import com.github.rd806.simplecardmemo.items.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
 import com.github.rd806.simplecardmemo.network.Channel;
@@ -43,23 +44,28 @@ public class MemoPacketReceive {
             // 获取物品信息
             String key = sender + "->" + receiver.getName().getString();
             ItemStack output = ServerMemoCache.retrieveMemoItem(key);
-            if (output.isEmpty()) {
+            if (output == null) {
                 SimpleCardMemo.LOGGER.error("Memo not found: {}", key);
+                Channel.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> receiver),
+                        new MailStatusSend(MailStatus.EMPTY_RECEIVE)
+                );
                 return;
             }
             // 设置物品
             mailMenu.getItemStackHandler().setStackInSlot(MailMenu.OUTPUT_SLOT, output);
             // 设置内容缓存
-            boolean isLocal = MemoViewerItem.getTextSource(output);
             String filePath = MemoViewerItem.getFilePath(output);
             String content = ServerMemoCache.retrieveMemoContent(key);
-            if (isLocal) {
-                Channel.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> receiver),
-                        new MemoPacketSave(filePath, content)
-                );
-            }
-            ServerMemoCache.clearMemo(key);
+            Channel.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> receiver),
+                    new MemoPacketSave(filePath, content)
+            );
+            ServerMemoCache.removeMemo(key);
+            Channel.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> receiver),
+                    new MailStatusSend(MailStatus.SUCCESS_RECEIVE)
+            );
         });
         context.setPacketHandled(true);
     }

@@ -18,7 +18,7 @@ issueTrackerURL="https://github.com/rd806/simple-card-memo/issues" #optional
     # The modid of the mod
     modId = "simplecardmemo" #mandatory
     # The version number of the mod
-    version = "1.1.0" #mandatory
+    version = "1.1.1" #mandatory
     # A display name for the mod
     displayName = "Simple Card Memo" #mandatory
     # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
@@ -39,7 +39,7 @@ issueTrackerURL="https://github.com/rd806/simple-card-memo/issues" #optional
     # IMPORTANT NOTE: this is NOT an instruction as to which environments (CLIENT or DEDICATED SERVER) your mod loads on. Your mod should load (and maybe do nothing!) whereever it finds itself.
     #displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
     # The description text for the mod (multi line!) (#mandatory)
-    description = '''Add memo cards to Minecraft, more specifically, introduce a text preview system to the game.'''
+    description = '''Add memo cards to Minecraft, more specifically, preview texts anytime and anywhere in the Minecraft game.'''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies."simplecardmemo"]] #optional

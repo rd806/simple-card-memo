@@ -2,7 +2,9 @@ package com.github.rd806.simplecardmemo.network.send;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.init.MailStatus;
 import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
+import com.github.rd806.simplecardmemo.network.Channel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -10,18 +12,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
 public class MemoPacketSend {
 
-    private final ItemStack stack;
     private final String content;
     private final String receiver;
     private final String message;
 
-    public MemoPacketSend(ItemStack stack, String content, String receiver, String message) {
-        this.stack = stack;
+    public MemoPacketSend(String content, String receiver, String message) {
         this.content = content;
         this.receiver = receiver;
         this.message = message;
@@ -29,7 +30,6 @@ public class MemoPacketSend {
 
     // 编码：将数据写入网络缓冲区
     public void encode(FriendlyByteBuf buffer) {
-        buffer.writeItemStack(stack, false);
         buffer.writeUtf(content);
         buffer.writeUtf(receiver);
         buffer.writeUtf(message);
@@ -37,11 +37,10 @@ public class MemoPacketSend {
 
     // 解码：从网络缓冲区读取数据
     public static MemoPacketSend decode(FriendlyByteBuf buffer) {
-        ItemStack stack = buffer.readItem();
         String content = buffer.readUtf();
         String receiver = buffer.readUtf();
         String message = buffer.readUtf();
-        return new MemoPacketSend(stack, content, receiver, message);
+        return new MemoPacketSend(content, receiver, message);
     }
 
     // 处理方法
@@ -51,17 +50,26 @@ public class MemoPacketSend {
             ServerPlayer sender = context.getSender();
             if (sender == null) { return; }
             // 检查是否为管理器界面
-            MailMenu mailMenu = (MailMenu) sender.containerMenu;
+            if (!(sender.containerMenu instanceof MailMenu mailMenu)) {
+                SimpleCardMemo.LOGGER.error("Not a Mail Menu!");
+                return;
+            }
             ItemStack input = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
+            // 复制一份对象存入服务器缓存
+            ItemStack mail = input.copy();
             // 目标物品
-            if (input.isEmpty()) {
+            if (mail.isEmpty()) {
                 SimpleCardMemo.LOGGER.error("Memo is empty: {}", input);
                 return;
             }
             String key = sender.getName().getString() + "->" + receiver;
-            ServerMemoCache.addMemo(key, stack, content);
-            SimpleCardMemo.LOGGER.info("Memo {}:{} has been added!", key, input.getHoverName().getString());
+            ServerMemoCache.addMemo(key, mail, content);
+            SimpleCardMemo.LOGGER.info("Mail {}:{} has been added!", key, mail.getHoverName().getString());
             input.shrink(1);
+            Channel.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> sender),
+                    new MailStatusSend(MailStatus.SUCCESS_SEND)
+            );
             sendMessage(sender, receiver, message);
         });
         context.setPacketHandled(true);

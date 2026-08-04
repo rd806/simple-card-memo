@@ -9,6 +9,7 @@ import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketSave;
 import com.github.rd806.simplecardmemo.network.send.MemoPacketSend;
+import com.github.rd806.simplecardmemo.network.send.MailStatusSend;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -43,6 +44,10 @@ public class Channel {
         CHANNEL.registerMessage(
                 packetId++,
                 MemoPacketReceive.class, MemoPacketReceive::encode, MemoPacketReceive::decode, MemoPacketReceive::handle);
+        // 状态数据包
+        CHANNEL.registerMessage(
+                packetId++,
+                MailStatusSend.class, MailStatusSend::encode, MailStatusSend::decode, MailStatusSend::handle);
         // 缓存数据包
         CHANNEL.registerMessage(
                 packetId++,

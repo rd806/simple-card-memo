@@ -35,6 +35,7 @@ public class SimpleCardMemoCommand {
         root.then(cache.then(info.executes(SimpleCardMemoCommand::showCache)));
         root.then(cache.then(clear.executes(SimpleCardMemoCommand::clearCache)));
         root.then(mail.then(info.executes(SimpleCardMemoCommand::showMail)));
+        root.then(mail.then(clear.executes(SimpleCardMemoCommand::clearMail)));
         return root;
     }
 
@@ -94,6 +95,23 @@ public class SimpleCardMemoCommand {
                         player.displayClientMessage(Component.literal(key), false);
                     }
                 }
+            }
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error(e.getMessage());
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    // 清除信件缓存
+    private static int clearMail(CommandContext<CommandSourceStack> context) {
+        try {
+            ServerPlayer player = context.getSource().getPlayer();
+            ServerMemoCache.clearMemoCache();
+            if (player != null) {
+                player.displayClientMessage(
+                        Component.translatable(SimpleCardMemo.MODID + ".command.mail.clear"),
+                        false
+                );
             }
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());

@@ -26,11 +26,11 @@
     "simplecardmemo.item.memo_guide": "简易备忘录教程",
     "simplecardmemo.item.minecraft_server": "如何开设Minecraft服务器",
 
-    "simplecardmemo.gui.viewer_screen": "查看文本",
+    "simplecardmemo.gui.viewer_screen": "查看界面",
     "simplecardmemo.gui.viewer_screen.reload": "重新加载",
     "simplecardmemo.gui.viewer_screen.error": "文本错误：",
 
-    "simplecardmemo.gui.editor_screen": "编辑文本",
+    "simplecardmemo.gui.editor_screen": "编辑界面",
     "simplecardmemo.gui.editor_screen.title": "编辑内容",
     "simplecardmemo.gui.editor_screen.hint": "支持 Markdown 语法 | Ctrl+S 暂存 | Ctrl+E 导出",
     "simplecardmemo.gui.editor_screen.hint.name": "显示名",
@@ -48,12 +48,12 @@
     "simplecardmemo.gui.editor_screen.export.success": "成功导出备忘录！",
     "simplecardmemo.gui.editor_screen.close": "关闭",
 
-    "simplecardmemo.gui.manager_screen": "管理备忘录",
+    "simplecardmemo.gui.manager_screen": "管理界面",
     "simplecardmemo.gui.manager_screen.title": "管理备忘录",
     "simplecardmemo.gui.manager_screen.memo_list": "文件列表",
     "simplecardmemo.gui.manager_screen.delete": "删除",
     "simplecardmemo.gui.manager_screen.edit": "编辑",
-    "simplecardmemo.gui.manager_screen.reload": "重载",
+    "simplecardmemo.gui.manager_screen.reload": "刷新",
     "simplecardmemo.gui.manager_screen.export": "导出",
     "simplecardmemo.gui.manager_screen.export.success": "成功导出备忘录！",
     "simplecardmemo.gui.manager_screen.destroy": "销毁",
@@ -62,8 +62,12 @@
     "simplecardmemo.gui.mail_screen.input.hint": "请输入目标玩家名",
     "simplecardmemo.gui.mail_screen.send": "发送",
     "simplecardmemo.gui.mail_screen.receive": "接收",
+
+    "simplecardmemo.gui.mail_screen.message.success_send": "发送成功！",
+    "simplecardmemo.gui.mail_screen.message.success_receive": "接收成功！",
+    "simplecardmemo.gui.mail_screen.message.empty_send": "请放入有效的备忘录！",
+    "simplecardmemo.gui.mail_screen.message.empty_receive": "无可接收的备忘录！",
     "simplecardmemo.gui.mail_screen.message.no_target": "请输入玩家名！",
-    "simplecardmemo.gui.mail_screen.message.no_item": "请放入有效的备忘录！",
 
     "simplecardmemo.memo_mail.send": "向你发送了一个备忘录。",
 
