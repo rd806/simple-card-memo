@@ -79,7 +79,19 @@
     "simplecardmemo.command.mail.clear": "Mails have been cleared!",
 
     "simplecardmemo.config.load_local_files": "Load Local Files",
+    "simplecardmemo.config.load_local_files.tooltip": "Load local memos when start games",
     "simplecardmemo.config.page_margin": "Page Margin",
+    "simplecardmemo.config.page_margin.tooltip": "Page Margin: WIDE/MIDDLE/NARROW",
+    "simplecardmemo.config.text_background": "Text Background",
+    "simplecardmemo.config.text_background.tooltip": "Enable text background when viewing",
+    "simplecardmemo.config.background_color": "Background Color",
+    "simplecardmemo.config.background_color.tooltip": "Color for the text background",
     "simplecardmemo.config.cache": "Cache Size",
-    "simplecardmemo.config.date_format": "Date Format"
+    "simplecardmemo.config.cache.tooltip": "Define how many memos' content will be cached during the game",
+    "simplecardmemo.config.date_format": "Date Format",
+    "simplecardmemo.config.date_format.tooltip": "Date format for the memos",
+
+    "simplecardmemo.gui.config.title": "Simple Card Memo Config",
+    "simplecardmemo.gui.config.text": "Text view screen settings",
+    "simplecardmemo.gui.config.item": "Card Memo item settings"
 }

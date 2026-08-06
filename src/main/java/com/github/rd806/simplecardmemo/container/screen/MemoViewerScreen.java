@@ -19,9 +19,9 @@ public class MemoViewerScreen extends Screen {
     private MineMarkDrawable markdownText;
 
     // 页面设置
-    private float header;
-    private float margin;
-    private float footer;
+    private int header;
+    private int margin;
+    private int footer;
     // 滚动设置
     private float totalHeight = 0;
     private double scrollOffset = 0;
@@ -61,19 +61,19 @@ public class MemoViewerScreen extends Screen {
         float screenHeight = this.height;
         switch (Config.PAGE_MARGIN.get()) {
             case WIDE -> {
-                this.margin = screenWidth * 0.35f;
-                this.header = screenHeight * 0.2f;
-                this.footer = screenHeight * 0.2f;
+                this.margin = (int) (screenWidth * 0.35f);
+                this.header = (int) (screenHeight * 0.2f);
+                this.footer = (int) (screenHeight * 0.2f);
             }
             case MEDIUM -> {
-                this.margin = screenWidth * 0.25f;
-                this.header = screenHeight * 0.15f;
-                this.footer = screenHeight * 0.15f;
+                this.margin = (int) (screenWidth * 0.25f);
+                this.header = (int) (screenHeight * 0.15f);
+                this.footer = (int) (screenHeight * 0.15f);
             }
             case NARROW -> {
-                this.margin = screenWidth * 0.15f;
-                this.header = screenHeight * 0.1f;
-                this.footer = screenHeight * 0.1f;
+                this.margin = (int) (screenWidth * 0.15f);
+                this.header = (int) (screenHeight * 0.1f);
+                this.footer = (int) (screenHeight * 0.1f);
             }
         }
     }
@@ -99,7 +99,7 @@ public class MemoViewerScreen extends Screen {
         calculateScrollOffset();
         this.addRenderableWidget(new Button.Builder(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.reload"),
                 button -> reload(memoInfo))
-                .pos(this.width / 2 - 50, (int) (this.height - footer + 5))
+                .pos(this.width / 2 - 50, this.height - footer + 10)
                 .size(100, 20)
                 .build()
         );
@@ -123,14 +123,14 @@ public class MemoViewerScreen extends Screen {
 
     // 渲染文本
     private void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        int contentX = (int) margin;
-        int contentY = (int) header;
-        int contentW = (int) (this.width - 2 * margin);
-        int contentH = (int) (this.height - header - footer);
+        int contentX = margin;
+        int contentY = header;
+        int contentW = (this.width - 2 * margin);
+        int contentH = this.height - header - footer;
         // 使用裁剪
         graphics.enableScissor(
                 contentX - 5, contentY - 5,
-                contentX + contentW, contentY + contentH
+                contentX + contentW + 5, contentY + contentH + 5
         );
         graphics.pose().pushPose();
         float drawY = contentY - (float) scrollOffset;
@@ -142,6 +142,14 @@ public class MemoViewerScreen extends Screen {
                             .append(memoInfo.getMemoPath()),
                     20, contentY, 0xFFFFFF);
             return;
+        }
+        // 渲染文本背景
+        if (Config.TEXT_BACKGROUND.get()) {
+            graphics.fill(
+                    contentX - 5, contentY - 5,
+                    contentX + contentW + 5, contentY + contentH + 5,
+                    Config.BACKGROUND_COLOR.get()
+            );
         }
         // 渲染文件内容
         try {
@@ -164,27 +172,27 @@ public class MemoViewerScreen extends Screen {
     private void renderScrollBar(GuiGraphics graphics) {
         if (this.maxScroll <= 0) return;
 
-        int barX = (int) (this.width - margin + 4);
-        int barY = (int) header;
+        int barX = this.width - margin + 8;
+        int barY = header;
         int barW = 6;
-        int barH = (int) (this.height - header - footer);
+        int barH = this.height - header - footer;
 
-        graphics.fill(barX, barY, barX + barW, barY + barH, 0x33FFFFFF);
+        graphics.fill(barX, barY - 5, barX + barW, barY + barH + 5, 0x33FFFFFF);
         // 滑块
         float progress = (float) (scrollOffset / maxScroll);
         int thumbHeight = Math.max(20, (int) (barH * Math.min(1, (barH / totalHeight))));
         int thumbY = barY + (int) ((barH - thumbHeight) * progress);
-        graphics.fill(barX, thumbY, barX + barW, thumbY + thumbHeight, 0xCCFFFFFF);
+        graphics.fill(barX, thumbY - 5, barX + barW, thumbY + thumbHeight + 5, 0xCCFFFFFF);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // 检查是否点击在滚动条滑块上（开始拖动）
         if (button == 0 && maxScroll > 0) {
-            int barX = (int) (this.width - margin + 4);
-            int barY = (int) footer;
+            int barX = this.width - margin + 8;
+            int barY = header - 5;
             int barW = 6;
-            int barH = (int) (this.height - header - footer);
+            int barH = this.height - header - footer;
 
             float visibleRatio = totalHeight / barH;
             int thumbHeight = Math.max(20, (int)(barH * visibleRatio));
@@ -201,7 +209,7 @@ public class MemoViewerScreen extends Screen {
             // 点击滚动条轨道，跳转到对应位置
             if (mouseX >= barX && mouseX <= barX + barW && mouseY >= barY && mouseY <= barY + barH) {
                 float clickProgress = (float) (mouseY - barY) / barH;
-                scrollOffset = (int)(clickProgress * maxScroll);
+                scrollOffset = (int) (clickProgress * maxScroll);
                 scrollOffset = Math.max(0, Math.min(scrollOffset, maxScroll));
                 return true;
             }
@@ -224,7 +232,7 @@ public class MemoViewerScreen extends Screen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (isDragging && button == 0) {
             int deltaY = (int) (mouseY - dragStartY);
-            int barHeight = (int) (this.height - header - footer);
+            int barHeight = this.height - header - footer;
             float progress = (float) deltaY / barHeight;
             scrollOffset = dragStartOffset + (int) (progress * maxScroll);
             scrollOffset = Math.max(0, Math.min(scrollOffset, maxScroll));

@@ -62,11 +62,33 @@ public class  MemoConfig {
         }
     }
 
-    // 从本地加载
+    // 加载 JSON 配置文件
+    public static void loadFromJson() {
+        try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
+            var json = GSON.fromJson(reader, JsonWrapper.class);
+            if (json != null && json.memos != null) {
+                MEMO_LIST = json.memos;
+                MEMO_MAP.clear();
+                for (MemoInfo info : json.memos) {
+                    MEMO_MAP.put(info.getMemoPath(), info);
+                    SimpleCardMemo.LOGGER.info("Loading Memo: {}", info.getMemoName());
+                }
+            }
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Failed to load memos from {}", CONFIG_PATH, e);
+        }
+    }
+
+    // 从本地文件加载
     public static void localFilesToJson() {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(SimpleCardMemo.DATA_DIR)) {
             for (Path path : stream) {
                 try {
+                    // 跳过 temp.md 文件
+                    if (path.getFileName().toString().equals("temp.md")) {
+                        continue;
+                    }
+                    // 跳过重复文件
                     if (MEMO_MAP.containsKey(path.getFileName().toString())) {
                         continue;
                     }
@@ -89,36 +111,17 @@ public class  MemoConfig {
         }
     }
 
-    // 加载 JSON 文件
-    public static void loadFromJson() {
-        try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
-            var json = GSON.fromJson(reader, JsonWrapper.class);
-            if (json != null && json.memos != null) {
-                MEMO_LIST = json.memos;
-                MEMO_MAP.clear();
-                for (MemoInfo info : json.memos) {
-                    MEMO_MAP.put(info.getMemoPath(), info);
-                    SimpleCardMemo.LOGGER.info("Loading Memo: {}", info.getMemoName());
-                }
-            }
-        } catch (Exception e) {
-            SimpleCardMemo.LOGGER.error("Failed to load memos from {}", CONFIG_PATH, e);
-        }
-    }
-
     // 重新加载
     public static void reload() {
         MEMO_LIST.clear();
         MEMO_MAP.clear();
         loadFromJson();
+        if (Config.LOAD_LOCAL_FILES.get()) {
+            localFilesToJson();
+        }
     }
 
-    // 根据路径获取
-    public static MemoInfo getMemoInfo(String memoPath) {
-        return MEMO_MAP.get(memoPath);
-    }
-
-    // 保存到 JSON 文件
+    // 保存配置到 JSON 文件
     public static void saveToConfig() {
         try {
             Files.createDirectories(CONFIG_PATH.getParent());

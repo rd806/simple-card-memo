@@ -27,7 +27,10 @@ public class SimpleCardMemo {
     // 数据文件目录
     public static final Path DATA_DIR = FMLPaths.GAMEDIR.get().resolve("data/simple_card_memo");
 
+    public static FMLJavaModLoadingContext fmlContext;
+
     public SimpleCardMemo(FMLJavaModLoadingContext context) {
+        fmlContext = context;
         IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(this::commonSetup);
         // 创建物品、GUI和物品栏

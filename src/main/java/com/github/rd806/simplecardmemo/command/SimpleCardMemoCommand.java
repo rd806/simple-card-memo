@@ -72,28 +72,20 @@ public class SimpleCardMemoCommand {
     // 显示信件内容
     private static int showMail(CommandContext<CommandSourceStack> context) {
         try {
-            ServerPlayer player = context.getSource().getPlayer();
             Set<String> set = ServerMemoCache.getMemoKeys();
             // 显示列表
             if (set.isEmpty()) {
-                SimpleCardMemo.LOGGER.info("No Mail is on the server!");
-                if (player != null) {
-                    player.displayClientMessage(
-                            Component.translatable(SimpleCardMemo.MODID + ".command.mail.empty"),
-                            false);
-                }
+                context.getSource().sendSuccess(
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.empty"),
+                        false);
             } else {
-                SimpleCardMemo.LOGGER.info("The following mails are available:");
-                if (player != null) {
-                    player.displayClientMessage(
-                            Component.translatable(SimpleCardMemo.MODID + ".command.mail.info"),
-                            false);
-                }
+                context.getSource().sendSuccess(
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.info"),
+                        false);
+                // 显示列表
                 for (String key : set) {
                     SimpleCardMemo.LOGGER.info(key);
-                    if (player != null) {
-                        player.displayClientMessage(Component.literal(key), false);
-                    }
+                    context.getSource().sendSuccess(() -> Component.literal(key), false);
                 }
             }
         } catch (Exception e) {
@@ -105,14 +97,9 @@ public class SimpleCardMemoCommand {
     // 清除信件缓存
     private static int clearMail(CommandContext<CommandSourceStack> context) {
         try {
-            ServerPlayer player = context.getSource().getPlayer();
-            ServerMemoCache.clearMemoCache();
-            if (player != null) {
-                player.displayClientMessage(
-                        Component.translatable(SimpleCardMemo.MODID + ".command.mail.clear"),
-                        false
-                );
-            }
+            context.getSource().sendSuccess(
+                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.clear"),
+                    false);
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());
         }
