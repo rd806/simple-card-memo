@@ -44,10 +44,12 @@ public class SimpleCardMemoCommand {
         try {
             // 发送网络包
             ServerPlayer player = context.getSource().getPlayer();
-            Channel.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> player),
-                    new MemoCacheInfo()
-            );
+            if (player != null) {
+                Channel.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> player),
+                        new MemoCacheInfo()
+                );
+            }
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());
         }
@@ -59,10 +61,12 @@ public class SimpleCardMemoCommand {
         try {
             // 发送网络包
             ServerPlayer player = context.getSource().getPlayer();
-            Channel.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> player),
-                    new MemoCacheClear()
-            );
+            if (player != null) {
+                Channel.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> player),
+                        new MemoCacheClear()
+                );
+            }
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());
         }

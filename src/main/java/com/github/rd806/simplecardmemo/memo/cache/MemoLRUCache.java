@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.memo.cache;
 import com.github.rd806.simplecardmemo.Config;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class MemoLRUCache<K, V> extends LinkedHashMap<K, V> {
     private static int MAX_CAPACITY = 5;
@@ -13,7 +14,7 @@ public class MemoLRUCache<K, V> extends LinkedHashMap<K, V> {
     }
 
     @Override
-    protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest) {
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
         return size() > MAX_CAPACITY;
     }
 }

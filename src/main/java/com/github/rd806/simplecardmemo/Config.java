@@ -1,6 +1,5 @@
 package com.github.rd806.simplecardmemo;
 
-import net.minecraft.client.resources.language.I18n;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 
@@ -37,30 +36,30 @@ public class Config {
         BUILDER.push("Text").translation(SimpleCardMemo.MODID + ".gui.config.text");
         LOAD_LOCAL_FILES = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.load_local_files")
-                .comment(I18n.get(SimpleCardMemo.MODID + ".config.load_local_files.tooltip"))
+                .comment("Load local memos when start games")
                 .define("LoadLocalFiles", true);
         PAGE_MARGIN = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.page_margin")
-                .comment(I18n.get(SimpleCardMemo.MODID + ".config.page_margin.tooltip"))
+                .comment("Page Margin: WIDE/MIDDLE/NARROW")
                 .defineEnum("PageMargin", Margin.MEDIUM);
         TEXT_BACKGROUND = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.text_background")
-                .comment(I18n.get(SimpleCardMemo.MODID + ".config.text_background.tooltip"))
+                .comment("Enable text background when viewing")
                 .define("TextBackground", false);
         BACKGROUND_COLOR = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.background_color")
-                .comment(I18n.get(SimpleCardMemo.MODID + ".config.background_color.tooltip"))
+                .comment("Color for the text background")
                 .define("BackgroundColor", 0xFF020619);
         CACHE_SIZE = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.cache")
-                .comment(I18n.get(SimpleCardMemo.MODID + ".config.cache.tooltip"))
+                .comment("Define how many memos' content will be cached during the game")
                 .defineInRange("CacheSize", 5, 5, 10);
         BUILDER.pop();
 
         BUILDER.push("Item").translation(SimpleCardMemo.MODID + ".gui.config.item");
         DATE_FORMAT = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.date_format")
-                .comment(I18n.get(SimpleCardMemo.MODID + ".config.date_format.tooltip"))
+                .comment("Date format for the memos")
                 .defineEnum("DateFormat", DateFormat.ISO_LOCAL_DATE);
         BUILDER.pop();
 

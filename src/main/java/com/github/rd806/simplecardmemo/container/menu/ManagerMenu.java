@@ -79,7 +79,7 @@ public class ManagerMenu extends AbstractContainerMenu {
     // 创建发送槽位
     private void addSlot() {
         // 发送槽位
-        this.addSlot(new SlotItemHandler(itemHandler, INPUT_SLOT, 55, 125) {
+        this.addSlot(new SlotItemHandler(itemHandler, INPUT_SLOT, 55, 135) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 // 只允许放入 Memo Viewer
@@ -87,7 +87,7 @@ public class ManagerMenu extends AbstractContainerMenu {
             }
         });
         // 接收槽位
-        this.addSlot(new SlotItemHandler(itemHandler, OUTPUT_SLOT, 109, 125) {
+        this.addSlot(new SlotItemHandler(itemHandler, OUTPUT_SLOT, 109, 135) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return false;
@@ -104,7 +104,7 @@ public class ManagerMenu extends AbstractContainerMenu {
                         inventory,
                         col + row * 9 + 9,
                         8 + col * 18,
-                        157 + row * 18
+                        174 + row * 18
                 ));
             }
         }
@@ -113,7 +113,7 @@ public class ManagerMenu extends AbstractContainerMenu {
                     inventory,
                     col,
                     8 + col * 18,
-                    215
+                    232
             ));
         }
     }

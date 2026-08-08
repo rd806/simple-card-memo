@@ -44,7 +44,7 @@ public class MemoViewerItem extends Item {
     private static final String IS_LOCAL_FILE = "isLocalFile";
     // 默认内容
     private static String content = "Default Text";
-    private final String prefix = "§a▍ §r";
+    private final String prefix = "§a▍ §7";
 
     public MemoViewerItem(Properties properties) {
         super(properties);
@@ -52,12 +52,12 @@ public class MemoViewerItem extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        // 使用方法
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
-                .withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
         // 为空展示默认信息
         if (stack.equals(ModCreativeModeTabs.newMemo(), false)) {
+            // 使用方法
+            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
+                    .withStyle(ChatFormatting.GRAY));
             tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.default")
                     .withStyle(ChatFormatting.GRAY));
             return;
@@ -74,7 +74,10 @@ public class MemoViewerItem extends Item {
                 tooltipComponents.add(Component.literal(getDateString(timestamp)));
             }
         } else {
-            // 未按 Shift 时显示提示
+            // 使用方法
+            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
+                    .withStyle(ChatFormatting.GRAY));
+            // 显示提示
             tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.more")
                     .withStyle(ChatFormatting.GRAY));
         }
@@ -105,7 +108,7 @@ public class MemoViewerItem extends Item {
                             e -> {
                                 SimpleCardMemo.LOGGER.error("Error loading content data", e);
                                 return null;
-            });
+                            });
             ClientMemoCache.setLastMemo(newStack);
         }
         // 返回成功，表示物品被使用了，但避免消耗
@@ -189,17 +192,19 @@ public class MemoViewerItem extends Item {
     }
 
     // 获取文件作者信息
+    @OnlyIn(Dist.CLIENT)
     private String getAuthorString(ItemStack stack) {
-        String author = I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.author") + getAuthor(stack);
+        String author = I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.author") + "§r" + getAuthor(stack);
         return prefix + author;
     }
     // 获取文件来源信息
+    @OnlyIn(Dist.CLIENT)
     private String getSourceString(ItemStack stack) {
         // 数据来源
         String source = getTextSource(stack) ?
                 I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.local") :
                 I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.web");
-        return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.source") + source;
+        return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.source") + "§r" + source;
     }
     // 获取格式化的时间字符串
     @OnlyIn(Dist.CLIENT)
@@ -207,13 +212,13 @@ public class MemoViewerItem extends Item {
         Instant instant = Instant.ofEpochMilli(timestamp);
         String lastModified = "";
         switch (Config.DATE_FORMAT.get()) {
-            case ISO_LOCAL_DATE -> lastModified = DateTimeFormatter.ISO_LOCAL_DATE.
-                    format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()));
-            case ISO_LOCAL_DATE_TIME -> lastModified = DateTimeFormatter.ISO_LOCAL_DATE_TIME.
-                    format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).withNano(0));
-            case RFC_1123_DATE_TIME -> lastModified = DateTimeFormatter.RFC_1123_DATE_TIME.withLocale(Locale.US).
-                    format(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));
+            case ISO_LOCAL_DATE -> lastModified = DateTimeFormatter.ISO_LOCAL_DATE
+                    .format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()));
+            case ISO_LOCAL_DATE_TIME -> lastModified = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+                    .format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).withNano(0));
+            case RFC_1123_DATE_TIME -> lastModified = DateTimeFormatter.RFC_1123_DATE_TIME.withLocale(Locale.US)
+                    .format(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));
         }
-        return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.time") + lastModified;
+        return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.time") + "§r" + lastModified;
     }
 }

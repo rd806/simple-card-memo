@@ -7,12 +7,13 @@ import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
-import com.github.rd806.simplecardmemo.network.get.MemoPacketDestroy;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -58,7 +59,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         memoList = MemoConfig.MEMO_LIST;
         selectedMemo = memoList.get(0);
         this.imageWidth = 175;
-        this.imageHeight = 238;
+        this.imageHeight = 255;
     }
 
     @Override
@@ -70,10 +71,10 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 物品栏标题的 X 位置
         this.inventoryLabelX = 8;
         // 物品栏标题的 Y 位置
-        this.inventoryLabelY = 145;
+        this.inventoryLabelY = 160;
         // 布局
         PADDING = leftPos + 16;
-        HEADER = topPos + 24;
+        HEADER = topPos + 47;
         TOTAL_HEIGHT = memoList.size() * ENTRY_HEIGHT;
 
         renderEditBox();
@@ -85,15 +86,16 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 创建文件名输入框
         nameInput = new EditBox(
                 this.font,
-                leftPos - BUTTON_WIDTH * 2 - 5,
-                topPos + 10,
-                BUTTON_WIDTH * 2,
-                BUTTON_HEIGHT,
+                leftPos + 43, topPos + 28,
+                90, 18,
                 Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.input")
         );
-        nameInput.setBordered(true);
-        nameInput.setValue(selectedMemo.getMemoName());
-        nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.hint.name"));
+        nameInput.setMaxLength(256);
+        nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.input.hint")
+                .withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+        nameInput.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.input.tooltip")));
+        nameInput.setTextColor(0xF3EFE0);
+        nameInput.setBordered(false);
         addRenderableWidget(nameInput);
     }
     // 绘制按钮
@@ -105,42 +107,41 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                             MemoConfig.saveToConfig();
                             refreshMemoList();
                         })
-                .pos(leftPos - BUTTON_WIDTH - 5, nameInput.getY() + BUTTON_HEIGHT + 5)
+                .pos(leftPos - BUTTON_WIDTH - 5, HEADER)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
+
+        editButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit.tooltip")));
         addRenderableWidget(editButton);
-        // 删除按钮
-        Button deleteButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
-                        button -> {
-                            if (MemoLoader.deleteLocalFiles(selectedMemo)) {
-                                refreshMemoList();
-                            }
-                        })
-                .pos(leftPos - BUTTON_WIDTH - 5, editButton.getY() + BUTTON_HEIGHT + 5)
-                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .build();
-        addRenderableWidget(deleteButton);
-        // 刷新按钮
-        Button reloadButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.reload"),
-                        button -> refreshMemoList())
-                .pos(leftPos - BUTTON_WIDTH - 5, deleteButton.getY() + BUTTON_HEIGHT + 5)
-                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .build();
-        addRenderableWidget(reloadButton);
+
         // 导出按钮
         Button exportButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export"),
                         button -> exportItem())
-                .pos(leftPos - BUTTON_WIDTH - 5, reloadButton.getY() + BUTTON_HEIGHT + 5)
+                .pos(leftPos - BUTTON_WIDTH - 5, editButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
+        exportButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export.tooltip")));
         addRenderableWidget(exportButton);
-        // 销毁按钮
-        Button destroyButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.destroy"),
-                        button -> destroyItem())
+
+        // 刷新按钮
+        Button reloadButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.reload"),
+                        button -> refreshMemoList())
                 .pos(leftPos - BUTTON_WIDTH - 5, exportButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
-        addRenderableWidget(destroyButton);
+        reloadButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.reload.tooltip")));
+        addRenderableWidget(reloadButton);
+
+        // 删除按钮
+        Button deleteButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
+                        button -> {
+                            if (MemoLoader.deleteLocalFiles(selectedMemo)) { refreshMemoList(); }
+                        })
+                .pos(leftPos - BUTTON_WIDTH - 5, reloadButton.getY() + BUTTON_HEIGHT + 5)
+                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .build();
+        deleteButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete.tooltip")));
+        addRenderableWidget(deleteButton);
     }
 
     @Override
@@ -283,14 +284,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
                 new MemoPacketGet(selectedMemo)
-        );
-    }
-
-    // 销毁物品
-    private void destroyItem() {
-        Channel.CHANNEL.send(
-                PacketDistributor.SERVER.noArg(),
-                new MemoPacketDestroy()
         );
     }
 }
