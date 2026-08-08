@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.network.send;
+package com.github.rd806.simplecardmemo.network.mail;
 
 import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
 import net.minecraft.network.FriendlyByteBuf;

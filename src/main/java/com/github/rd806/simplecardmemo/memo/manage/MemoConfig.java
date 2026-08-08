@@ -1,10 +1,13 @@
 package com.github.rd806.simplecardmemo.memo.manage;
 
-import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
+import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.BufferedWriter;
@@ -40,7 +43,7 @@ public class  MemoConfig {
                     """;
             writer.write(defaultConfig);
         } catch (Exception e) {
-            SimpleCardMemo.LOGGER.error("Fail to create default config！{}", e.getMessage());
+            SimpleCardMemo.LOGGER.error("Fail to create default config!", e);
         }
     }
 
@@ -52,8 +55,10 @@ public class  MemoConfig {
                 createDefaultConfig();
             }
             loadFromJson();
-            if (Config.LOAD_LOCAL_FILES.get()) {
-                localFilesToJson();
+            localFilesToJson();
+            // 是否预加载文件到内存
+            if (CommonConfig.PRELOAD_FILES.get()) {
+                preloadFiles();
             }
             SimpleCardMemo.LOGGER.info("Loaded {} memos", MEMO_MAP.size());
         } catch (Exception e) {
@@ -107,8 +112,34 @@ public class  MemoConfig {
             saveToConfig();
             SimpleCardMemo.LOGGER.info("Loaded memos from {}", SimpleCardMemo.DATA_DIR);
         } catch (Exception e) {
-            SimpleCardMemo.LOGGER.error("Failed to load local memos {}", e.getMessage());
+            SimpleCardMemo.LOGGER.error("Failed to load local memos", e);
         }
+    }
+
+    // 预加载文件
+    public static void preloadFiles() {
+        DistExecutor.safeRunForDist(
+                // 客户端
+                () -> {
+                    for (MemoInfo info : MEMO_LIST) {
+                        String content = MemoLoader.loadText(info);
+                        if (content != null) {
+                            ClientMemoCache.put(info.getMemoPath(), content);
+                        }
+                    }
+                    return null;
+                },
+                // 服务端
+                () -> {
+                    for (MemoInfo info : MEMO_LIST) {
+                        String content = MemoLoader.loadText(info);
+                        if (content != null) {
+                            ServerMemoCache.put(info.getMemoPath(), content);
+                        }
+                    }
+                    return null;
+                }
+        );
     }
 
     // 重新加载
@@ -116,9 +147,7 @@ public class  MemoConfig {
         MEMO_LIST.clear();
         MEMO_MAP.clear();
         loadFromJson();
-        if (Config.LOAD_LOCAL_FILES.get()) {
-            localFilesToJson();
-        }
+        localFilesToJson();
     }
 
     // 保存配置到 JSON 文件

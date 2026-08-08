@@ -1,10 +1,10 @@
 package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.items.MemoEditorItem;
-import com.github.rd806.simplecardmemo.items.MemoManagerItem;
-import com.github.rd806.simplecardmemo.items.MemoMailItem;
-import com.github.rd806.simplecardmemo.items.MemoViewerItem;
+import com.github.rd806.simplecardmemo.init.item.MemoEditorItem;
+import com.github.rd806.simplecardmemo.init.item.MemoManagerItem;
+import com.github.rd806.simplecardmemo.init.item.MemoMailItem;
+import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

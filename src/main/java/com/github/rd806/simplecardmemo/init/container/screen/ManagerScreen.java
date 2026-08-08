@@ -1,7 +1,7 @@
-package com.github.rd806.simplecardmemo.container.screen;
+package com.github.rd806.simplecardmemo.init.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
+import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;

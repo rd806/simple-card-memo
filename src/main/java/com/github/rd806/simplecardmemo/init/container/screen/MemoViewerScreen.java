@@ -1,6 +1,6 @@
-package com.github.rd806.simplecardmemo.container.screen;
+package com.github.rd806.simplecardmemo.init.container.screen;
 
-import com.github.rd806.simplecardmemo.Config;
+import com.github.rd806.simplecardmemo.config.ClientConfig;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
@@ -59,7 +59,7 @@ public class MemoViewerScreen extends Screen {
     private void resetContent() {
         float screenWidth = this.width;
         float screenHeight = this.height;
-        switch (Config.PAGE_MARGIN.get()) {
+        switch (ClientConfig.PAGE_MARGIN.get()) {
             case WIDE -> {
                 this.margin = (int) (screenWidth * 0.35f);
                 this.header = (int) (screenHeight * 0.2f);
@@ -144,11 +144,11 @@ public class MemoViewerScreen extends Screen {
             return;
         }
         // 渲染文本背景
-        if (Config.TEXT_BACKGROUND.get()) {
+        if (ClientConfig.TEXT_BACKGROUND.get()) {
             graphics.fill(
                     contentX - 5, contentY - 5,
                     contentX + contentW + 5, contentY + contentH + 5,
-                    Config.BACKGROUND_COLOR.get()
+                    ClientConfig.BACKGROUND_COLOR.get()
             );
         }
         // 渲染文件内容

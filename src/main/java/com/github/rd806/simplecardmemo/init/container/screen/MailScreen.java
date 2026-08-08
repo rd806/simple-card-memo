@@ -1,14 +1,14 @@
-package com.github.rd806.simplecardmemo.container.screen;
+package com.github.rd806.simplecardmemo.init.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.init.MailStatus;
-import com.github.rd806.simplecardmemo.items.MemoViewerItem;
+import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.network.mail.MailStatus;
+import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.send.MemoPacketReceive;
-import com.github.rd806.simplecardmemo.network.send.MemoPacketSend;
+import com.github.rd806.simplecardmemo.network.mail.MemoPacketReceive;
+import com.github.rd806.simplecardmemo.network.mail.MemoPacketSend;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

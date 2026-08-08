@@ -1,9 +1,10 @@
-package com.github.rd806.simplecardmemo.network.send;
+package com.github.rd806.simplecardmemo.network.mail;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.init.MailStatus;
-import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
+import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
+import com.github.rd806.simplecardmemo.memo.mail.MailKey;
+import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -57,15 +58,18 @@ public class MemoPacketSend {
             ItemStack input = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
             // 复制一份对象存入服务器缓存
             ItemStack mail = input.copy();
-            // 目标物品
             if (mail.isEmpty()) {
                 SimpleCardMemo.LOGGER.error("Memo is empty: {}", input);
                 return;
             }
-            String key = sender.getName().getString() + "->" + receiver;
-            ServerMemoCache.addMemo(key, mail, content);
-            SimpleCardMemo.LOGGER.info("Mail {}:{} has been added!", key, mail.getHoverName().getString());
+            // 存入邮件系统
+            MailKey key = new MailKey(sender.getName().getString(), receiver, System.currentTimeMillis(), mail.getHoverName().getString());
+            MailSystem.putMail(key, mail);
+            MailSystem.putContent(MemoViewerItem.getFilePath(mail), content);
+            // 消耗物品
+            SimpleCardMemo.LOGGER.info("Mail {}:{} has been added!", key.sender() + "->" + key.receiver(), key.name());
             input.shrink(1);
+            // 发送成功消息
             Channel.CHANNEL.send(
                     PacketDistributor.PLAYER.with(() -> sender),
                     new MailStatusSend(MailStatus.SUCCESS_SEND)

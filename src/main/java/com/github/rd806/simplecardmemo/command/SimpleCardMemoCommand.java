@@ -1,7 +1,10 @@
 package com.github.rd806.simplecardmemo.command;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
+import com.github.rd806.simplecardmemo.memo.mail.MailKey;
+import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.command.MemoCacheClear;
 import com.github.rd806.simplecardmemo.network.command.MemoCacheInfo;
@@ -22,6 +25,7 @@ public class SimpleCardMemoCommand {
     private static final String CACHE = "cache";
     private static final String MAIL = "mail";
     private static final String INFO = "info";
+    private static final String CONTENT = "content";
     private static final String CLEAR = "clear";
 
     public static LiteralArgumentBuilder<CommandSourceStack> get() {
@@ -30,11 +34,13 @@ public class SimpleCardMemoCommand {
         LiteralArgumentBuilder<CommandSourceStack> cache = Commands.literal(CACHE);
         LiteralArgumentBuilder<CommandSourceStack> mail = Commands.literal(MAIL);
         LiteralArgumentBuilder<CommandSourceStack> info = Commands.literal(INFO);
+        LiteralArgumentBuilder<CommandSourceStack> content = Commands.literal(CONTENT);
         LiteralArgumentBuilder<CommandSourceStack> clear = Commands.literal(CLEAR);
 
         root.then(cache.then(info.executes(SimpleCardMemoCommand::showCache)));
         root.then(cache.then(clear.executes(SimpleCardMemoCommand::clearCache)));
         root.then(mail.then(info.executes(SimpleCardMemoCommand::showMail)));
+        root.then(mail.then(content.executes(SimpleCardMemoCommand::showServerContent)));
         root.then(mail.then(clear.executes(SimpleCardMemoCommand::clearMail)));
         return root;
     }
@@ -76,9 +82,9 @@ public class SimpleCardMemoCommand {
     // 显示信件内容
     private static int showMail(CommandContext<CommandSourceStack> context) {
         try {
-            Set<String> set = ServerMemoCache.getMemoKeys();
+            Set<MailKey> sets = MailSystem.getAllMails();
             // 显示列表
-            if (set.isEmpty()) {
+            if (sets.isEmpty()) {
                 context.getSource().sendSuccess(
                         () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.empty"),
                         false);
@@ -87,9 +93,38 @@ public class SimpleCardMemoCommand {
                         () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.info"),
                         false);
                 // 显示列表
-                for (String key : set) {
-                    SimpleCardMemo.LOGGER.info(key);
-                    context.getSource().sendSuccess(() -> Component.literal(key), false);
+                for (MailKey set : sets) {
+                    String message = "§7S: §r" + set.receiver()
+                                    + " §7R: §r" + set.receiver()
+                                    + " §7T: §r" + CommonConfig.getDateString(set.timestamp())
+                                    + " §7N: §r" + set.name();
+                    // 发送信息
+                    context.getSource().sendSuccess(() -> Component.literal(message), false);
+                }
+            }
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error(e.getMessage());
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    // 展示服务端缓存
+    private static int showServerContent(CommandContext<CommandSourceStack> context) {
+        try {
+            Set<String> sets = ServerMemoCache.getAll();
+            // 显示列表
+            if (sets.isEmpty()) {
+                context.getSource().sendSuccess(
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail_content.empty"),
+                        false);
+            } else {
+                context.getSource().sendSuccess(
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail_content.info"),
+                        false);
+                // 显示列表
+                for (String set : sets) {
+                    // 发送信息
+                    context.getSource().sendSuccess(() -> Component.literal(set), false);
                 }
             }
         } catch (Exception e) {

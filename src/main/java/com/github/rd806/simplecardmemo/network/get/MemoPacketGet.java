@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.network.get;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
+import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
 import net.minecraft.network.FriendlyByteBuf;

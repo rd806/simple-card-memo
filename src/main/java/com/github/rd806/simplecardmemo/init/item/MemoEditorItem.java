@@ -1,7 +1,7 @@
-package com.github.rd806.simplecardmemo.items;
+package com.github.rd806.simplecardmemo.init.item;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.screen.EditorScreen;
+import com.github.rd806.simplecardmemo.init.container.screen.EditorScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;

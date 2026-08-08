@@ -1,8 +1,8 @@
-package com.github.rd806.simplecardmemo.items;
+package com.github.rd806.simplecardmemo.init.item;
 
-import com.github.rd806.simplecardmemo.Config;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.screen.MemoViewerScreen;
+import com.github.rd806.simplecardmemo.config.CommonConfig;
+import com.github.rd806.simplecardmemo.init.container.screen.MemoViewerScreen;
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
@@ -24,13 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -71,7 +65,10 @@ public class MemoViewerItem extends Item {
             // 修改日期
             long timestamp = getLastModified(stack);
             if (timestamp > 0) {
-                tooltipComponents.add(Component.literal(getDateString(timestamp)));
+                String time = prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.time")
+                                + "§r" + CommonConfig.getDateString(timestamp);
+
+                tooltipComponents.add(Component.literal(time));
             }
         } else {
             // 使用方法
@@ -205,20 +202,5 @@ public class MemoViewerItem extends Item {
                 I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.local") :
                 I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.web");
         return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.source") + "§r" + source;
-    }
-    // 获取格式化的时间字符串
-    @OnlyIn(Dist.CLIENT)
-    private String getDateString(long timestamp) {
-        Instant instant = Instant.ofEpochMilli(timestamp);
-        String lastModified = "";
-        switch (Config.DATE_FORMAT.get()) {
-            case ISO_LOCAL_DATE -> lastModified = DateTimeFormatter.ISO_LOCAL_DATE
-                    .format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()));
-            case ISO_LOCAL_DATE_TIME -> lastModified = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-                    .format(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).withNano(0));
-            case RFC_1123_DATE_TIME -> lastModified = DateTimeFormatter.RFC_1123_DATE_TIME.withLocale(Locale.US)
-                    .format(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));
-        }
-        return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.time") + "§r" + lastModified;
     }
 }

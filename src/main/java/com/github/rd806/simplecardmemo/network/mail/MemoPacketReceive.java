@@ -1,10 +1,10 @@
-package com.github.rd806.simplecardmemo.network.send;
+package com.github.rd806.simplecardmemo.network.mail;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.init.MailStatus;
-import com.github.rd806.simplecardmemo.items.MemoViewerItem;
-import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
+import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
+import com.github.rd806.simplecardmemo.memo.mail.MailKey;
+import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class MemoPacketReceive {
@@ -41,27 +42,36 @@ public class MemoPacketReceive {
                 SimpleCardMemo.LOGGER.error("Not a Mail Menu!");
                 return;
             }
-            // 获取物品信息
-            String key = sender + "->" + receiver.getName().getString();
-            ItemStack output = ServerMemoCache.retrieveMemoItem(key);
+            // 获取物品
+            ItemStack output = null;
+            String content = null;
+            String filePath = null;
+            Set<MailKey> sets = MailSystem.getAllMails();
+            for (MailKey mailKey : sets) {
+                if (mailKey.sender().equals(sender)) {
+                    output = MailSystem.getMail(mailKey);
+                    filePath = MemoViewerItem.getFilePath(output);
+                    content = MailSystem.getContent(filePath);
+                    // 移除对应的信件
+                    MailSystem.removeMail(mailKey);
+                    break;
+                }
+            }
+
+            // 设置物品
             if (output == null) {
-                SimpleCardMemo.LOGGER.error("Memo not found: {}", key);
+                SimpleCardMemo.LOGGER.error("Memo not found");
                 Channel.CHANNEL.send(
                         PacketDistributor.PLAYER.with(() -> receiver),
                         new MailStatusSend(MailStatus.EMPTY_RECEIVE)
                 );
                 return;
             }
-            // 设置物品
             mailMenu.getItemStackHandler().setStackInSlot(MailMenu.OUTPUT_SLOT, output);
-            // 设置内容缓存
-            String filePath = MemoViewerItem.getFilePath(output);
-            String content = ServerMemoCache.retrieveMemoContent(key);
             Channel.CHANNEL.send(
                     PacketDistributor.PLAYER.with(() -> receiver),
                     new MemoPacketSave(filePath, content)
             );
-            ServerMemoCache.removeMemo(key);
             Channel.CHANNEL.send(
                     PacketDistributor.PLAYER.with(() -> receiver),
                     new MailStatusSend(MailStatus.SUCCESS_RECEIVE)

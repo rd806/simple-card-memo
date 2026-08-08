@@ -75,4 +75,7 @@ You can also preview texts which come from the Internet. However, it may take mo
 
 | Commands                      | Function                  |
 |-------------------------------|---------------------------|
-| `/simplecardmemo clear_cache` | Clear local content cache |
+| `/simplecardmemo mail info`   | Show server's mails       |
+| `/simplecardmemo mail clear`  | Clear server's mails      |
+| `/simplecardmemo cache info`  | Show local content cache  |
+| `/simplecardmemo cache clear` | Clear local content cache |

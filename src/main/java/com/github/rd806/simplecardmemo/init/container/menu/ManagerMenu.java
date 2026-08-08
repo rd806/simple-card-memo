@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.container.menu;
+package com.github.rd806.simplecardmemo.init.container.menu;
 
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.init.ModMenus;

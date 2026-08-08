@@ -1,8 +1,11 @@
 package com.github.rd806.simplecardmemo;
 
+import com.github.rd806.simplecardmemo.config.ClientConfig;
+import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.init.ModMenus;
+import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,7 +43,8 @@ public class SimpleCardMemo {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         // 注册配置文件
-        context.registerConfig(ModConfig.Type.CLIENT, Config.init());
+        context.registerConfig(ModConfig.Type.CLIENT, ClientConfig.init());
+        context.registerConfig(ModConfig.Type.COMMON, CommonConfig.init());
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -52,5 +56,7 @@ public class SimpleCardMemo {
         } catch (IOException e) {
             LOGGER.error("Failed to create directory {}", DATA_DIR);
         }
+        // 获取文件列表
+        MemoConfig.generateConfig();
     }
 }

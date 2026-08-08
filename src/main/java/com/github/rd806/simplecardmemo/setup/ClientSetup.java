@@ -2,8 +2,8 @@ package com.github.rd806.simplecardmemo.setup;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.compat.ConfigMenu;
-import com.github.rd806.simplecardmemo.container.screen.MailScreen;
-import com.github.rd806.simplecardmemo.container.screen.ManagerScreen;
+import com.github.rd806.simplecardmemo.init.container.screen.MailScreen;
+import com.github.rd806.simplecardmemo.init.container.screen.ManagerScreen;
 import com.github.rd806.simplecardmemo.init.ModMenus;
 import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
@@ -21,8 +21,6 @@ public class ClientSetup {
     public static void onClientSetup(FMLClientSetupEvent event) {
         // 创建临时文件
         MemoLoader.createTempFile();
-        // 获取文件列表
-        MemoConfig.generateConfig();
         // 注册GUI
         registerScreens();
         // 配置界面

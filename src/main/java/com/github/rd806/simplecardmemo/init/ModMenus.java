@@ -1,8 +1,8 @@
 package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.menu.ManagerMenu;
-import com.github.rd806.simplecardmemo.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
+import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;

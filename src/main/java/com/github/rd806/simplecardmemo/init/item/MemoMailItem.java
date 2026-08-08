@@ -1,7 +1,7 @@
-package com.github.rd806.simplecardmemo.items;
+package com.github.rd806.simplecardmemo.init.item;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.container.menu.MailMenu;
+import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
