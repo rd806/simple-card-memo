@@ -1,13 +1,10 @@
 package com.github.rd806.simplecardmemo.memo.manage;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
-import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
+import com.github.rd806.simplecardmemo.memo.cache.MemoCache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.BufferedWriter;
@@ -21,18 +18,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class  MemoConfig {
+public class MemoConfig {
     // 配置 JSON 文件
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String CONFIG = SimpleCardMemo.MODID + "-memo.json";
     private static final Path CONFIG_PATH = FMLPaths.CONFIGDIR.get().resolve(CONFIG);
     // 哈希映射表（用于去重和查找）
-    public static final Map<String, MemoInfo> MEMO_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, MemoInfo> MEMO_MAP = new ConcurrentHashMap<>();
     // 文件列表
-    public static List<MemoInfo> MEMO_LIST = new ArrayList<>();
+    private static List<MemoInfo> MEMO_LIST = new ArrayList<>();
+
+    public List<MemoInfo> getMemoList() { return MEMO_LIST; }
+
+    public MemoConfig() {
+        generateConfig();
+        SimpleCardMemo.LOGGER.info("Successfully loaded from config: {}", CONFIG);
+    }
+
+    // 生成配置文件
+    public void generateConfig() {
+        try {
+            Files.createDirectories(CONFIG_PATH.getParent());
+            if (!Files.exists(CONFIG_PATH)) {
+                createDefaultConfig();
+            }
+            loadFromJson();
+            localFilesToJson();
+            SimpleCardMemo.LOGGER.info("Loaded {} memos", MEMO_MAP.size());
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Couldn't create directory at {}", CONFIG_PATH);
+            SimpleCardMemo.LOGGER.error(e.getMessage());
+        }
+    }
 
     // 创建默认配置文件
-    private static void createDefaultConfig() {
+    private void createDefaultConfig() {
         try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
             String defaultConfig = """
                     {
@@ -47,28 +67,8 @@ public class  MemoConfig {
         }
     }
 
-    // 生成配置文件
-    public static void generateConfig() {
-        try {
-            Files.createDirectories(CONFIG_PATH.getParent());
-            if (!Files.exists(CONFIG_PATH)) {
-                createDefaultConfig();
-            }
-            loadFromJson();
-            localFilesToJson();
-            // 是否预加载文件到内存
-            if (CommonConfig.PRELOAD_FILES.get()) {
-                preloadFiles();
-            }
-            SimpleCardMemo.LOGGER.info("Loaded {} memos", MEMO_MAP.size());
-        } catch (Exception e) {
-            SimpleCardMemo.LOGGER.error("Couldn't create directory at {}", CONFIG_PATH);
-            SimpleCardMemo.LOGGER.error(e.getMessage());
-        }
-    }
-
     // 加载 JSON 配置文件
-    public static void loadFromJson() {
+    public void loadFromJson() {
         try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
             var json = GSON.fromJson(reader, JsonWrapper.class);
             if (json != null && json.memos != null) {
@@ -85,7 +85,7 @@ public class  MemoConfig {
     }
 
     // 从本地文件加载
-    public static void localFilesToJson() {
+    public void localFilesToJson() {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(SimpleCardMemo.DATA_DIR)) {
             for (Path path : stream) {
                 try {
@@ -101,7 +101,7 @@ public class  MemoConfig {
                     info.setMemoPath(path.getFileName().toString());
                     info.setMemoName(path.getFileName().toString());
                     info.setMemoAuthor("Default");
-                    info.setLocalFile(true);
+                    info.setExternal(true);
                     info.setLastModified(path.toFile().lastModified());
                     MEMO_LIST.add(info);
                     MEMO_MAP.put(info.getMemoPath(), info);
@@ -117,33 +117,17 @@ public class  MemoConfig {
     }
 
     // 预加载文件
-    public static void preloadFiles() {
-        DistExecutor.safeRunForDist(
-                // 客户端
-                () -> {
-                    for (MemoInfo info : MEMO_LIST) {
-                        String content = MemoLoader.loadText(info);
-                        if (content != null) {
-                            ClientMemoCache.put(info.getMemoPath(), content);
-                        }
-                    }
-                    return null;
-                },
-                // 服务端
-                () -> {
-                    for (MemoInfo info : MEMO_LIST) {
-                        String content = MemoLoader.loadText(info);
-                        if (content != null) {
-                            ServerMemoCache.put(info.getMemoPath(), content);
-                        }
-                    }
-                    return null;
-                }
-        );
+    public void preloadFiles(MemoCache memoCache) {
+        for (MemoInfo info : MEMO_LIST) {
+            String content = MemoLoader.loadText(info);
+            if (content != null) {
+                memoCache.getCache().put(info.getMemoPath(), content);
+            }
+        }
     }
 
     // 重新加载
-    public static void reload() {
+    public void reload() {
         MEMO_LIST.clear();
         MEMO_MAP.clear();
         loadFromJson();
@@ -151,7 +135,7 @@ public class  MemoConfig {
     }
 
     // 保存配置到 JSON 文件
-    public static void saveToConfig() {
+    public void saveToConfig() {
         try {
             Files.createDirectories(CONFIG_PATH.getParent());
             try (BufferedWriter writer = Files.newBufferedWriter(CONFIG_PATH)) {

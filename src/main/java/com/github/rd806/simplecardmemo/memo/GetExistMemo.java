@@ -62,7 +62,7 @@ public class GetExistMemo {
             MemoViewerItem.setDisplayName(viewer, memoInfo.getMemoName());
             MemoViewerItem.setFilePath(viewer, memoInfo.getMemoPath());
             MemoViewerItem.setAuthor(viewer, memoInfo.getMemoAuthor());
-            MemoViewerItem.setTextSource(viewer, memoInfo.isLocalFile());
+            MemoViewerItem.setTextSource(viewer, memoInfo.isExternal());
             MemoViewerItem.setLastModified(viewer, memoInfo.getLastModified());
             // 发送物品
             return viewer;

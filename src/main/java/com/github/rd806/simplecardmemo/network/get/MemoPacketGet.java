@@ -24,7 +24,7 @@ public class MemoPacketGet {
         buffer.writeUtf(memoInfo.getMemoName());
         buffer.writeUtf(memoInfo.getMemoPath());
         buffer.writeUtf(memoInfo.getMemoAuthor());
-        buffer.writeBoolean(memoInfo.isLocalFile());
+        buffer.writeBoolean(memoInfo.isExternal());
         buffer.writeLong(memoInfo.getLastModified());
     }
 

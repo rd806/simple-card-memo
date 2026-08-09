@@ -2,12 +2,12 @@ package com.github.rd806.simplecardmemo.command;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.config.CommonConfig;
-import com.github.rd806.simplecardmemo.memo.cache.ServerMemoCache;
 import com.github.rd806.simplecardmemo.memo.mail.MailKey;
 import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.command.MemoCacheClear;
 import com.github.rd806.simplecardmemo.network.command.MemoCacheInfo;
+import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -111,15 +111,15 @@ public class SimpleCardMemoCommand {
     // 展示服务端缓存
     private static int showServerContent(CommandContext<CommandSourceStack> context) {
         try {
-            Set<String> sets = ServerMemoCache.getAll();
+            Set<String> sets = ServerSetup.serverCache.getCache().keySet();
             // 显示列表
             if (sets.isEmpty()) {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail_content.empty"),
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.cache.empty"),
                         false);
             } else {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail_content.info"),
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.cache.info"),
                         false);
                 // 显示列表
                 for (String set : sets) {

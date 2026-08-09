@@ -4,14 +4,14 @@ public class MemoInfo {
     private String name;
     private String path;
     private String author;
-    private boolean isLocalFile;
+    private boolean isExternal;
     private long lastModified;
 
-    public MemoInfo(String name, String path, String author, boolean isLocalFile, long lastModified) {
+    public MemoInfo(String name, String path, String author, boolean isExternal, long lastModified) {
         this.name = name;
         this.path = path;
         this.author = author;
-        this.isLocalFile = isLocalFile;
+        this.isExternal = isExternal;
         this.lastModified = lastModified;
     }
 
@@ -26,8 +26,8 @@ public class MemoInfo {
     public String getMemoAuthor() { return author; }
     public void setMemoAuthor(String author) { this.author = author; }
 
-    public boolean isLocalFile() { return isLocalFile; }
-    public void setLocalFile(boolean localFile) { this.isLocalFile = localFile; }
+    public boolean isExternal() { return isExternal; }
+    public void setExternal(boolean external) { this.isExternal = external; }
 
     public long getLastModified() { return lastModified; }
     public void setLastModified(long lastModified) { this.lastModified = lastModified; }

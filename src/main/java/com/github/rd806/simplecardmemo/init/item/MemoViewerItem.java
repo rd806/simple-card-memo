@@ -5,7 +5,8 @@ import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.init.container.screen.MemoViewerScreen;
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
+import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
+import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -35,7 +36,7 @@ public class MemoViewerItem extends Item {
     private static final String DISPLAY_NAME = "displayName";
     private static final String AUTHOR = "author";
     private static final String LAST_MODIFIED = "lastModified";
-    private static final String IS_LOCAL_FILE = "isLocalFile";
+    private static final String IS_EXTERNAL = "isExternal";
     // 默认内容
     private static String content = "Default Text";
     private final String prefix = "§a▍ §7";
@@ -89,14 +90,14 @@ public class MemoViewerItem extends Item {
         if (level.isClientSide) {
             // 若为空物品，转换为最后一次打开的备忘录
             if (stack.getTag() == null) {
-                newStack = ClientMemoCache.getLastMemo();
+                newStack = ClientSetup.clientCache.getLastMemo();
             }
             // 构造 MemoInfo
             MemoInfo memoInfo = getMemoInfo(newStack);
             // 异步加载
             CompletableFuture.runAsync(() -> {
                         // 使用 LRU 缓存机制
-                        content = ClientMemoCache.getMemoContentWithCache(memoInfo);
+                        content = CacheSystem.getMemoContentWithCache(memoInfo, ClientSetup.clientCache);
                     })
                     .thenAccept(data -> Minecraft.getInstance().execute(() ->
                             Minecraft.getInstance().setScreen(new MemoViewerScreen(content, memoInfo)))
@@ -106,7 +107,7 @@ public class MemoViewerItem extends Item {
                                 SimpleCardMemo.LOGGER.error("Error loading content data", e);
                                 return null;
                             });
-            ClientMemoCache.setLastMemo(newStack);
+            ClientSetup.clientCache.setLastMemo(newStack);
         }
         // 返回成功，表示物品被使用了，但避免消耗
         return InteractionResultHolder.success(stack);
@@ -123,8 +124,8 @@ public class MemoViewerItem extends Item {
     // 获取文件来源
     public static boolean getTextSource(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(IS_LOCAL_FILE)) {
-            return tag.getBoolean(IS_LOCAL_FILE);
+        if (tag != null && tag.contains(IS_EXTERNAL)) {
+            return tag.getBoolean(IS_EXTERNAL);
         }
         return true;
     }
@@ -172,8 +173,8 @@ public class MemoViewerItem extends Item {
         stack.getOrCreateTag().putString(FILE_PATH, filePath);
     }
     // 设置文件来源
-    public static void setTextSource(ItemStack stack, boolean isLocalFile) {
-        stack.getOrCreateTag().putBoolean(IS_LOCAL_FILE, isLocalFile);
+    public static void setTextSource(ItemStack stack, boolean isExternal) {
+        stack.getOrCreateTag().putBoolean(IS_EXTERNAL, isExternal);
     }
     // 设置文件名称
     public static void setDisplayName(ItemStack stack, String displayName) {
@@ -199,8 +200,8 @@ public class MemoViewerItem extends Item {
     private String getSourceString(ItemStack stack) {
         // 数据来源
         String source = getTextSource(stack) ?
-                I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.local") :
-                I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.web");
+                I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.external") :
+                I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.resource");
         return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.source") + "§r" + source;
     }
 }

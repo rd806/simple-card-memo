@@ -9,8 +9,8 @@
     "simplecardmemo.item.memo_viewer.tooltip.more": "Hold down [Shift] to view details",
     "simplecardmemo.item.memo_viewer.tooltip.source": "Source: ",
     "simplecardmemo.item.memo_viewer.tooltip.time": "Modified: ",
-    "simplecardmemo.item.memo_viewer.tooltip.local": "Local File",
-    "simplecardmemo.item.memo_viewer.tooltip.web": "Web File",
+    "simplecardmemo.item.memo_viewer.tooltip.external": "External File",
+    "simplecardmemo.item.memo_viewer.tooltip.resource": "Resource File",
 
     "item.simplecardmemo.memo_editor": "Memo Editor",
     "simplecardmemo.item.memo_editor.tooltip": "Edit a new memo",
@@ -82,9 +82,6 @@
     "simplecardmemo.command.mail.empty": "No Mail is on the server!",
     "simplecardmemo.command.mail.info": "The following mails are available:",
     "simplecardmemo.command.mail.clear": "Mails have been cleared!",
-    "simplecardmemo.command.mail_content.empty": "No Mail content is on the server!",
-    "simplecardmemo.command.mail_content.info": "The following mail contents are available:",
-    "simplecardmemo.command.mail_content.clear": "Mail contents have been cleared!",
 
     "simplecardmemo.config.load_local_files": "Preload files",
     "simplecardmemo.config.load_local_files.tooltip": "Preload memos when start games",

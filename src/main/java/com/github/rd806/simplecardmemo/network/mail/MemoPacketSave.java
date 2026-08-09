@@ -1,6 +1,6 @@
 package com.github.rd806.simplecardmemo.network.mail;
 
-import com.github.rd806.simplecardmemo.memo.cache.ClientMemoCache;
+import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -31,7 +31,7 @@ public class MemoPacketSave {
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientMemoCache.put(key, content)));
+        context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientSetup.clientCache.put(key, content)));
         context.setPacketHandled(true);
     }
 }

@@ -2,12 +2,12 @@ package com.github.rd806.simplecardmemo.init.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
-import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
+import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -56,7 +56,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
 
     public ManagerScreen(ManagerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        memoList = MemoConfig.MEMO_LIST;
+        memoList = ClientSetup.clientConfig.getMemoList();
         selectedMemo = memoList.get(0);
         this.imageWidth = 175;
         this.imageHeight = 255;
@@ -103,8 +103,8 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 编辑按钮
         Button editButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
                         button -> {
-                            MemoConfig.MEMO_LIST.get(selectIndex).setMemoName(nameInput.getValue());
-                            MemoConfig.saveToConfig();
+                            ClientSetup.clientConfig.getMemoList().get(selectIndex).setMemoName(nameInput.getValue());
+                            ClientSetup.clientConfig.saveToConfig();
                             refreshMemoList();
                         })
                 .pos(leftPos - BUTTON_WIDTH - 5, HEADER)
@@ -269,8 +269,8 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
 
     // 刷新文件列表
     private void refreshMemoList() {
-        MemoConfig.reload();
-        memoList = MemoConfig.MEMO_LIST;
+        ClientSetup.clientConfig.reload();
+        memoList = ClientSetup.clientConfig.getMemoList();
         memoListScroll = 0;
     }
 

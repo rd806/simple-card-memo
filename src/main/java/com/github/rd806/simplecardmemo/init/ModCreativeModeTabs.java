@@ -51,7 +51,7 @@ public class ModCreativeModeTabs {
                 .withStyle(style -> style.withItalic(false)));
         MemoViewerItem.setFilePath(item, SimpleCardMemo.MODID + ":sample/guide.md");
         MemoViewerItem.setDisplayName(item, "Guide");
-        MemoViewerItem.setTextSource(item, true);
+        MemoViewerItem.setTextSource(item, false);
         MemoViewerItem.setAuthor(item, "RunicDolphin806");
         return item;
     }
@@ -63,7 +63,7 @@ public class ModCreativeModeTabs {
                 .withStyle(style -> style.withItalic(false)));
         MemoViewerItem.setFilePath(item, SimpleCardMemo.MODID + ":sample/minecraft_server.md");
         MemoViewerItem.setDisplayName(item, "How to Host a Minecraft Server");
-        MemoViewerItem.setTextSource(item, true);
+        MemoViewerItem.setTextSource(item, false);
         MemoViewerItem.setAuthor(item, "From Internet");
         return item;
     }
