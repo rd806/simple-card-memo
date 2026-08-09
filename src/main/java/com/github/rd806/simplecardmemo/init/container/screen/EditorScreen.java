@@ -194,6 +194,8 @@ public class EditorScreen extends Screen {
                 PADDING,
                 8 + this.font.lineHeight + 2,
                 0x888888);
+        isLocalFile = sourceInput.selected();
+        textInput.visible = isLocalFile;
         // 渲染输入框和其他组件
         super.render(graphics, mouseX, mouseY, partialTick);
     }
@@ -250,14 +252,6 @@ public class EditorScreen extends Screen {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         return super.mouseScrolled(mouseX, mouseY, amount);
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        isLocalFile = sourceInput.selected();
-        textInput.visible = isLocalFile;
-
-        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

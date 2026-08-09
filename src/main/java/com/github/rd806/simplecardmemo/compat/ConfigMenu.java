@@ -31,13 +31,6 @@ public class ConfigMenu {
 
     // 文本预览配置
     private static void buildTextSettings(ConfigEntryBuilder entryBuilder, ConfigCategory textSettings) {
-        // 缓冲区大小
-        textSettings.addEntry(
-                entryBuilder.startIntField(Component.translatable(SimpleCardMemo.MODID + ".config.cache"), ClientConfig.CACHE_SIZE.get())
-                        .setDefaultValue(5)
-                        .setTooltip(Component.translatable(SimpleCardMemo.MODID + ".config.cache.tooltip"))
-                        .setSaveConsumer(cache -> ClientConfig.CACHE_SIZE.set(cache))
-                        .build());
         // 页边距
         textSettings.addEntry(
                 entryBuilder.startEnumSelector(Component.translatable(SimpleCardMemo.MODID + ".config.page_margin"), ClientConfig.Margin.class, ClientConfig.Margin.MEDIUM)
@@ -76,6 +69,13 @@ public class ConfigMenu {
                         .setDefaultValue(false)
                         .setTooltip(Component.translatable(SimpleCardMemo.MODID + ".config.load_local_files.tooltip"))
                         .setSaveConsumer(loadLocalFiles -> CommonConfig.PRELOAD_FILES.set(loadLocalFiles))
+                        .build());
+        // 缓冲区大小
+        commonSettings.addEntry(
+                entryBuilder.startIntField(Component.translatable(SimpleCardMemo.MODID + ".config.cache"), CommonConfig.CACHE_SIZE.get())
+                        .setDefaultValue(5)
+                        .setTooltip(Component.translatable(SimpleCardMemo.MODID + ".config.cache.tooltip"))
+                        .setSaveConsumer(cache -> CommonConfig.CACHE_SIZE.set(cache))
                         .build());
     }
 }

@@ -6,12 +6,14 @@ import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
+import com.github.rd806.simplecardmemo.network.get.MemoListGet;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -31,7 +33,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private static final ResourceLocation MANAGER_GUI =
             ResourceLocation.parse(SimpleCardMemo.MODID + ":textures/container/manager.png");
     // 导出信息
-    private List<MemoInfo> memoList;
+    private static List<MemoInfo> memoList;
     private MemoInfo selectedMemo;
     private int selectIndex;
     // 滚动常量
@@ -50,6 +52,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private static int TOTAL_HEIGHT;
     // 输入框
     private EditBox nameInput;
+    private Checkbox fromServer;
     // 按键常量
     private static final int BUTTON_WIDTH = 50;
     private static final int BUTTON_HEIGHT = 20;
@@ -100,14 +103,24 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     }
     // 绘制按钮
     private void renderButton() {
+        // 切换来源
+        fromServer = new Checkbox(
+                leftPos - 60, topPos + 28,
+                20, 20,
+                Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.source"),
+                false
+        );
+        addRenderableWidget(fromServer);
+
         // 编辑按钮
         Button editButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
                         button -> {
+                            if (fromServer.selected()) { return; }
                             ClientSetup.clientConfig.getMemoList().get(selectIndex).setMemoName(nameInput.getValue());
                             ClientSetup.clientConfig.saveToConfig();
                             refreshMemoList();
                         })
-                .pos(leftPos - BUTTON_WIDTH - 5, HEADER)
+                .pos(leftPos - BUTTON_WIDTH - 5, fromServer.getY() + 25)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
 
@@ -267,10 +280,23 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         return super.mouseScrolled(mouseX, mouseY, amount);
     }
 
+    // 获取文件列表
+    public static void setMemoList(List<MemoInfo> list) {
+        memoList = list;
+    }
+
     // 刷新文件列表
     private void refreshMemoList() {
-        ClientSetup.clientConfig.reload();
-        memoList = ClientSetup.clientConfig.getMemoList();
+        // 显示来源
+        if (!fromServer.selected()) {
+            ClientSetup.clientConfig.reload();
+            memoList = ClientSetup.clientConfig.getMemoList();
+        } else {
+            Channel.CHANNEL.send(
+                    PacketDistributor.SERVER.noArg(),
+                    new MemoListGet()
+            );
+        }
         memoListScroll = 0;
     }
 
@@ -283,7 +309,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 发送网络包
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
-                new MemoPacketGet(selectedMemo)
+                new MemoPacketGet(selectedMemo, fromServer.selected())
         );
     }
 }

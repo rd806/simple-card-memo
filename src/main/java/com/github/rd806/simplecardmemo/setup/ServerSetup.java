@@ -1,7 +1,6 @@
 package com.github.rd806.simplecardmemo.setup;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.memo.cache.MemoCache;
 import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -18,9 +17,7 @@ public class ServerSetup {
     public static void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         SimpleCardMemo.LOGGER.info("Start SimpleCardMemo on the server!");
-        if (CommonConfig.PRELOAD_FILES.get()) {
-            serverConfig.preloadFiles(serverCache);
-            SimpleCardMemo.LOGGER.info("Preload Files on the server!");
-        }
+        serverConfig.preloadFiles(serverCache);
+        SimpleCardMemo.LOGGER.info("Preload Files on the server!");
     }
 }

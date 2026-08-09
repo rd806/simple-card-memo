@@ -1,6 +1,6 @@
 package com.github.rd806.simplecardmemo.memo.cache;
 
-import com.github.rd806.simplecardmemo.config.ClientConfig;
+import com.github.rd806.simplecardmemo.config.CommonConfig;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ public class MemoLRUCache<K, V> extends LinkedHashMap<K, V> {
 
     public MemoLRUCache() {
         super(16, 0.75f, true);
-        MAX_CAPACITY = ClientConfig.CACHE_SIZE.get();
+        MAX_CAPACITY = CommonConfig.CACHE_SIZE.get();
     }
 
     @Override

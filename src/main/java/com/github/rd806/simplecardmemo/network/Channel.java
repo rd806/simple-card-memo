@@ -3,6 +3,8 @@ package com.github.rd806.simplecardmemo.network;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.network.command.MemoCacheClear;
 import com.github.rd806.simplecardmemo.network.command.MemoCacheInfo;
+import com.github.rd806.simplecardmemo.network.get.MemoListGet;
+import com.github.rd806.simplecardmemo.network.get.MemoListReceive;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
 import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
 import com.github.rd806.simplecardmemo.network.mail.MemoPacketReceive;
@@ -44,6 +46,13 @@ public class Channel {
         CHANNEL.registerMessage(
                 packetId++,
                 MailStatusSend.class, MailStatusSend::encode, MailStatusSend::decode, MailStatusSend::handle);
+        // 文件列表数据包
+        CHANNEL.registerMessage(
+                packetId++,
+                MemoListGet.class, MemoListGet::encode, MemoListGet::decode, MemoListGet::handle);
+        CHANNEL.registerMessage(
+                packetId++,
+                MemoListReceive.class, MemoListReceive::encode, MemoListReceive::decode, MemoListReceive::handle);
         // 缓存数据包
         CHANNEL.registerMessage(
                 packetId++,

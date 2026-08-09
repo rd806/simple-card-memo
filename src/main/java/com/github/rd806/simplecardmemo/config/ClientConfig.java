@@ -20,8 +20,7 @@ public class ClientConfig {
     // 文本背景
     public static ForgeConfigSpec.BooleanValue TEXT_BACKGROUND;
     public static ForgeConfigSpec.ConfigValue<Integer> BACKGROUND_COLOR;
-    // 缓冲区大小
-    public static ForgeConfigSpec.ConfigValue<Integer> CACHE_SIZE;
+
 
 
     public static ForgeConfigSpec init() {
@@ -38,10 +37,6 @@ public class ClientConfig {
                 .translation(SimpleCardMemo.MODID + ".config.background_color")
                 .comment("Color for the text background")
                 .define("BackgroundColor", 0xFF020619);
-        CACHE_SIZE = BUILDER
-                .translation(SimpleCardMemo.MODID + ".config.cache")
-                .comment("Define how many memos' content will be cached during the game")
-                .defineInRange("CacheSize", 5, 5, 10);
         BUILDER.pop();
 
         return BUILDER.build();

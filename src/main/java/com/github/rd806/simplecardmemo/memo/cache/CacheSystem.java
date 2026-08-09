@@ -35,7 +35,7 @@ public class CacheSystem {
                     false
             );
             for (String key : set) {
-                player.displayClientMessage(Component.literal("- " + key), false);
+                player.displayClientMessage(Component.literal("§a▍ §7" + key), false);
             }
         }
     }

@@ -6,6 +6,7 @@ import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.mail.MailKey;
 import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
+import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -51,13 +52,12 @@ public class MemoPacketReceive {
                 if (mailKey.sender().equals(sender)) {
                     output = MailSystem.getMail(mailKey);
                     filePath = MemoViewerItem.getFilePath(output);
-                    content = MailSystem.getContent(filePath);
+                    content = ServerSetup.serverCache.get(filePath);
                     // 移除对应的信件
                     MailSystem.removeMail(mailKey);
                     break;
                 }
             }
-
             // 设置物品
             if (output == null) {
                 SimpleCardMemo.LOGGER.error("Memo not found");

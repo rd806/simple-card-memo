@@ -25,6 +25,8 @@ public class CommonConfig {
     public static ForgeConfigSpec.EnumValue<DateFormat> DATE_FORMAT;
     // 读取本地文件
     public static ForgeConfigSpec.BooleanValue PRELOAD_FILES;
+    // 缓冲区大小
+    public static ForgeConfigSpec.ConfigValue<Integer> CACHE_SIZE;
 
     public static ForgeConfigSpec init() {
         BUILDER.push("Item").translation(SimpleCardMemo.MODID + ".gui.config.item");
@@ -36,6 +38,10 @@ public class CommonConfig {
                 .translation(SimpleCardMemo.MODID + ".config.load_local_files")
                 .comment("Preload local memos when start games")
                 .define("PreloadFiles", false);
+        CACHE_SIZE = BUILDER
+                .translation(SimpleCardMemo.MODID + ".config.cache")
+                .comment("Define how many memos' content will be cached during the game")
+                .defineInRange("CacheSize", 5, 5, 10);
         BUILDER.pop();
         return BUILDER.build();
     }

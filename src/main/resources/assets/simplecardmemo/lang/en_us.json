@@ -54,6 +54,7 @@
     "simplecardmemo.gui.manager_screen.input": "Name Input Box",
     "simplecardmemo.gui.manager_screen.input.hint": "Input new name",
     "simplecardmemo.gui.manager_screen.input.tooltip": "Change the selected memo's name",
+    "simplecardmemo.gui.manager_screen.source": "From Server",
     "simplecardmemo.gui.manager_screen.edit": "Edit",
     "simplecardmemo.gui.manager_screen.edit.tooltip": "Click this button to rename the memo",
     "simplecardmemo.gui.manager_screen.export": "Export",
@@ -78,10 +79,11 @@
 
     "simplecardmemo.command.cache.empty": "No file is in the cache!",
     "simplecardmemo.command.cache.info": "The following files have been cached:",
-    "simplecardmemo.command.cache.clear": "Client cache has been cleared!",
+    "simplecardmemo.command.cache.clear": "Cache has been cleared!",
     "simplecardmemo.command.mail.empty": "No Mail is on the server!",
     "simplecardmemo.command.mail.info": "The following mails are available:",
     "simplecardmemo.command.mail.clear": "Mails have been cleared!",
+    "simplecardmemo.command.reload": "Reload Successfully!",
 
     "simplecardmemo.config.load_local_files": "Preload files",
     "simplecardmemo.config.load_local_files.tooltip": "Preload memos when start games",
