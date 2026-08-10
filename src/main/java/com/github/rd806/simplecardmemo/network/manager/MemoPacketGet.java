@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.network.manager;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.MemoSource;
+import com.github.rd806.simplecardmemo.init.value.MemoSource;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class MemoPacketGet {

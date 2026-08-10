@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.network.mail;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.MailStatus;
+import com.github.rd806.simplecardmemo.init.value.MailStatus;
 import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.mail.MailKey;

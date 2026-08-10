@@ -5,8 +5,8 @@
 
     "item.simplecardmemo.memo_viewer": "New Memo",
     "simplecardmemo.item.memo_viewer.tooltip.default": "The last opened memo",
-    "simplecardmemo.item.memo_viewer.tooltip.author": "Author: ",
     "simplecardmemo.item.memo_viewer.tooltip.more": "Hold down [Shift] to view details",
+    "simplecardmemo.item.memo_viewer.tooltip.author": "Author: ",
     "simplecardmemo.item.memo_viewer.tooltip.source": "Source: ",
     "simplecardmemo.item.memo_viewer.tooltip.time": "Modified: ",
     "simplecardmemo.item.memo_viewer.tooltip.external": "External File",
@@ -28,7 +28,7 @@
 
     "simplecardmemo.gui.viewer_screen": "View Screen",
     "simplecardmemo.gui.viewer_screen.reload": "Reload text",
-    "simplecardmemo.gui.viewer_screen.error": "Text Error: ",
+    "simplecardmemo.gui.viewer_screen.error": "Text Error: %s. Try to get this item again!",
 
     "simplecardmemo.gui.editor_screen": "Edit Screen",
     "simplecardmemo.gui.editor_screen.title": "Edit content",
@@ -55,6 +55,9 @@
     "simplecardmemo.gui.manager_screen.input.hint": "Input new name",
     "simplecardmemo.gui.manager_screen.input.tooltip": "Change the selected memo's name",
     "simplecardmemo.gui.manager_screen.source": "Source",
+    "simplecardmemo.gui.manager_screen.source.client": "Client",
+    "simplecardmemo.gui.manager_screen.source.server": "Server",
+    "simplecardmemo.gui.manager_screen.source.tooltip": "Click to change the memo list source.",
     "simplecardmemo.gui.manager_screen.edit": "Edit",
     "simplecardmemo.gui.manager_screen.edit.tooltip": "Click this button to rename the memo",
     "simplecardmemo.gui.manager_screen.export": "Export",
@@ -77,9 +80,12 @@
 
     "simplecardmemo.memo_mail.send": "send a memo to you.",
 
-    "simplecardmemo.command.cache.empty": "No file is in the cache!",
-    "simplecardmemo.command.cache.info": "The following files have been cached:",
-    "simplecardmemo.command.cache.clear": "Cache has been cleared!",
+    "simplecardmemo.command.client_cache.empty": "No file is in the client cache!",
+    "simplecardmemo.command.client_cache.info": "The following files have been cached in client:",
+    "simplecardmemo.command.client_cache.clear": "Client cache has been cleared!",
+    "simplecardmemo.command.server_cache.empty": "No file is in the server cache!",
+    "simplecardmemo.command.server_cache.info": "The following files have been cached in server:",
+    "simplecardmemo.command.server_cache.clear": "Server cache has been cleared!",
     "simplecardmemo.command.mail.empty": "No Mail is on the server!",
     "simplecardmemo.command.mail.info": "The following mails are available:",
     "simplecardmemo.command.mail.clear": "Mails have been cleared!",

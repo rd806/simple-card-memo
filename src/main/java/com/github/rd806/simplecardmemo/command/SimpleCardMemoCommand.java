@@ -10,6 +10,7 @@ import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -31,21 +32,27 @@ public class SimpleCardMemoCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> get() {
         LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(ROOT)
                 .requires((source) -> source.hasPermission(2));
-        LiteralArgumentBuilder<CommandSourceStack> client = Commands.literal(CLIENT);
-        LiteralArgumentBuilder<CommandSourceStack> server = Commands.literal(SERVER);
-        LiteralArgumentBuilder<CommandSourceStack> cache = Commands.literal(CACHE);
-        LiteralArgumentBuilder<CommandSourceStack> mail = Commands.literal(MAIL);
-        LiteralArgumentBuilder<CommandSourceStack> info = Commands.literal(INFO);
-        LiteralArgumentBuilder<CommandSourceStack> clear = Commands.literal(CLEAR);
-        LiteralArgumentBuilder<CommandSourceStack> reload = Commands.literal(RELOAD);
+        // 为每个路径创建独立的节点
+        // 每个命令节点应该是唯一的实例，不可在不同的命令路径中共享同一个 LiteralArgumentBuilder
+        root.then(Commands.literal(CLIENT)
+                .then(Commands.literal(CACHE)
+                        .then(Commands.literal(INFO).executes(SimpleCardMemoCommand::showClientCache))
+                        .then(Commands.literal(CLEAR).executes(SimpleCardMemoCommand::clearClientCache))
+                )
+        );
 
-        root.then(client.then(cache.then(info.executes(SimpleCardMemoCommand::showClientCache))));
-        root.then(client.then(cache.then(clear.executes(SimpleCardMemoCommand::clearClientCache))));
-        root.then(server.then(cache.then(info.executes(SimpleCardMemoCommand::showServerCache))));
-        root.then(server.then(cache.then(clear.executes(SimpleCardMemoCommand::clearServerCache))));
-        root.then(server.then(reload.executes(SimpleCardMemoCommand::reload)));
-        root.then(mail.then(info.executes(SimpleCardMemoCommand::showMail)));
-        root.then(mail.then(clear.executes(SimpleCardMemoCommand::clearMail)));
+        root.then(Commands.literal(SERVER)
+                .then(Commands.literal(CACHE)
+                        .then(Commands.literal(INFO).executes(SimpleCardMemoCommand::showServerCache))
+                        .then(Commands.literal(CLEAR).executes(SimpleCardMemoCommand::clearServerCache))
+                )
+                .then(Commands.literal(RELOAD).executes(SimpleCardMemoCommand::reload))
+        );
+
+        root.then(Commands.literal(MAIL)
+                .then(Commands.literal(INFO).executes(SimpleCardMemoCommand::showMail))
+                .then(Commands.literal(CLEAR).executes(SimpleCardMemoCommand::clearMail))
+        );
         return root;
     }
 
@@ -72,7 +79,8 @@ public class SimpleCardMemoCommand {
                 Channel.sendCommand(player, CommandType.CACHE_CLEAR);
             }
             context.getSource().sendSuccess(
-                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.cache.clear"),
+                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.client_cache.clear")
+                            .withStyle(ChatFormatting.GRAY),
                     false
             );
         } catch (Exception e) {
@@ -88,11 +96,12 @@ public class SimpleCardMemoCommand {
             // 显示列表
             if (sets.isEmpty()) {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.cache.empty"),
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.server_cache.empty"),
                         false);
             } else {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.cache.info"),
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.server_cache.info")
+                                .withStyle(ChatFormatting.GREEN),
                         false);
                 // 显示列表
                 for (String set : sets) {
@@ -111,7 +120,8 @@ public class SimpleCardMemoCommand {
         try {
             ServerSetup.serverCache.clear();
             context.getSource().sendSuccess(
-                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.cache.clear"),
+                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.server_cache.clear")
+                            .withStyle(ChatFormatting.GRAY),
                     false
             );
         } catch (Exception e) {
@@ -131,16 +141,19 @@ public class SimpleCardMemoCommand {
                         false);
             } else {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.info"),
+                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.info")
+                                .withStyle(ChatFormatting.GRAY),
                         false);
                 // 显示列表
+                int id = 1;
                 for (MailKey set : sets) {
-                    String message = "§7S: §r" + set.receiver()
+                    String message = id + ". " + "§7S: §r" + set.receiver()
                                     + " §7R: §r" + set.receiver()
                                     + " §7T: §r" + CommonConfig.getDateString(set.timestamp())
                                     + " §7N: §r" + set.name();
                     // 发送信息
                     context.getSource().sendSuccess(() -> Component.literal(message), false);
+                    id++;
                 }
             }
         } catch (Exception e) {
@@ -153,7 +166,8 @@ public class SimpleCardMemoCommand {
     private static int clearMail(CommandContext<CommandSourceStack> context) {
         try {
             context.getSource().sendSuccess(
-                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.clear"),
+                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.clear")
+                            .withStyle(ChatFormatting.GRAY),
                     false);
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());
@@ -167,7 +181,8 @@ public class SimpleCardMemoCommand {
             ServerSetup.serverConfig.reload();
             ServerSetup.serverConfig.preloadFiles(ServerSetup.serverCache);
             context.getSource().sendSuccess(
-                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.reload"),
+                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.reload")
+                            .withStyle(ChatFormatting.GRAY),
                     false);
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());

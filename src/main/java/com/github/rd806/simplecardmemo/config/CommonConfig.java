@@ -37,7 +37,7 @@ public class CommonConfig {
         PRELOAD_FILES = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.load_local_files")
                 .comment("Preload local memos when start games")
-                .define("PreloadFiles", false);
+                .define("PreloadFiles", true);
         CACHE_SIZE = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.cache")
                 .comment("Define how many memos' content will be cached during the game")

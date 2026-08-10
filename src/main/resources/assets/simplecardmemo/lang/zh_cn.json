@@ -5,8 +5,8 @@
 
     "item.simplecardmemo.memo_viewer": "新的备忘录",
     "simplecardmemo.item.memo_viewer.tooltip.default": "最近一次打开的备忘录",
-    "simplecardmemo.item.memo_viewer.tooltip.author": "作者：",
     "simplecardmemo.item.memo_viewer.tooltip.more": "按下 [Shift] 键显示详情",
+    "simplecardmemo.item.memo_viewer.tooltip.author": "作者：",
     "simplecardmemo.item.memo_viewer.tooltip.source": "来源：",
     "simplecardmemo.item.memo_viewer.tooltip.time": "修改：",
     "simplecardmemo.item.memo_viewer.tooltip.external": "外部文件",
@@ -28,7 +28,7 @@
 
     "simplecardmemo.gui.viewer_screen": "查看界面",
     "simplecardmemo.gui.viewer_screen.reload": "重新加载",
-    "simplecardmemo.gui.viewer_screen.error": "文本错误：",
+    "simplecardmemo.gui.viewer_screen.error": "文本错误：%s，请尝试重新获取该物品！",
 
     "simplecardmemo.gui.editor_screen": "编辑界面",
     "simplecardmemo.gui.editor_screen.title": "编辑内容",
@@ -55,6 +55,9 @@
     "simplecardmemo.gui.manager_screen.input.hint": "输入新的名称",
     "simplecardmemo.gui.manager_screen.input.tooltip": "更改指定备忘录的名称",
     "simplecardmemo.gui.manager_screen.source": "来源",
+    "simplecardmemo.gui.manager_screen.source.client": "客户端",
+    "simplecardmemo.gui.manager_screen.source.server": "服务端",
+    "simplecardmemo.gui.manager_screen.source.tooltip": "点击切换文件列表来源",
     "simplecardmemo.gui.manager_screen.edit": "编辑",
     "simplecardmemo.gui.manager_screen.edit.tooltip": "点击按钮以重命名备忘录",
     "simplecardmemo.gui.manager_screen.export": "导出",
@@ -77,9 +80,12 @@
 
     "simplecardmemo.memo_mail.send": "向你发送了一个备忘录。",
 
-    "simplecardmemo.command.cache.empty": "无文件缓存！",
-    "simplecardmemo.command.cache.info": "已缓存以下文件：",
-    "simplecardmemo.command.cache.clear": "内容缓存已被清理！",
+    "simplecardmemo.command.client_cache.empty": "客户端无文件缓存！",
+    "simplecardmemo.command.client_cache.info": "客户端已缓存以下文件：",
+    "simplecardmemo.command.client_cache.clear": "客户端内容缓存已被清理！",
+    "simplecardmemo.command.server_cache.empty": "服务端无文件缓存！",
+    "simplecardmemo.command.server_cache.info": "服务端已缓存以下文件：",
+    "simplecardmemo.command.server_cache.clear": "服务端内容缓存已被清理！",
     "simplecardmemo.command.mail.empty": "服务器无信件可用！",
     "simplecardmemo.command.mail.info": "服务器存在以下信件：",
     "simplecardmemo.command.mail.clear": "已清理所有信件！",

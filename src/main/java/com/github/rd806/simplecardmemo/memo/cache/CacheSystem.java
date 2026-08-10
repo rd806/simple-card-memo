@@ -4,7 +4,9 @@ import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -28,12 +30,13 @@ public class CacheSystem {
         if (player == null) { return; }
         if (set.isEmpty()) {
             player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".command.cache.empty"),
+                    Component.translatable(SimpleCardMemo.MODID + ".command.client_cache.empty"),
                     false
             );
         } else {
             player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".command.cache.info"),
+                    Component.translatable(SimpleCardMemo.MODID + ".command.client_cache.info")
+                            .withStyle(ChatFormatting.GREEN),
                     false
             );
             for (String key : set) {
@@ -56,8 +59,7 @@ public class CacheSystem {
         }
         // 更新缓冲区
         if (content == null) {
-            content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
-                    .append(filePath).getString();
+            content = I18n.get(SimpleCardMemo.MODID + ".gui.viewer_screen.error", filePath);
         } else {
             memoCache.put(filePath, content);
         }

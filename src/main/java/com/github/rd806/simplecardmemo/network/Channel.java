@@ -1,8 +1,8 @@
 package com.github.rd806.simplecardmemo.network;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.MailStatus;
-import com.github.rd806.simplecardmemo.init.MemoSource;
+import com.github.rd806.simplecardmemo.init.value.MailStatus;
+import com.github.rd806.simplecardmemo.init.value.MemoSource;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.network.command.CommandType;
 import com.github.rd806.simplecardmemo.network.command.ClientCommand;

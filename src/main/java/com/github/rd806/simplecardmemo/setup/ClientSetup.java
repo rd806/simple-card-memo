@@ -21,8 +21,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = SimpleCardMemo.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class  ClientSetup {
 
-    public static MemoConfig clientConfig = new MemoConfig();
-    public static MemoCache clientCache = new MemoCache();
+    public static MemoConfig clientConfig;
+    public static MemoCache clientCache;
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
@@ -37,6 +37,8 @@ public class  ClientSetup {
                             ConfigMenu.buildScreen().setParentScreen(parent).build()));
         }
         // 客户端配置文件
+        clientConfig = new MemoConfig();
+        clientCache =  new MemoCache();
         if (CommonConfig.PRELOAD_FILES.get()) {
             clientConfig.preloadFiles(clientCache);
             SimpleCardMemo.LOGGER.info("Preload Files on the client!");

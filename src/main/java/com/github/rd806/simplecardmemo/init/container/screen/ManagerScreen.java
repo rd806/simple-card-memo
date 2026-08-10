@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.init.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.MemoSource;
+import com.github.rd806.simplecardmemo.init.value.MemoSource;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -97,18 +98,32 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         nameInput.setBordered(false);
         addRenderableWidget(nameInput);
     }
+
     // 绘制按钮
     private void renderButton() {
         // 切换来源
-        CycleButton<MemoSource> sourceChange = CycleButton.<MemoSource>builder((value) -> Component.literal(value.toString()))
+        CycleButton<MemoSource> sourceChange = CycleButton.<MemoSource>builder(
+                (value) -> {
+                    String name = "";
+                    switch (value) {
+                        case CLIENT -> name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.client");
+                        case SERVER -> name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.server");
+                    }
+                    return Component.literal(name);
+                })
                 .withValues(MemoSource.values())
                 .create(
                         // 居中显示
                         this.width / 2 - BUTTON_WIDTH,  topPos - 25,
                         BUTTON_WIDTH * 2, BUTTON_HEIGHT,
                         Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.source"),
-                        (button, value) -> memoSource = value
+                        (button, value) -> {
+                            memoSource = value;
+                            refreshMemoList();
+                        }
                 );
+        sourceChange.setValue(memoSource);
+        sourceChange.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.source.tooltip")));
         addRenderableWidget(sourceChange);
 
         // 编辑按钮
@@ -119,7 +134,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                             ClientSetup.clientConfig.saveToConfig();
                             refreshMemoList();
                         })
-                .pos(leftPos - BUTTON_WIDTH - 5, topPos + 28)
+                .pos(leftPos - BUTTON_WIDTH - 5, topPos + 47)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         editButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit.tooltip")));
@@ -259,7 +274,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // 点击文件列表选择文件
         if (memoList != null && !memoList.isEmpty()) {
-            // 点击选择
             if (isMouseOver(mouseX, mouseY)) {
                 int index = (int) ((mouseY - HEADER) / ENTRY_HEIGHT) + memoListScroll;
                 if (index >= 0 && index < memoList.size()) {

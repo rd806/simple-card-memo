@@ -66,7 +66,7 @@ public class ConfigMenu {
         // 是否预加载本地文件
         commonSettings.addEntry(
                 entryBuilder.startBooleanToggle(Component.translatable(SimpleCardMemo.MODID + ".config.load_local_files"), CommonConfig.PRELOAD_FILES.get())
-                        .setDefaultValue(false)
+                        .setDefaultValue(true)
                         .setTooltip(Component.translatable(SimpleCardMemo.MODID + ".config.load_local_files.tooltip"))
                         .setSaveConsumer(loadLocalFiles -> CommonConfig.PRELOAD_FILES.set(loadLocalFiles))
                         .build());
