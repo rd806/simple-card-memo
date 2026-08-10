@@ -3,12 +3,12 @@ package com.github.rd806.simplecardmemo.init.container.screen;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
-import com.github.rd806.simplecardmemo.network.mail.MailStatus;
+import com.github.rd806.simplecardmemo.init.MailStatus;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.mail.MemoPacketReceive;
-import com.github.rd806.simplecardmemo.network.mail.MemoPacketSend;
+import com.github.rd806.simplecardmemo.network.mail.MailReceive;
+import com.github.rd806.simplecardmemo.network.mail.MailSend;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
@@ -150,7 +150,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
                 .thenAccept(data -> Minecraft.getInstance().execute(() ->
                         Channel.CHANNEL.send(
                                 PacketDistributor.SERVER.noArg(),
-                                new MemoPacketSend(content, target, message)
+                                new MailSend(content, target, message)
                         )))
                 .exceptionally(e -> {
                             SimpleCardMemo.LOGGER.error("Error on sending mail", e);
@@ -168,7 +168,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         }
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
-                new MemoPacketReceive(target)
+                new MailReceive(target)
         );
     }
 

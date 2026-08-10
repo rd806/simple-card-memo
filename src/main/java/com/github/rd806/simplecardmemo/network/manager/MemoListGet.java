@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.network.get;
+package com.github.rd806.simplecardmemo.network.manager;
 
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.setup.ServerSetup;

@@ -1,21 +1,18 @@
 package com.github.rd806.simplecardmemo.init.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.MemoSource;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
-import com.github.rd806.simplecardmemo.network.get.MemoListGet;
-import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
+import com.github.rd806.simplecardmemo.network.manager.MemoListGet;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Checkbox;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -32,15 +29,16 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     // 背景GUI图片
     private static final ResourceLocation MANAGER_GUI =
             ResourceLocation.parse(SimpleCardMemo.MODID + ":textures/container/manager.png");
-    // 导出信息
-    private static List<MemoInfo> memoList;
+
+    // 文件信息
+    private static List<MemoInfo> memoList = ClientSetup.clientConfig.getMemoList();
+    private static MemoSource memoSource = MemoSource.CLIENT;
     private MemoInfo selectedMemo;
     private int selectIndex;
     // 滚动常量
     private int memoListScroll = 0;
     private int memoListMaxScroll = 0;
     // 布局常量
-    // GUI 左上角的位置，使界面居中显示
     private int leftPos;
     private int topPos;
     private static int PADDING;
@@ -52,14 +50,12 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private static int TOTAL_HEIGHT;
     // 输入框
     private EditBox nameInput;
-    private Checkbox fromServer;
     // 按键常量
     private static final int BUTTON_WIDTH = 50;
     private static final int BUTTON_HEIGHT = 20;
 
     public ManagerScreen(ManagerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        memoList = ClientSetup.clientConfig.getMemoList();
         selectedMemo = memoList.get(0);
         this.imageWidth = 175;
         this.imageHeight = 255;
@@ -104,33 +100,35 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     // 绘制按钮
     private void renderButton() {
         // 切换来源
-        fromServer = new Checkbox(
-                leftPos - 60, topPos + 28,
-                20, 20,
-                Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.source"),
-                false
-        );
-        addRenderableWidget(fromServer);
+        CycleButton<MemoSource> sourceChange = CycleButton.<MemoSource>builder((value) -> Component.literal(value.toString()))
+                .withValues(MemoSource.values())
+                .create(
+                        // 居中显示
+                        this.width / 2 - BUTTON_WIDTH,  topPos - 25,
+                        BUTTON_WIDTH * 2, BUTTON_HEIGHT,
+                        Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.source"),
+                        (button, value) -> memoSource = value
+                );
+        addRenderableWidget(sourceChange);
 
         // 编辑按钮
         Button editButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
                         button -> {
-                            if (fromServer.selected()) { return; }
+                            if (memoSource.equals(MemoSource.SERVER)) { return; }
                             ClientSetup.clientConfig.getMemoList().get(selectIndex).setMemoName(nameInput.getValue());
                             ClientSetup.clientConfig.saveToConfig();
                             refreshMemoList();
                         })
-                .pos(leftPos - BUTTON_WIDTH - 5, fromServer.getY() + 25)
+                .pos(leftPos - BUTTON_WIDTH - 5, topPos + 28)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
-
         editButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit.tooltip")));
         addRenderableWidget(editButton);
 
         // 导出按钮
         Button exportButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export"),
                         button -> exportItem())
-                .pos(leftPos - BUTTON_WIDTH - 5, editButton.getY() + BUTTON_HEIGHT + 5)
+                .pos(editButton.getX(), editButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         exportButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.export.tooltip")));
@@ -139,7 +137,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 刷新按钮
         Button reloadButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.reload"),
                         button -> refreshMemoList())
-                .pos(leftPos - BUTTON_WIDTH - 5, exportButton.getY() + BUTTON_HEIGHT + 5)
+                .pos(editButton.getX(), exportButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         reloadButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.reload.tooltip")));
@@ -148,9 +146,11 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 删除按钮
         Button deleteButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
                         button -> {
-                            if (MemoLoader.deleteLocalFiles(selectedMemo)) { refreshMemoList(); }
+                            if (memoSource.equals(MemoSource.CLIENT) && MemoLoader.deleteLocalFiles(selectedMemo)) {
+                                refreshMemoList();
+                            }
                         })
-                .pos(leftPos - BUTTON_WIDTH - 5, reloadButton.getY() + BUTTON_HEIGHT + 5)
+                .pos(editButton.getX(), reloadButton.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         deleteButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete.tooltip")));
@@ -281,18 +281,16 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     }
 
     // 获取文件列表
-    public static void setMemoList(List<MemoInfo> list) {
-        memoList = list;
-    }
+    public static void setMemoList(List<MemoInfo> list) { memoList = list; }
 
     // 刷新文件列表
     private void refreshMemoList() {
-        // 显示来源
-        if (!fromServer.selected()) {
-            ClientSetup.clientConfig.reload();
-            memoList = ClientSetup.clientConfig.getMemoList();
-        } else {
-            Channel.CHANNEL.send(
+        switch (memoSource) {
+            case CLIENT -> {
+                ClientSetup.clientConfig.reload();
+                memoList = ClientSetup.clientConfig.getMemoList();
+            }
+            case SERVER -> Channel.CHANNEL.send(
                     PacketDistributor.SERVER.noArg(),
                     new MemoListGet()
             );
@@ -307,9 +305,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
             return;
         }
         // 发送网络包
-        Channel.CHANNEL.send(
-                PacketDistributor.SERVER.noArg(),
-                new MemoPacketGet(selectedMemo, fromServer.selected())
-        );
+        Channel.getMemoItem(selectedMemo, memoSource);
     }
 }

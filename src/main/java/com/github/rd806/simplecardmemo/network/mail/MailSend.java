@@ -1,6 +1,7 @@
 package com.github.rd806.simplecardmemo.network.mail;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.MailStatus;
 import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.mail.MailKey;
@@ -14,17 +15,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
-public class MemoPacketSend {
+public class MailSend {
 
     private final String content;
     private final String receiver;
     private final String message;
 
-    public MemoPacketSend(String content, String receiver, String message) {
+    public MailSend(String content, String receiver, String message) {
         this.content = content;
         this.receiver = receiver;
         this.message = message;
@@ -38,11 +38,11 @@ public class MemoPacketSend {
     }
 
     // 解码：从网络缓冲区读取数据
-    public static MemoPacketSend decode(FriendlyByteBuf buffer) {
+    public static MailSend decode(FriendlyByteBuf buffer) {
         String content = buffer.readUtf();
         String receiver = buffer.readUtf();
         String message = buffer.readUtf();
-        return new MemoPacketSend(content, receiver, message);
+        return new MailSend(content, receiver, message);
     }
 
     // 处理方法
@@ -71,10 +71,7 @@ public class MemoPacketSend {
             SimpleCardMemo.LOGGER.info("Mail {}:{} has been added!", key.sender() + "->" + key.receiver(), key.name());
             input.shrink(1);
             // 发送成功消息
-            Channel.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> sender),
-                    new MailStatusSend(MailStatus.SUCCESS_SEND)
-            );
+            Channel.sendMailStatus(sender, MailStatus.SUCCESS_SEND);
             sendMessage(sender, receiver, message);
         });
         context.setPacketHandled(true);

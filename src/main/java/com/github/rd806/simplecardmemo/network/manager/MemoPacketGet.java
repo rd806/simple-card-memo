@@ -1,12 +1,12 @@
-package com.github.rd806.simplecardmemo.network.get;
+package com.github.rd806.simplecardmemo.network.manager;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.MemoSource;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.mail.MemoPacketSave;
 import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,16 +14,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class MemoPacketGet {
 
     private final MemoInfo memoInfo;
-    private final boolean fromServer;
+    private final MemoSource memoSource;
 
-    public MemoPacketGet(MemoInfo memoInfo, boolean fromServer) {
+    public MemoPacketGet(MemoInfo memoInfo, MemoSource memoSource) {
         this.memoInfo = memoInfo;
-        this.fromServer = fromServer;
+        this.memoSource = memoSource;
     }
 
     // 编码：将数据写入网络缓冲区
@@ -33,7 +34,7 @@ public class MemoPacketGet {
         buffer.writeUtf(memoInfo.getMemoAuthor());
         buffer.writeBoolean(memoInfo.isExternal());
         buffer.writeLong(memoInfo.getLastModified());
-        buffer.writeBoolean(fromServer);
+        buffer.writeEnum(memoSource);
     }
 
     // 解码：从网络缓冲区读取数据
@@ -44,8 +45,8 @@ public class MemoPacketGet {
         boolean external = buffer.readBoolean();
         long lastModified = buffer.readLong();
         MemoInfo memoInfo = new MemoInfo(memoName, memoPath, author, external, lastModified);
-        boolean fromServer = buffer.readBoolean();
-        return new MemoPacketGet(memoInfo, fromServer);
+        MemoSource memoSource = buffer.readEnum(MemoSource.class);
+        return new MemoPacketGet(memoInfo, memoSource);
     }
 
     // 处理方法
@@ -66,7 +67,7 @@ public class MemoPacketGet {
             ItemStack output = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.OUTPUT_SLOT);
             if (!output.isEmpty()) { return; }
             // 如果是服务端文件还需要传递内容
-            if (fromServer) {
+            if (memoSource.equals(MemoSource.SERVER)) {
                 String filePath = memoInfo.getMemoPath();
                 String content = ServerSetup.serverCache.get(filePath);
                 if (content == null) {

@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.network.get;
+package com.github.rd806.simplecardmemo.network.editor;
 
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
@@ -9,23 +9,19 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MemoPacketNew {
+public class NewMemo {
 
     private final ItemStack stack;
 
-    public MemoPacketNew(ItemStack stack) {
-        this.stack = stack;
-    }
+    public NewMemo(ItemStack stack) { this.stack = stack; }
 
     // 编码：将数据写入网络缓冲区
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeItem(this.stack);
-    }
+    public void encode(FriendlyByteBuf buffer) { buffer.writeItem(this.stack); }
 
     // 解码：从网络缓冲区读取数据
-    public static MemoPacketNew decode(FriendlyByteBuf buffer) {
+    public static NewMemo decode(FriendlyByteBuf buffer) {
         ItemStack stack = buffer.readItem();
-        return new MemoPacketNew(stack);
+        return new NewMemo(stack);
     }
 
     // 处理方法

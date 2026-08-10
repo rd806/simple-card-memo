@@ -22,7 +22,6 @@ public class ClientConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> BACKGROUND_COLOR;
 
 
-
     public static ForgeConfigSpec init() {
         BUILDER.push("Text").translation(SimpleCardMemo.MODID + ".gui.config.text");
         PAGE_MARGIN = BUILDER

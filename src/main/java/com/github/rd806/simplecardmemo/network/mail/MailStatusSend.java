@@ -1,5 +1,6 @@
 package com.github.rd806.simplecardmemo.network.mail;
 
+import com.github.rd806.simplecardmemo.init.MailStatus;
 import com.github.rd806.simplecardmemo.init.container.screen.MailScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;

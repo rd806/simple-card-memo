@@ -5,7 +5,7 @@ import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
+import com.github.rd806.simplecardmemo.network.editor.NewMemo;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -240,7 +240,7 @@ public class EditorScreen extends Screen {
         // 发送网络包
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
-                new MemoPacketNew(viewer));
+                new NewMemo(viewer));
         if (Minecraft.getInstance().player != null) {
             Minecraft.getInstance().player.displayClientMessage(
                     Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.export.success"),

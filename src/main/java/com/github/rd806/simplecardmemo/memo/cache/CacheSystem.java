@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.memo.cache;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
+import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +21,8 @@ import java.util.Set;
 @OnlyIn(Dist.CLIENT)
 public class CacheSystem {
     // 查看缓存
-    public static void getInfo(MemoCache memoCache) {
+    public static void getInfo() {
+        MemoCache memoCache = ClientSetup.clientCache;
         Set<String> set = memoCache.getCache().keySet();
         Player player = Minecraft.getInstance().player;
         if (player == null) { return; }

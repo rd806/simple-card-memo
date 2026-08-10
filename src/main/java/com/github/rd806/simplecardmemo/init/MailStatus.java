@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.network.mail;
+package com.github.rd806.simplecardmemo.init;
 
 public enum MailStatus {
     SUCCESS_SEND,

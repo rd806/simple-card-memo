@@ -1,18 +1,18 @@
 package com.github.rd806.simplecardmemo.network;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.network.command.MemoCacheClear;
-import com.github.rd806.simplecardmemo.network.command.MemoCacheInfo;
-import com.github.rd806.simplecardmemo.network.get.MemoListGet;
-import com.github.rd806.simplecardmemo.network.get.MemoListReceive;
-import com.github.rd806.simplecardmemo.network.get.MemoPacketGet;
-import com.github.rd806.simplecardmemo.network.get.MemoPacketNew;
-import com.github.rd806.simplecardmemo.network.mail.MemoPacketReceive;
-import com.github.rd806.simplecardmemo.network.mail.MemoPacketSave;
-import com.github.rd806.simplecardmemo.network.mail.MemoPacketSend;
-import com.github.rd806.simplecardmemo.network.mail.MailStatusSend;
+import com.github.rd806.simplecardmemo.init.MailStatus;
+import com.github.rd806.simplecardmemo.init.MemoSource;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import com.github.rd806.simplecardmemo.network.command.CommandType;
+import com.github.rd806.simplecardmemo.network.command.ClientCommand;
+import com.github.rd806.simplecardmemo.network.editor.NewMemo;
+import com.github.rd806.simplecardmemo.network.manager.*;
+import com.github.rd806.simplecardmemo.network.mail.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class Channel {
@@ -32,16 +32,16 @@ public class Channel {
         // 物品数据包
         CHANNEL.registerMessage(
                 packetId++,
-                MemoPacketNew.class, MemoPacketNew::encode, MemoPacketNew::decode, MemoPacketNew::handle);
+                NewMemo.class, NewMemo::encode, NewMemo::decode, NewMemo::handle);
         CHANNEL.registerMessage(
                 packetId++,
                 MemoPacketGet.class, MemoPacketGet::encode, MemoPacketGet::decode, MemoPacketGet::handle);
         CHANNEL.registerMessage(
                 packetId++,
-                MemoPacketSend.class, MemoPacketSend::encode, MemoPacketSend::decode, MemoPacketSend::handle);
+                MailSend.class, MailSend::encode, MailSend::decode, MailSend::handle);
         CHANNEL.registerMessage(
                 packetId++,
-                MemoPacketReceive.class, MemoPacketReceive::encode, MemoPacketReceive::decode, MemoPacketReceive::handle);
+                MailReceive.class, MailReceive::encode, MailReceive::decode, MailReceive::handle);
         // 状态数据包
         CHANNEL.registerMessage(
                 packetId++,
@@ -60,9 +60,21 @@ public class Channel {
         // 命令数据包
         CHANNEL.registerMessage(
                 packetId++,
-                MemoCacheInfo.class, MemoCacheInfo::encode, MemoCacheInfo::decode, MemoCacheInfo::handle);
-        CHANNEL.registerMessage(
-                packetId++,
-                MemoCacheClear.class, MemoCacheClear::encode, MemoCacheClear::decode, MemoCacheClear::handle);
+                ClientCommand.class, ClientCommand::encode, ClientCommand::decode, ClientCommand::handle);
+    }
+
+    // 获取物品
+    public static void getMemoItem(MemoInfo selectedMemo, MemoSource source) {
+        Channel.CHANNEL.send(PacketDistributor.SERVER.noArg(), new MemoPacketGet(selectedMemo, source));
+    }
+
+    // 发送信件状态信息
+    public static void sendMailStatus(ServerPlayer player, MailStatus status) {
+        Channel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MailStatusSend(status));
+    }
+
+    // 发送命令
+    public static void sendCommand(ServerPlayer player, CommandType commandType) {
+        Channel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ClientCommand(commandType));
     }
 }

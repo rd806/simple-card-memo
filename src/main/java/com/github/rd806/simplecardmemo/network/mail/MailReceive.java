@@ -1,11 +1,13 @@
 package com.github.rd806.simplecardmemo.network.mail;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.MailStatus;
 import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.mail.MailKey;
 import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
+import com.github.rd806.simplecardmemo.network.manager.MemoPacketSave;
 import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,11 +18,11 @@ import net.minecraftforge.network.PacketDistributor;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class MemoPacketReceive {
+public class MailReceive {
 
     private final String sender;
 
-    public MemoPacketReceive(String sender) {
+    public MailReceive(String sender) {
         this.sender = sender;
     }
 
@@ -28,9 +30,9 @@ public class MemoPacketReceive {
         buffer.writeUtf(sender);
     }
 
-    public static MemoPacketReceive decode(FriendlyByteBuf buffer) {
+    public static MailReceive decode(FriendlyByteBuf buffer) {
         String sender = buffer.readUtf();
-        return new MemoPacketReceive(sender);
+        return new MailReceive(sender);
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
@@ -61,10 +63,7 @@ public class MemoPacketReceive {
             // 设置物品
             if (output == null) {
                 SimpleCardMemo.LOGGER.error("Memo not found");
-                Channel.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> receiver),
-                        new MailStatusSend(MailStatus.EMPTY_RECEIVE)
-                );
+                Channel.sendMailStatus(receiver, MailStatus.EMPTY_RECEIVE);
                 return;
             }
             mailMenu.getItemStackHandler().setStackInSlot(MailMenu.OUTPUT_SLOT, output);
@@ -72,10 +71,7 @@ public class MemoPacketReceive {
                     PacketDistributor.PLAYER.with(() -> receiver),
                     new MemoPacketSave(filePath, content)
             );
-            Channel.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> receiver),
-                    new MailStatusSend(MailStatus.SUCCESS_RECEIVE)
-            );
+            Channel.sendMailStatus(receiver, MailStatus.SUCCESS_RECEIVE);
         });
         context.setPacketHandled(true);
     }

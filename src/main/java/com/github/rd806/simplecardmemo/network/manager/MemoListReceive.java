@@ -1,4 +1,4 @@
-package com.github.rd806.simplecardmemo.network.get;
+package com.github.rd806.simplecardmemo.network.manager;
 
 import com.github.rd806.simplecardmemo.init.container.screen.ManagerScreen;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;

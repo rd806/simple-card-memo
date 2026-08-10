@@ -17,28 +17,28 @@ All the files have detailed information which is stored in `simplecardmemo-memo.
       "name": "temp",
       "path": "temp.md",
       "author": "Default",
-      "isLocalFile": true,
+      "isExternal": true,
       "lastModified": 1785244599788
     },
     {
       "name": "test1",
       "path": "test1.md",
       "author": "RunicDolphin806",
-      "isLocalFile": true,
+      "isExternal": true,
       "lastModified": 1785595410237
     },
     {
       "name": "test2.md",
       "path": "test2.md",
       "author": "Default",
-      "isLocalFile": true,
+      "isExternal": true,
       "lastModified": 1785595410238
     }
   ]
 }
 ```
 
-Obviously, There are two text sources: local and web.
+Obviously, There are two text sources: External and Resource.
 
 ### Local File
 
@@ -73,9 +73,11 @@ You can also preview texts which come from the Internet. However, it may take mo
 
 > Please note that **Memo Editor** is still under development. It's recommended to edit your Memos with a code editor.
 
-| Commands                      | Function                  |
-|-------------------------------|---------------------------|
-| `/simplecardmemo mail info`   | Show server's mails       |
-| `/simplecardmemo mail clear`  | Clear server's mails      |
-| `/simplecardmemo cache info`  | Show local content cache  |
-| `/simplecardmemo cache clear` | Clear local content cache |
+| Commands                             | Function                   |
+|--------------------------------------|----------------------------|
+| `/simplecardmemo mail info`          | Show server's mails        |
+| `/simplecardmemo mail clear`         | Clear server's mails       |
+| `/simplecardmemo client cache info`  | Show local content cache   |
+| `/simplecardmemo client cache clear` | Clear local content cache  |
+| `/simplecardmemo server cache info`  | Show server content cache  |
+| `/simplecardmemo server cache clear` | Clear server content cache |

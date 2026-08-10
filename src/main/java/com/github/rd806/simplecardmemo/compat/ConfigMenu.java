@@ -22,8 +22,8 @@ public class ConfigMenu {
         // 文本预览
         ConfigCategory textSettings = builder.getOrCreateCategory(Component.translatable(SimpleCardMemo.MODID + ".gui.config.text"));
         buildTextSettings(entryBuilder, textSettings);
-        // 物品信息
-        ConfigCategory itemSettings = builder.getOrCreateCategory(Component.translatable(SimpleCardMemo.MODID + ".gui.config.item"));
+        // 通用设置
+        ConfigCategory itemSettings = builder.getOrCreateCategory(Component.translatable(SimpleCardMemo.MODID + ".gui.config.common"));
         buildCommonSettings(entryBuilder, itemSettings);
 
         return builder;
@@ -73,7 +73,7 @@ public class ConfigMenu {
         // 缓冲区大小
         commonSettings.addEntry(
                 entryBuilder.startIntField(Component.translatable(SimpleCardMemo.MODID + ".config.cache"), CommonConfig.CACHE_SIZE.get())
-                        .setDefaultValue(5)
+                        .setDefaultValue(20)
                         .setTooltip(Component.translatable(SimpleCardMemo.MODID + ".config.cache.tooltip"))
                         .setSaveConsumer(cache -> CommonConfig.CACHE_SIZE.set(cache))
                         .build());

@@ -54,7 +54,7 @@
     "simplecardmemo.gui.manager_screen.input": "Name Input Box",
     "simplecardmemo.gui.manager_screen.input.hint": "Input new name",
     "simplecardmemo.gui.manager_screen.input.tooltip": "Change the selected memo's name",
-    "simplecardmemo.gui.manager_screen.source": "From Server",
+    "simplecardmemo.gui.manager_screen.source": "Source",
     "simplecardmemo.gui.manager_screen.edit": "Edit",
     "simplecardmemo.gui.manager_screen.edit.tooltip": "Click this button to rename the memo",
     "simplecardmemo.gui.manager_screen.export": "Export",
@@ -99,6 +99,6 @@
     "simplecardmemo.config.date_format.tooltip": "Date format for the memos",
 
     "simplecardmemo.gui.config.title": "Simple Card Memo Config",
-    "simplecardmemo.gui.config.text": "Text view screen settings",
-    "simplecardmemo.gui.config.item": "Card Memo item settings"
+    "simplecardmemo.gui.config.text": "Text view settings",
+    "simplecardmemo.gui.config.common": "Common settings"
 }

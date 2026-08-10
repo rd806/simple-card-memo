@@ -29,7 +29,7 @@ public class CommonConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> CACHE_SIZE;
 
     public static ForgeConfigSpec init() {
-        BUILDER.push("Item").translation(SimpleCardMemo.MODID + ".gui.config.item");
+        BUILDER.push("Common").translation(SimpleCardMemo.MODID + ".gui.config.common");
         DATE_FORMAT = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.date_format")
                 .comment("Date format for the memos")
@@ -41,7 +41,7 @@ public class CommonConfig {
         CACHE_SIZE = BUILDER
                 .translation(SimpleCardMemo.MODID + ".config.cache")
                 .comment("Define how many memos' content will be cached during the game")
-                .defineInRange("CacheSize", 5, 5, 10);
+                .defineInRange("CacheSize", 20, 5, 100);
         BUILDER.pop();
         return BUILDER.build();
     }

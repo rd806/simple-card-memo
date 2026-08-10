@@ -5,8 +5,7 @@ import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.memo.mail.MailKey;
 import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.command.MemoCacheClear;
-import com.github.rd806.simplecardmemo.network.command.MemoCacheInfo;
+import com.github.rd806.simplecardmemo.network.command.CommandType;
 import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -15,7 +14,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Set;
 
@@ -24,8 +22,8 @@ public class SimpleCardMemoCommand {
     private static final String ROOT = "simplecardmemo";
     private static final String CLIENT = "client";
     private static final String SERVER = "server";
-    private static final String CACHE = "cache";
     private static final String MAIL = "mail";
+    private static final String CACHE = "cache";
     private static final String INFO = "info";
     private static final String CLEAR = "clear";
     private static final String RELOAD = "reload";
@@ -43,8 +41,8 @@ public class SimpleCardMemoCommand {
 
         root.then(client.then(cache.then(info.executes(SimpleCardMemoCommand::showClientCache))));
         root.then(client.then(cache.then(clear.executes(SimpleCardMemoCommand::clearClientCache))));
-        root.then(server.then(cache.then(info.executes(SimpleCardMemoCommand::showServerContent))));
-        root.then(server.then(cache.then(clear.executes(SimpleCardMemoCommand::clearServerContent))));
+        root.then(server.then(cache.then(info.executes(SimpleCardMemoCommand::showServerCache))));
+        root.then(server.then(cache.then(clear.executes(SimpleCardMemoCommand::clearServerCache))));
         root.then(server.then(reload.executes(SimpleCardMemoCommand::reload)));
         root.then(mail.then(info.executes(SimpleCardMemoCommand::showMail)));
         root.then(mail.then(clear.executes(SimpleCardMemoCommand::clearMail)));
@@ -57,10 +55,7 @@ public class SimpleCardMemoCommand {
             // 发送网络包
             ServerPlayer player = context.getSource().getPlayer();
             if (player != null) {
-                Channel.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> player),
-                        new MemoCacheInfo()
-                );
+                Channel.sendCommand(player, CommandType.CACHE_INFO);
             }
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());
@@ -74,10 +69,7 @@ public class SimpleCardMemoCommand {
             // 发送网络包
             ServerPlayer player = context.getSource().getPlayer();
             if (player != null) {
-                Channel.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> player),
-                        new MemoCacheClear()
-                );
+                Channel.sendCommand(player, CommandType.CACHE_CLEAR);
             }
             context.getSource().sendSuccess(
                     () -> Component.translatable(SimpleCardMemo.MODID + ".command.cache.clear"),
@@ -90,7 +82,7 @@ public class SimpleCardMemoCommand {
     }
 
     // 展示服务端缓存
-    private static int showServerContent(CommandContext<CommandSourceStack> context) {
+    private static int showServerCache(CommandContext<CommandSourceStack> context) {
         try {
             Set<String> sets = ServerSetup.serverCache.getCache().keySet();
             // 显示列表
@@ -115,7 +107,7 @@ public class SimpleCardMemoCommand {
     }
 
     // 清除服务器缓存
-    private static int clearServerContent(CommandContext<CommandSourceStack> context) {
+    private static int clearServerCache(CommandContext<CommandSourceStack> context) {
         try {
             ServerSetup.serverCache.clear();
             context.getSource().sendSuccess(
