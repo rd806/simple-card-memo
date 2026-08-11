@@ -69,10 +69,20 @@ public class CacheSystem {
     // 不带缓存的加载
     public static String getMemoContent(MemoInfo memoInfo, MemoCache memoCache) {
         String filePath = memoInfo.getMemoPath();
-        // 重新获取文本
-        String content = MemoLoader.loadText(memoInfo);
+        String content;
+        // 先从本地加载
+        if (memoInfo.isExternal()) {
+            content = MemoLoader.loadText(memoInfo);
+        } else {
+            content = getResourceString(memoInfo);
+        }
+        // 本地加载失败则访问缓存
         if (content == null) {
-            content = I18n.get(SimpleCardMemo.MODID + ".gui.viewer_screen.error", filePath);
+            // 获取缓存
+            content = memoCache.get(filePath);
+            if (content == null) {
+                content = I18n.get(SimpleCardMemo.MODID + ".gui.viewer_screen.error", filePath);
+            }
         } else {
             memoCache.put(filePath, content);
         }

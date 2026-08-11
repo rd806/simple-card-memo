@@ -34,7 +34,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     // 文件信息
     private static List<MemoInfo> memoList = ClientSetup.clientConfig.getMemoList();
     private static MemoSource memoSource = MemoSource.CLIENT;
-    private MemoInfo selectedMemo;
+    private MemoInfo selectedMemo = new MemoInfo();
     private int selectIndex;
     // 滚动常量
     private int memoListScroll = 0;
@@ -57,7 +57,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
 
     public ManagerScreen(ManagerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        selectedMemo = memoList.get(0);
         this.imageWidth = 175;
         this.imageHeight = 235;
     }
@@ -106,8 +105,12 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 (value) -> {
                     String name = "";
                     switch (value) {
-                        case CLIENT -> name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.client");
-                        case SERVER -> name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.server");
+                        case BUILT_IN ->
+                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.built_in");
+                        case CLIENT ->
+                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.client");
+                        case SERVER ->
+                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.server");
                     }
                     return Component.literal(name);
                 })
@@ -299,14 +302,12 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     // 刷新文件列表
     private void refreshMemoList() {
         switch (memoSource) {
+            case BUILT_IN -> memoList = ClientSetup.builtInMemos;
             case CLIENT -> {
                 ClientSetup.clientConfig.reload();
                 memoList = ClientSetup.clientConfig.getMemoList();
             }
-            case SERVER -> Channel.CHANNEL.send(
-                    PacketDistributor.SERVER.noArg(),
-                    new MemoListGet()
-            );
+            case SERVER -> Channel.CHANNEL.send(PacketDistributor.SERVER.noArg(), new MemoListGet());
         }
         memoListScroll = 0;
     }

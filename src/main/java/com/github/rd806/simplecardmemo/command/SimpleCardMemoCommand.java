@@ -147,7 +147,7 @@ public class SimpleCardMemoCommand {
                 // 显示列表
                 int id = 1;
                 for (MailKey set : sets) {
-                    String message = id + ". " + "§7S: §r" + set.receiver()
+                    String message = id + ". " + "§7S: §r" + set.sender()
                                     + " §7R: §r" + set.receiver()
                                     + " §7T: §r" + CommonConfig.getDateString(set.timestamp())
                                     + " §7N: §r" + set.name();

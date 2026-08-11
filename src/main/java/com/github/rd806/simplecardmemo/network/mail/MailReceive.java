@@ -7,13 +7,10 @@ import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.mail.MailKey;
 import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.manager.MemoPacketSave;
-import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -51,12 +48,13 @@ public class MailReceive {
             String filePath = null;
             Set<MailKey> sets = MailSystem.getAllMails();
             for (MailKey mailKey : sets) {
-                if (mailKey.sender().equals(sender)) {
+                if (mailKey.sender().equals(sender) && mailKey.receiver().equals(receiver.getName().getString())) {
                     output = MailSystem.getMail(mailKey);
                     filePath = MemoViewerItem.getFilePath(output);
-                    content = ServerSetup.serverCache.get(filePath);
+                    content = MailSystem.getContent(mailKey);
                     // 移除对应的信件
                     MailSystem.removeMail(mailKey);
+                    MailSystem.removeContent(mailKey);
                     break;
                 }
             }
@@ -67,10 +65,7 @@ public class MailReceive {
                 return;
             }
             mailMenu.getItemStackHandler().setStackInSlot(MailMenu.OUTPUT_SLOT, output);
-            Channel.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> receiver),
-                    new MemoPacketSave(filePath, content)
-            );
+            Channel.sendToClientCache(receiver, filePath, content);
             Channel.sendMailStatus(receiver, MailStatus.SUCCESS_RECEIVE);
         });
         context.setPacketHandled(true);

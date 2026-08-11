@@ -20,5 +20,5 @@ public class MemoCache {
     public void setLastMemo(ItemStack memo) { MemoCache.lastMemo = memo; }
     public ItemStack getLastMemo() { return lastMemo; }
 
-    public void clear() { cache = new MemoLRUCache<>(); }
+    public void clear() { cache.clear(); }
 }

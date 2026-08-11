@@ -40,9 +40,9 @@ All the files have detailed information which is stored in `simplecardmemo-memo.
 
 Obviously, There are two text sources: External and Resource.
 
-### Local File
+### External
 
-For local text, please put all of them in the folder `./data/simple_card_memo/`.
+For External text, please put all of them in the folder `./data/simple_card_memo/`.
 
 ```yml
 {version folder}
@@ -58,9 +58,11 @@ For local text, please put all of them in the folder `./data/simple_card_memo/`.
   └── ...
 ```
 
-### Web File
-
 You can also preview texts which come from the Internet. However, it may take more time to load them into the game depending on your network connection status.
+
+### Resource
+
+Resource files are built-in ones which are stored in mods or resource packs.
 
 ## Usage
 

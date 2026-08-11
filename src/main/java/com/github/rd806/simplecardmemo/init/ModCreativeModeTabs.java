@@ -2,6 +2,7 @@ package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
+import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -35,14 +36,11 @@ public class ModCreativeModeTabs {
                             // 构建最终的 CreativeModeTab 实例
                             .build());
 
-    public static void register(IEventBus eventBus){
-        CREATIVE_MODE_TABS.register(eventBus);
-    }
+
+    public static void register(IEventBus eventBus){ CREATIVE_MODE_TABS.register(eventBus); }
 
     // 新的备忘录
-    public static ItemStack newMemo() {
-        return new ItemStack(ModItems.MEMO_VIEWER.get());
-    }
+    public static ItemStack newMemo() { return new ItemStack(ModItems.MEMO_VIEWER.get()); }
 
     // 教程文件
     public static ItemStack memoGuide() {
@@ -62,9 +60,15 @@ public class ModCreativeModeTabs {
         item.setHoverName(Component.translatable(SimpleCardMemo.MODID + ".item.minecraft_server")
                 .withStyle(style -> style.withItalic(false)));
         MemoViewerItem.setFilePath(item, SimpleCardMemo.MODID + ":sample/minecraft_server.md");
-        MemoViewerItem.setDisplayName(item, "How to Host a Minecraft Server");
+        MemoViewerItem.setDisplayName(item, "Minecraft Server");
         MemoViewerItem.setTextSource(item, false);
         MemoViewerItem.setAuthor(item, "From Internet");
         return item;
+    }
+
+    // 添加到内置列表
+    public static void builtInMemo() {
+        ClientSetup.builtInMemos.add(MemoViewerItem.getMemoInfo(memoGuide()));
+        ClientSetup.builtInMemos.add(MemoViewerItem.getMemoInfo(hostServer()));
     }
 }

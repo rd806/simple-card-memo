@@ -3,11 +3,9 @@ package com.github.rd806.simplecardmemo.network.mail;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.value.MailStatus;
 import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.mail.MailKey;
 import com.github.rd806.simplecardmemo.memo.mail.MailSystem;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -66,7 +64,7 @@ public class MailSend {
             // 存入邮件系统
             MailKey key = new MailKey(sender.getName().getString(), receiver, System.currentTimeMillis(), mail.getHoverName().getString());
             MailSystem.putMail(key, mail);
-            ServerSetup.serverCache.put(MemoViewerItem.getFilePath(mail), content);
+            MailSystem.putContent(key, content);
             // 消耗物品
             SimpleCardMemo.LOGGER.info("Mail {}:{} has been added!", key.sender() + "->" + key.receiver(), key.name());
             input.shrink(1);

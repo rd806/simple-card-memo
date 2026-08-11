@@ -7,6 +7,7 @@ import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.init.container.screen.MailScreen;
 import com.github.rd806.simplecardmemo.init.container.screen.ManagerScreen;
 import com.github.rd806.simplecardmemo.init.ModMenus;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.MemoCache;
 import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
@@ -18,11 +19,16 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Mod.EventBusSubscriber(modid = SimpleCardMemo.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class  ClientSetup {
 
     public static MemoConfig clientConfig;
     public static MemoCache clientCache;
+    // 内置文件列表
+    public static List<MemoInfo> builtInMemos = new ArrayList<>();
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
@@ -44,6 +50,7 @@ public class  ClientSetup {
             SimpleCardMemo.LOGGER.info("Preload Files on the client!");
         }
         clientCache.setLastMemo(ModCreativeModeTabs.memoGuide());
+        ModCreativeModeTabs.builtInMemo();
     }
 
     // 注册GUI
