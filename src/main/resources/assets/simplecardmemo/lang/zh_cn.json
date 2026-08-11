@@ -58,13 +58,13 @@
     "simplecardmemo.gui.manager_screen.source.client": "客户端",
     "simplecardmemo.gui.manager_screen.source.server": "服务端",
     "simplecardmemo.gui.manager_screen.source.tooltip": "点击切换文件列表来源",
-    "simplecardmemo.gui.manager_screen.edit": "编辑",
+    "simplecardmemo.gui.manager_screen.edit": "编辑名称",
     "simplecardmemo.gui.manager_screen.edit.tooltip": "点击按钮以重命名备忘录",
-    "simplecardmemo.gui.manager_screen.export": "导出",
+    "simplecardmemo.gui.manager_screen.export": "导出物品",
     "simplecardmemo.gui.manager_screen.export.tooltip": "请在输入槽放入一个备忘录卡片",
-    "simplecardmemo.gui.manager_screen.reload": "刷新",
+    "simplecardmemo.gui.manager_screen.reload": "刷新列表",
     "simplecardmemo.gui.manager_screen.reload.tooltip": "刷新备忘录列表",
-    "simplecardmemo.gui.manager_screen.delete": "删除",
+    "simplecardmemo.gui.manager_screen.delete": "删除文件",
     "simplecardmemo.gui.manager_screen.delete.tooltip": "删除选定的备忘录，包括文件！",
 
     "simplecardmemo.gui.mail_screen.input": "输入框",
@@ -78,7 +78,8 @@
     "simplecardmemo.gui.mail_screen.message.empty_receive": "无可接收的备忘录！",
     "simplecardmemo.gui.mail_screen.message.no_target": "请输入玩家名！",
 
-    "simplecardmemo.memo_mail.send": "向你发送了一个备忘录。",
+    "simplecardmemo.message.memo_mail.send": "%s 向你发送了一个备忘录",
+    "simplecardmemo.message.login": "已发送服务器备忘录内容",
 
     "simplecardmemo.command.client_cache.empty": "客户端无文件缓存！",
     "simplecardmemo.command.client_cache.info": "客户端已缓存以下文件：",

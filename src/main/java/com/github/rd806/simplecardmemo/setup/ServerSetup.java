@@ -3,9 +3,15 @@ package com.github.rd806.simplecardmemo.setup;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.cache.MemoCache;
 import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
+import com.github.rd806.simplecardmemo.network.Channel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Map;
 
 @Mod.EventBusSubscriber
 public class ServerSetup {
@@ -21,5 +27,21 @@ public class ServerSetup {
         serverCache = new MemoCache();
         serverConfig.preloadFiles(serverCache);
         SimpleCardMemo.LOGGER.info("Preload Files on the server!");
+    }
+
+    // 玩家进入服务器发送缓存
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            for (Map.Entry<String, String> entry :serverCache.getCache().entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                Channel.sendToClientCache(serverPlayer, key, value);
+            }
+            serverPlayer.displayClientMessage(
+                    Component.translatable(SimpleCardMemo.MODID + ".message.login"),
+                    false
+            );
+        }
     }
 }

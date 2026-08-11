@@ -72,8 +72,7 @@ public class CacheSystem {
         // 重新获取文本
         String content = MemoLoader.loadText(memoInfo);
         if (content == null) {
-            content = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
-                    .append(filePath).getString();
+            content = I18n.get(SimpleCardMemo.MODID + ".gui.viewer_screen.error", filePath);
         } else {
             memoCache.put(filePath, content);
         }

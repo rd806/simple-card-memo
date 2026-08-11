@@ -78,7 +78,8 @@
     "simplecardmemo.gui.mail_screen.message.empty_send": "No valid Memo!",
     "simplecardmemo.gui.mail_screen.message.empty_receive": "No valid Memo!",
 
-    "simplecardmemo.memo_mail.send": "send a memo to you.",
+    "simplecardmemo.message.memo_mail.send": "%s send a memo to you.",
+    "simplecardmemo.message.login": "Sending server memos to you.",
 
     "simplecardmemo.command.client_cache.empty": "No file is in the client cache!",
     "simplecardmemo.command.client_cache.info": "The following files have been cached in client:",

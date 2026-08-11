@@ -45,21 +45,21 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private static int PADDING;
     private static int HEADER;
     // 文件列表
-    private static final int FILE_LIST_WIDTH = 142;
-    private static final int FILE_LIST_HEIGHT = 80;
+    private static final int FILE_LIST_WIDTH = 123;
+    private static final int FILE_LIST_HEIGHT = 64;
     private static final int ENTRY_HEIGHT = 16;
     private static int TOTAL_HEIGHT;
     // 输入框
     private EditBox nameInput;
     // 按键常量
-    private static final int BUTTON_WIDTH = 50;
+    private static final int BUTTON_WIDTH = 80;
     private static final int BUTTON_HEIGHT = 20;
 
     public ManagerScreen(ManagerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         selectedMemo = memoList.get(0);
         this.imageWidth = 175;
-        this.imageHeight = 255;
+        this.imageHeight = 235;
     }
 
     @Override
@@ -71,9 +71,9 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 物品栏标题的 X 位置
         this.inventoryLabelX = 8;
         // 物品栏标题的 Y 位置
-        this.inventoryLabelY = 160;
+        this.inventoryLabelY = 140;
         // 布局
-        PADDING = leftPos + 16;
+        PADDING = leftPos + 26;
         HEADER = topPos + 47;
         TOTAL_HEIGHT = memoList.size() * ENTRY_HEIGHT;
 
@@ -113,9 +113,8 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 })
                 .withValues(MemoSource.values())
                 .create(
-                        // 居中显示
-                        this.width / 2 - BUTTON_WIDTH,  topPos - 25,
-                        BUTTON_WIDTH * 2, BUTTON_HEIGHT,
+                        leftPos - BUTTON_WIDTH - 5,  topPos + 28,
+                        BUTTON_WIDTH, BUTTON_HEIGHT,
                         Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.source"),
                         (button, value) -> {
                             memoSource = value;
@@ -134,7 +133,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                             ClientSetup.clientConfig.saveToConfig();
                             refreshMemoList();
                         })
-                .pos(leftPos - BUTTON_WIDTH - 5, topPos + 47)
+                .pos(leftPos - BUTTON_WIDTH - 5, sourceChange.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         editButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit.tooltip")));

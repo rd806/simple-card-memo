@@ -73,6 +73,11 @@ public class Channel {
         Channel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MailStatusSend(status));
     }
 
+    // 发送到客户端缓存
+    public static void sendToClientCache(ServerPlayer player, String key, String value) {
+        Channel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MemoPacketSave(key, value));
+    }
+
     // 发送命令
     public static void sendCommand(ServerPlayer player, CommandType commandType) {
         Channel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ClientCommand(commandType));

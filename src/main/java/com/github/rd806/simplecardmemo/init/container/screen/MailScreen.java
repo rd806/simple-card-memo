@@ -141,7 +141,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 构造发送信息
         Player player = Minecraft.getInstance().player;
         if (player != null) {
-            message = player.getName().getString() + " " + I18n.get(SimpleCardMemo.MODID + ".memo_mail.send");
+            message =  I18n.get(SimpleCardMemo.MODID + ".message.memo_mail.send", player.getName().getString());
         }
         // 获取发送的内容
         MemoInfo memoInfo = MemoViewerItem.getMemoInfo(stack);
