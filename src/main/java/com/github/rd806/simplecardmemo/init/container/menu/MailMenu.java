@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.init.container.menu;
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.init.ModMenus;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -30,11 +31,10 @@ public class MailMenu extends AbstractContainerMenu {
     public MailMenu(int id, Inventory inventory) {
         // 指定该菜单对应的 MenuType
         super(ModMenus.MAIL_MENU.get(), id);
-        // 保存数据
         // 添加玩家背包与快捷栏
         addPlayerInventory(inventory);
         // 添加输入栏
-        addSendSlot(itemStackHandler);
+        addSlot(itemStackHandler);
     }
 
     @Override
@@ -75,8 +75,22 @@ public class MailMenu extends AbstractContainerMenu {
         return true;
     }
 
+    // 关闭界面返还物品
+    @Override
+    public void removed(@NotNull Player player) {
+        if (!player.level().isClientSide) {
+            returnItem(player, INPUT_SLOT);
+            returnItem(player, OUTPUT_SLOT);
+        }
+        if (player instanceof ServerPlayer serverPlayer) {
+            // 同步玩家背包到客户端
+            serverPlayer.inventoryMenu.broadcastChanges();
+        }
+        super.removed(player);
+    }
+
     // 创建槽位
-    private void addSendSlot(ItemStackHandler handler) {
+    private void addSlot(ItemStackHandler handler) {
         // 发送槽位
         this.addSlot(new SlotItemHandler(handler, INPUT_SLOT, 26, 47) {
             @Override
@@ -88,9 +102,7 @@ public class MailMenu extends AbstractContainerMenu {
         // 接收槽位
         this.addSlot(new SlotItemHandler(handler, OUTPUT_SLOT, 61, 76) {
             @Override
-            public boolean mayPlace(@NotNull ItemStack stack) {
-                return false;
-            }
+            public boolean mayPlace(@NotNull ItemStack stack) { return false; }
         });
     }
 
@@ -117,7 +129,22 @@ public class MailMenu extends AbstractContainerMenu {
         }
     }
 
-    public ItemStackHandler getItemStackHandler() {
-        return itemStackHandler;
+    // 返回物品
+    private void returnItem(Player player, int slotIndex) {
+        ItemStack item = this.itemStackHandler.getStackInSlot(slotIndex);
+
+        if (player.isDeadOrDying()) {
+            // 死亡时直接掉落
+            player.drop(item, false);
+        } else {
+            // 尝试加入背包
+            boolean addItem = player.getInventory().add(item);
+            // 背包已满，掉落在地上
+            if (!addItem) {
+                player.drop(item, false);
+            }
+        }
     }
+
+    public ItemStackHandler getItemStackHandler() { return itemStackHandler; }
 }

@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.init.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.ModItems;
+import com.github.rd806.simplecardmemo.memo.GetExistMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
@@ -216,7 +217,6 @@ public class EditorScreen extends Screen {
     // 导出内容到物品
     private void exportItem(String path) {
         // 给予玩家
-        ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.get());
         MemoInfo memoInfo = new MemoInfo(displayName, filePath, author, true, System.currentTimeMillis());
         if (isLocalFile) {
             // 检测重名文件
@@ -227,8 +227,7 @@ public class EditorScreen extends Screen {
             }
             String content = textInput.getValue();
             if (content.trim().isEmpty()) {
-                textInput.setValue(Component.translatable(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.content")
-                        .getString());
+                textInput.setValue(I18n.get(SimpleCardMemo.MODID + ".gui.editor_screen.input.error.content"));
                 return;
             }
             MemoLoader.saveToLocal(content, memoInfo);
@@ -236,7 +235,7 @@ public class EditorScreen extends Screen {
         // 添加到列表
         ClientSetup.clientConfig.getMemoList().add(memoInfo);
         // 设置物品
-        viewer.setHoverName(Component.literal(displayName));
+        ItemStack viewer = GetExistMemo.setMemo(memoInfo);
         // 发送网络包
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),

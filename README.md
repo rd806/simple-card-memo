@@ -4,11 +4,14 @@
 
 Simple Card Memo is a Minecraft Java mod which adds memo cards to Minecraft. More specifically, it introduces a text preview system to the game.
 
-> Markdown is supported! Using a Markdown Text Render System from [MineMark](https://github.com/DeDiamondPro/MineMark).
+Markdown is supported! Using a Markdown Text Render System from [MineMark](https://github.com/DeDiamondPro/MineMark).
+
+> [!Warning]
+> If you update from earlier version to 1.2.0, you need to refresh all the memos as the NBT tags has been changed!  
 
 ## Text File Manage
 
-All the files have detailed information which is stored in `simplecardmemo-memo.json`.
+All the memos have detailed information which is stored in `simplecardmemo-memo.json`.
 
 ```json
 {
@@ -42,12 +45,14 @@ Obviously, There are two text sources: External and Resource.
 
 ### External
 
-For External text, please put all of them in the folder `./data/simple_card_memo/`.
+For External text, whose `isExternal` is `true`, please put all of them in the folder `./data/simple_card_memo/`.
 
 ```yml
 {version folder}
   ├── config
-  │   └── simplecardmemo-common.toml     # Client config    
+  │   ├── simplecardmemo-client.toml     # Client config
+  │   └── simplecardmemo-common.toml     # Common config
+  │   └── simplecardmemo-memo.json       # Memo config
   │
   ├── data/simple_card_memo              # Store memo files
   │   ├── test1.md
@@ -64,7 +69,11 @@ You can also preview texts which come from the Internet. However, it may take mo
 
 Resource files are built-in ones which are stored in mods or resource packs.
 
+> Of course, their `isExternal` is `false`.
+
 ## Usage
+
+### General
 
 | Item         | How to use                                                                                             |
 |--------------|--------------------------------------------------------------------------------------------------------|
@@ -73,7 +82,14 @@ Resource files are built-in ones which are stored in mods or resource packs.
 | Memo Manager | Don't worry if you lost a memo, you can get it again by the Memo Manager while consuming a new viewer. |
 | Memo Mail    | You can send a memo to other players by using it.                                                      |
 
-> Please note that **Memo Editor** is still under development. It's recommended to edit your Memos with a code editor.
+> [!Note]
+> **Memo Editor** is still under development. It's recommended to edit your Memos with a code editor.
+
+### Server Memos
+
+Since 1.2.0, you can get memos stored in the server's `simplecardmemo-memo.json` through the *Memo Manger*.
+
+## Commands
 
 | Commands                             | Function                   |
 |--------------------------------------|----------------------------|

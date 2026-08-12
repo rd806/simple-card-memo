@@ -48,7 +48,9 @@ public class MailReceive {
             String filePath = null;
             Set<MailKey> sets = MailSystem.getAllMails();
             for (MailKey mailKey : sets) {
-                if (mailKey.sender().equals(sender) && mailKey.receiver().equals(receiver.getName().getString())) {
+                // 匹配信件
+                if ((mailKey.sender().equals(sender) || sender.isEmpty())
+                        && mailKey.receiver().equals(receiver.getName().getString())) {
                     output = MailSystem.getMail(mailKey);
                     filePath = MemoViewerItem.getFilePath(output);
                     content = MailSystem.getContent(mailKey);

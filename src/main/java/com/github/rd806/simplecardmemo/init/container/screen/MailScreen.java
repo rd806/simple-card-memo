@@ -43,7 +43,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
 
     private EditBox nameInput;
 
-    private String target;
+    private static String target;
     private static MailStatus status;
     private static String content;
     private static String message;
@@ -161,11 +161,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     // 接收信件
     private void receiveMemo() {
         status = MailStatus.DEFAULT;
-        this.target = nameInput.getValue();
-        if (target.isEmpty()) {
-            status = MailStatus.NO_TARGET;
-            return;
-        }
+        target = nameInput.getValue();
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
                 new MailReceive(target)
@@ -209,7 +205,5 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         }
     }
 
-    public static void setStatus(MailStatus status1) {
-        status = status1;
-    }
+    public static void setStatus(MailStatus mailStatus) { status = mailStatus; }
 }

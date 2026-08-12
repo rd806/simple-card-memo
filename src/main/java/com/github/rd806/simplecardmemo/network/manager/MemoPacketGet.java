@@ -60,10 +60,10 @@ public class MemoPacketGet {
                 return;
             }
             // 检查输入槽
-            ItemStack input = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.INPUT_SLOT);
+            ItemStack input = managerMenu.getItemStackHandler().getStackInSlot(ManagerMenu.INPUT_SLOT);
             if (input.isEmpty()) { return; }
             // 检查输出槽
-            ItemStack output = managerMenu.getItemHandler().getStackInSlot(ManagerMenu.OUTPUT_SLOT);
+            ItemStack output = managerMenu.getItemStackHandler().getStackInSlot(ManagerMenu.OUTPUT_SLOT);
             if (!output.isEmpty()) { return; }
             // 如果是服务端文件还需要传递内容
             if (memoSource.equals(MemoSource.SERVER)) {
@@ -79,7 +79,7 @@ public class MemoPacketGet {
             }
             // 消耗和产出物品
             input.shrink(1);
-            managerMenu.getItemHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, GetExistMemo.setMemo(memoInfo));
+            managerMenu.getItemStackHandler().setStackInSlot(ManagerMenu.OUTPUT_SLOT, GetExistMemo.setMemo(memoInfo));
         });
         context.setPacketHandled(true);
     }

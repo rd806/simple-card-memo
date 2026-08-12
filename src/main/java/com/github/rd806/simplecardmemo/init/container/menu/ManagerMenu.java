@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.init.container.menu;
 import com.github.rd806.simplecardmemo.init.ModItems;
 import com.github.rd806.simplecardmemo.init.ModMenus;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class ManagerMenu extends AbstractContainerMenu {
 
     // 容器
-    private final ItemStackHandler itemHandler;
+    private final ItemStackHandler itemStackHandler;
     // 输入槽索引
     public static final int INPUT_SLOT = 0;
     public static final int OUTPUT_SLOT = 1;
@@ -31,7 +32,7 @@ public class ManagerMenu extends AbstractContainerMenu {
         // 指定该菜单对应的 MenuType
         super(ModMenus.MANAGER_MENU.get(), id);
         // 获取数据
-        this.itemHandler = new ItemStackHandler(2);
+        this.itemStackHandler = new ItemStackHandler(2);
         // 添加玩家背包与快捷栏
         addPlayerInventory(inventory);
         // 添加额外物品栏
@@ -76,10 +77,24 @@ public class ManagerMenu extends AbstractContainerMenu {
         return true;
     }
 
+    // 关闭界面返还物品
+    @Override
+    public void removed(@NotNull Player player) {
+        if (!player.level().isClientSide) {
+            returnItem(player, INPUT_SLOT);
+            returnItem(player, OUTPUT_SLOT);
+        }
+        // 同步玩家背包到客户端
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.inventoryMenu.broadcastChanges();
+        }
+        super.removed(player);
+    }
+
     // 创建发送槽位
     private void addSlot() {
         // 发送槽位
-        this.addSlot(new SlotItemHandler(itemHandler, INPUT_SLOT, 55, 119) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, INPUT_SLOT, 55, 119) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 // 只允许放入 Memo Viewer
@@ -87,7 +102,7 @@ public class ManagerMenu extends AbstractContainerMenu {
             }
         });
         // 接收槽位
-        this.addSlot(new SlotItemHandler(itemHandler, OUTPUT_SLOT, 109, 119) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, OUTPUT_SLOT, 109, 119) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return false;
@@ -118,7 +133,21 @@ public class ManagerMenu extends AbstractContainerMenu {
         }
     }
 
-    public ItemStackHandler getItemHandler() {
-        return itemHandler;
+    // 返回物品
+    private void returnItem(Player player, int slotIndex) {
+        ItemStack item = this.itemStackHandler.getStackInSlot(slotIndex);
+        if (player.isDeadOrDying()) {
+            // 死亡时直接掉落
+            player.drop(item, false);
+        } else {
+            // 尝试加入背包
+            boolean addItem = player.getInventory().add(item);
+            // 背包已满，掉落在地上
+            if (!addItem) {
+                player.drop(item, false);
+            }
+        }
     }
+
+    public ItemStackHandler getItemStackHandler() { return itemStackHandler; }
 }
