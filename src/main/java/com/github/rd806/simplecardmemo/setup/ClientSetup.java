@@ -1,0 +1,61 @@
+package com.github.rd806.simplecardmemo.setup;
+
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.compat.ConfigMenu;
+import com.github.rd806.simplecardmemo.config.CommonConfig;
+import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
+import com.github.rd806.simplecardmemo.init.ModMenus;
+import com.github.rd806.simplecardmemo.init.container.screen.MailScreen;
+import com.github.rd806.simplecardmemo.init.container.screen.ManagerScreen;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import com.github.rd806.simplecardmemo.memo.cache.MemoCache;
+import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
+import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Mod(value = SimpleCardMemo.MODID, dist = Dist.CLIENT)
+@EventBusSubscriber(modid = SimpleCardMemo.MODID, value = Dist.CLIENT)
+public class ClientSetup {
+
+    public static MemoConfig clientConfig;
+    public static MemoCache clientCache;
+    // 内置文件列表
+    public static List<MemoInfo> builtInMemos = new ArrayList<>();
+
+    public ClientSetup(ModContainer container) {
+        container.registerExtensionPoint(IConfigScreenFactory.class, (container1, parent) ->
+                ConfigMenu.buildScreen().setParentScreen(parent).build());
+    }
+
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        // 创建临时文件
+        MemoLoader.createTempFile();
+        // 客户端配置文件
+        clientConfig = new MemoConfig();
+        clientCache = new MemoCache();
+        if (CommonConfig.PRELOAD_FILES.get()) {
+            clientConfig.preloadFiles(clientCache);
+            SimpleCardMemo.LOGGER.info("Preload Files on the client!");
+        }
+        clientCache.setLastMemo(ModCreativeModeTabs.memoGuide());
+        ModCreativeModeTabs.builtInMemo();
+    }
+
+    // 注册GUI
+    @SubscribeEvent
+    private static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(ModMenus.MANAGER_MENU.get(), ManagerScreen::new);
+        event.register(ModMenus.MAIL_MENU.get(), MailScreen::new);
+    }
+}

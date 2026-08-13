@@ -1,0 +1,45 @@
+package com.github.rd806.simplecardmemo.init.item;
+
+import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.container.screen.EditorScreen;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+public class MemoEditorItem extends Item {
+
+    public MemoEditorItem(Properties properties) { super(properties); }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
+                .withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_editor.tooltip")
+                .withStyle(ChatFormatting.GRAY));
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        // 只在客户端执行打开界面的逻辑
+        if (level.isClientSide) {
+            // 打开编辑器界面
+            Minecraft.getInstance().setScreen(new EditorScreen());
+        }
+        // 返回成功，表示物品被使用了
+        return InteractionResultHolder.success(stack);
+    }
+}
