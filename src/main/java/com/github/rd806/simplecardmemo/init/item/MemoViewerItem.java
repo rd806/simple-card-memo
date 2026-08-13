@@ -172,6 +172,7 @@ public class MemoViewerItem extends Item {
         stack.set(MemoDataComponents.LAST_MODIFIED, lastModified);
     }
     // 设置名称
+    // 名称有固定组件 CUSTOM_NAME
     public static void setItemName(ItemStack stack, String itemName) {
         stack.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
     }

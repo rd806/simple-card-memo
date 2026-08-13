@@ -71,6 +71,13 @@ issueTrackerURL="https://github.com/rd806/simple-card-memo/issues" #optional
     versionRange = "[1.21.1,)"
     ordering = "NONE"
     side = "BOTH"
+[[dependencies."simplecardmemo"]]
+    modId = "cloth_config"
+    type = "optional"
+    versionRange = "[15.0.140,)"
+    ordering = "AFTER"
+    side = "BOTH"
+
 
 [modproperties."simplecardmemo"]
     catalogueImageIcon = "simplecardmemo_icon.png"

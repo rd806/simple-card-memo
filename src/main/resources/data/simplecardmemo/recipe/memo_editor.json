@@ -2,13 +2,14 @@
     "type": "minecraft:crafting_shaped",
     "category": "building",
     "key": {
-        "#": { "item": "minecraft:paper" }
+        "A": { "item": "minecraft:paper" },
+        "B": { "item": "minecraft:crafting_table" }
     },
     "pattern": [
-        "###"
+        "ABA"
     ],
     "result": {
-        "item": "simplecardmemo:memo_viewer"
+        "id": "simplecardmemo:memo_editor"
     },
     "show_notification": true
 }

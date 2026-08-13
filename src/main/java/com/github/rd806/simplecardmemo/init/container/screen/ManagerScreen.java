@@ -290,10 +290,10 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double mouseZ, double amount) {
-        memoListScroll -= (int) (amount * 2);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        memoListScroll -= (int) (scrollY * 2);
         memoListScroll = Math.clamp(memoListScroll, 0, memoListMaxScroll);
-        return super.mouseScrolled(mouseX, mouseY, mouseZ, amount);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     // 获取文件列表

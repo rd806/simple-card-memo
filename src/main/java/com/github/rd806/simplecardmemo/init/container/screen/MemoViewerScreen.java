@@ -220,13 +220,13 @@ public class MemoViewerScreen extends Screen {
 
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double mouseZ, double amount) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (maxScroll > 0) {
-            this.scrollOffset -= amount * 20;
+            this.scrollOffset -= scrollY * 20;
             this.scrollOffset = Math.clamp(scrollOffset, 0, maxScroll);
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, mouseZ, amount);
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override

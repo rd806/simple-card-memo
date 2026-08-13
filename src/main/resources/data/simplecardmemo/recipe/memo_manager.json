@@ -3,13 +3,13 @@
     "category": "building",
     "key": {
         "A": { "item": "minecraft:paper" },
-        "B": { "item": "minecraft:crafting_table" }
+        "B": { "item": "minecraft:chest" }
     },
     "pattern": [
         "ABA"
     ],
     "result": {
-        "item": "simplecardmemo:memo_editor"
+        "id": "simplecardmemo:memo_manager"
     },
     "show_notification": true
 }

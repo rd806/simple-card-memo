@@ -113,10 +113,8 @@ configurations {
 
 dependencies {
     // Cloth Config api
-    implementation 'me.shedaniel.cloth:cloth-config-neoforge:15.0.140'
-    implementation "dev.dediamondpro:minemark-core:${minemark_version}"
-    implementation "dev.dediamondpro:minemark-minecraft-${minecraft_version}-neoforge:${minemark_version}"
-
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    // MineMark
     shade "dev.dediamondpro:minemark-core:${minemark_version}"
     shade "dev.dediamondpro:minemark-minecraft-${minecraft_version}-neoforge:${minemark_version}"
 }

@@ -33,9 +33,10 @@ public record NewMemo(ItemStack stack) implements CustomPacketPayload {
             if (context.player() instanceof ServerPlayer player) {
                 ItemStack stack = packet.stack;
                 // 消耗和产出物品
-                if (GetExistMemo.consumeItem(player.getInventory(),
-                        new ItemStack(ModItems.MEMO_EDITOR.value()), 1)) {
+                if (GetExistMemo.consumeItem(player.getInventory(), new ItemStack(ModItems.MEMO_EDITOR.value()), 1)) {
                     player.getInventory().add(stack);
+                } else {
+                    SimpleCardMemo.LOGGER.warn("Failed to create new memo for player {}", player);
                 }
             }
         });
