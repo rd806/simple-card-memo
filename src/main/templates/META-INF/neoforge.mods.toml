@@ -63,7 +63,7 @@ issueTrackerURL="https://github.com/rd806/simple-card-memo/issues" #optional
     ordering = "NONE"
     # Side this dependency is applied on - BOTH, CLIENT, or SERVER
     side = "BOTH"
-    # Here's another dependency
+# Here's another dependency
 [[dependencies."simplecardmemo"]]
     modId = "minecraft"
     type = "required"

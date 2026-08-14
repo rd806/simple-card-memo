@@ -15,7 +15,7 @@ public class GetExistMemo {
         // 遍历玩家主背包
         for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
             ItemStack stack = inventory.getItem(slot);
-            if (stack.equals(targetItem)) {
+            if (ItemStack.isSameItemSameComponents(stack, targetItem)) {
                 totalCount += stack.getCount();
                 // 如果已经达到需求，可以提前跳出，提高效率
                 if (totalCount >= removeAmount) {
@@ -25,13 +25,14 @@ public class GetExistMemo {
         }
         // 如果总数不够，直接返回false
         if (totalCount < removeAmount) {
+            SimpleCardMemo.LOGGER.warn("Item {} not found in inventory!", targetItem);
             return false;
         }
         // 开始移除物品 (从第一个找到的槽位开始扣减)
         int remainingToRemove = removeAmount;
         for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
             ItemStack stack = inventory.getItem(slot);
-            if (stack.equals(targetItem)) {
+            if (ItemStack.isSameItemSameComponents(stack, targetItem)) {
                 int stackSize = stack.getCount();
                 if (stackSize <= remainingToRemove) {
                     // 如果这个槽位的物品数量小于等于需要移除的数量，直接清空该槽位
@@ -57,7 +58,7 @@ public class GetExistMemo {
             ItemStack viewer = new ItemStack(ModItems.MEMO_VIEWER.value());
             // 设置显示名
             MemoViewerItem.setItemName(viewer, memoInfo.getMemoName());
-            // 设置 NBT 数据
+            // 设置组件数据
             MemoViewerItem.setDisplayName(viewer, memoInfo.getMemoName());
             MemoViewerItem.setFilePath(viewer, memoInfo.getMemoPath());
             MemoViewerItem.setAuthor(viewer, memoInfo.getMemoAuthor());

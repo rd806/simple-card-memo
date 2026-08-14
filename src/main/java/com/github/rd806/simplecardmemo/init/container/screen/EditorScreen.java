@@ -177,6 +177,7 @@ public class EditorScreen extends Screen {
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        super.render(graphics, mouseX, mouseY, partialTick);
         // 渲染标题
         graphics.drawString(
                 this.font,
@@ -194,8 +195,6 @@ public class EditorScreen extends Screen {
                 0x888888);
         isLocalFile = sourceInput.selected();
         textInput.visible = isLocalFile;
-        // 渲染输入框和其他组件
-        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     // 导出内容到草稿

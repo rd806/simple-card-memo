@@ -188,7 +188,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        // 1.21.1 的 AbstractContainerScreen 不需要再绘制一遍背景
         super.render(graphics, mouseX, mouseY, partialTick);
         // 渲染文件列表
         renderFileList(graphics);

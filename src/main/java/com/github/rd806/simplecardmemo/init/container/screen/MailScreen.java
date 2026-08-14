@@ -111,8 +111,6 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        // 绘制界面背景
-        renderBackground(graphics, mouseX, mouseY, partialTick);
         super.render(graphics, mouseX, mouseY, partialTick);
         renderHint(graphics, status);
         // 渲染物品提示

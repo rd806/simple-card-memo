@@ -171,12 +171,12 @@ public class MemoViewerItem extends Item {
     public static void setLastModified(ItemStack stack, long lastModified) {
         stack.set(MemoDataComponents.LAST_MODIFIED, lastModified);
     }
-    // 设置名称
-    // 名称有固定组件 CUSTOM_NAME
+    // 设置名称，有固定组件 CUSTOM_NAME
     public static void setItemName(ItemStack stack, String itemName) {
         stack.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
     }
 
+    // GUI方法
     // 获取文件作者信息
     @OnlyIn(Dist.CLIENT)
     private String getAuthorString(ItemStack stack) {
