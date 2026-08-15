@@ -63,7 +63,7 @@ public class MemoLoader {
                 }
                 return content.toString();
             } catch (Exception e) {
-                SimpleCardMemo.LOGGER.error("Failed to load file from path: {}", filePath, e);
+                SimpleCardMemo.LOGGER.error("Failed to load file from url: {}", filePath, e);
                 return null;
             }
         } else {
@@ -73,7 +73,8 @@ public class MemoLoader {
                     return Files.readString(path);
                 }
             } catch (IOException e) {
-                SimpleCardMemo.LOGGER.error("Failed to load file from path: {}", filePath, e);
+                SimpleCardMemo.LOGGER.error("Failed to load file from local: {}", filePath, e);
+                return null;
             }
         }
         return null;
@@ -96,6 +97,7 @@ public class MemoLoader {
 
     // 移除不安全字符
     private static String sanitizeFileName(String name) {
+        // 暂时仅支持英文、数字、下划线
         return name.replaceAll("[^a-zA-Z0-9\\-_.]", "_");
     }
 

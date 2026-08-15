@@ -11,6 +11,7 @@
     "simplecardmemo.item.memo_viewer.tooltip.time": "Modified: ",
     "simplecardmemo.item.memo_viewer.tooltip.external": "External File",
     "simplecardmemo.item.memo_viewer.tooltip.resource": "Resource File",
+    "simplecardmemo.item.memo_viewer.no_screen": "No memo has been opened!",
 
     "item.simplecardmemo.memo_editor": "Memo Editor",
     "simplecardmemo.item.memo_editor.tooltip": "Edit a new memo",

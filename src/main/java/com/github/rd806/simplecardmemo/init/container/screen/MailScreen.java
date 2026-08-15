@@ -2,7 +2,7 @@ package com.github.rd806.simplecardmemo.init.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.CacheSystem;
 import com.github.rd806.simplecardmemo.init.value.MailStatus;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
@@ -146,7 +146,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 获取发送的内容
         MemoInfo memoInfo = MemoViewerItem.getMemoInfo(stack);
         // 异步加载
-        CompletableFuture.runAsync(() -> content = CacheSystem.getMemoContentWithCache(memoInfo, ClientSetup.clientCache))
+        CompletableFuture.runAsync(() -> content = CacheSystem.getMemoContentWithCache(memoInfo, ClientSetup.clientContentCache))
                 .thenAccept(data -> Minecraft.getInstance().execute(() ->
                         Channel.CHANNEL.send(
                                 PacketDistributor.SERVER.noArg(),

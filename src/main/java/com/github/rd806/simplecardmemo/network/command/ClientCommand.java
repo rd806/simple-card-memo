@@ -1,7 +1,6 @@
 package com.github.rd806.simplecardmemo.network.command;
 
-import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
-import com.github.rd806.simplecardmemo.setup.ClientSetup;
+import com.github.rd806.simplecardmemo.memo.CacheSystem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -26,8 +25,8 @@ public class ClientCommand {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             switch (commandType) {
-                case CACHE_INFO -> CacheSystem.getInfo();
-                case CACHE_CLEAR -> ClientSetup.clientCache.clear();
+                case CACHE_INFO -> CacheSystem.getCache();
+                case CACHE_CLEAR -> CacheSystem.clearCache();
             }
         }));
         context.setPacketHandled(true);

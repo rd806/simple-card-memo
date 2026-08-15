@@ -54,7 +54,7 @@ public class ConfigMenu {
                         .build());
     }
 
-    // 物品预览配置
+    // 通用配置
     private static void buildCommonSettings(ConfigEntryBuilder entryBuilder, ConfigCategory commonSettings) {
         // 日期风格
         commonSettings.addEntry(
@@ -72,7 +72,7 @@ public class ConfigMenu {
                         .build());
         // 缓冲区大小
         commonSettings.addEntry(
-                entryBuilder.startIntField(Component.translatable(SimpleCardMemo.MODID + ".config.cache"), CommonConfig.CACHE_SIZE.get())
+                entryBuilder.startIntSlider(Component.translatable(SimpleCardMemo.MODID + ".config.cache"), CommonConfig.CACHE_SIZE.get(), 5, 100)
                         .setDefaultValue(20)
                         .setTooltip(Component.translatable(SimpleCardMemo.MODID + ".config.cache.tooltip"))
                         .setSaveConsumer(cache -> CommonConfig.CACHE_SIZE.set(cache))

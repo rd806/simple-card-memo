@@ -5,7 +5,7 @@ import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.init.container.screen.MemoViewerScreen;
 import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.cache.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.CacheSystem;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -38,7 +38,7 @@ public class MemoViewerItem extends Item {
     private static final String LAST_MODIFIED = "lastModified";
     private static final String IS_EXTERNAL = "isExternal";
     // 默认内容
-    private static String content = "Default Text";
+    private static MemoViewerScreen memoViewerScreen = null;
     private final String prefix = "§a▍ §7";
 
     public MemoViewerItem(Properties properties) {
@@ -85,29 +85,39 @@ public class MemoViewerItem extends Item {
     @OnlyIn(Dist.CLIENT)
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        ItemStack newStack = stack.copy();
         // 只在客户端执行打开界面的逻辑
         if (level.isClientSide) {
             // 若为空物品，转换为最后一次打开的备忘录
-            if (stack.getTag() == null) {
-                newStack = ClientSetup.clientCache.getLastMemo();
+            if (getFilePath(stack).isEmpty()) {
+                if (memoViewerScreen == null) {
+                    player.displayClientMessage(
+                            Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.no_screen"),
+                            false);
+                    return InteractionResultHolder.success(stack);
+                }
+                Minecraft.getInstance().execute(() -> Minecraft.getInstance().setScreen(memoViewerScreen));
+                return InteractionResultHolder.success(stack);
             }
-            // 构造 MemoInfo
-            MemoInfo memoInfo = getMemoInfo(newStack);
             // 异步加载
             CompletableFuture.runAsync(() -> {
-                        // 使用 LRU 缓存机制
-                        content = CacheSystem.getMemoContentWithCache(memoInfo, ClientSetup.clientCache);
-                    })
-                    .thenAccept(data -> Minecraft.getInstance().execute(() ->
-                            Minecraft.getInstance().setScreen(new MemoViewerScreen(content, memoInfo)))
-                    )
-                    .exceptionally(
-                            e -> {
-                                SimpleCardMemo.LOGGER.error("Error loading content data", e);
-                                return null;
-                            });
-            ClientSetup.clientCache.setLastMemo(newStack);
+                memoViewerScreen = ClientSetup.clientScreenCache.get(stack);
+                if (memoViewerScreen == null) {
+                    // 构造 MemoInfo
+                    MemoInfo memoInfo = getMemoInfo(stack);
+                    String content = CacheSystem.getMemoContentWithCache(memoInfo, ClientSetup.clientContentCache);
+                    memoViewerScreen = new MemoViewerScreen(content, memoInfo);
+                    // 放入缓存
+                    ClientSetup.clientScreenCache.put(stack, memoViewerScreen);
+                }
+            })
+            .thenAccept(data -> Minecraft.getInstance().execute(() ->
+                    Minecraft.getInstance().setScreen(memoViewerScreen))
+            )
+            .exceptionally(
+                    e -> {
+                        SimpleCardMemo.LOGGER.error("Error loading content data", e);
+                        return null;
+                    });
         }
         // 返回成功，表示物品被使用了，但避免消耗
         return InteractionResultHolder.success(stack);

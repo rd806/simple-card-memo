@@ -11,6 +11,7 @@
     "simplecardmemo.item.memo_viewer.tooltip.time": "修改：",
     "simplecardmemo.item.memo_viewer.tooltip.external": "外部文件",
     "simplecardmemo.item.memo_viewer.tooltip.resource": "资源文件",
+    "simplecardmemo.item.memo_viewer.no_screen": "暂无打开的备忘录！",
 
     "item.simplecardmemo.memo_editor": "备忘录编辑器",
     "simplecardmemo.item.memo_editor.tooltip": "编辑新的备忘录",

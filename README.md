@@ -31,9 +31,9 @@ All the memos have detailed information which is stored in `simplecardmemo-memo.
       "lastModified": 1785595410237
     },
     {
-      "name": "test2.md",
-      "path": "test2.md",
-      "author": "Default",
+      "name": "test2",
+      "path": "https://example.com/test2.md",
+      "author": "Steve",
       "isExternal": true,
       "lastModified": 1785595410238
     }
@@ -63,7 +63,10 @@ For External text, whose `isExternal` is `true`, please put all of them in the f
   └── ...
 ```
 
-You can also preview texts which come from the Internet. However, it may take more time to load them into the game depending on your network connection status.
+You can also preview texts which come from the Internet. However, it may take more time to load them into the game depending on your network connection status. In this case, you can set `PreloadFiles` to true to make it runs faster.
+
+> [!Note]
+> Currently, you have better to name all your external files with characters `[a-zA-Z0-9\-_.]`.
 
 ### Resource
 
@@ -85,9 +88,11 @@ Resource files are built-in ones which are stored in mods or resource packs.
 > [!Note]
 > **Memo Editor** is still under development. It's recommended to edit your Memos with a code editor.
 
-### Server Memos
+### Server & Client Side
 
-Since 1.2.0, you can get memos stored in the server's `simplecardmemo-memo.json` through the *Memo Manger*.
+Since 1.2.0, there are three memo sources available: client, server and built-in, which can be selected in Memo Manager.
+
+That means you can get memos stored in the server's `simplecardmemo-memo.json` through the *Memo Manger*. Obviously, you are not allowed to edit or delete them through a Memo Manager.
 
 ## Commands
 
@@ -99,3 +104,4 @@ Since 1.2.0, you can get memos stored in the server's `simplecardmemo-memo.json`
 | `/simplecardmemo client cache clear` | Clear local content cache  |
 | `/simplecardmemo server cache info`  | Show server content cache  |
 | `/simplecardmemo server cache clear` | Clear server content cache |
+| `/simplecardmemo server reload`      | Reload memos on the sever  |
