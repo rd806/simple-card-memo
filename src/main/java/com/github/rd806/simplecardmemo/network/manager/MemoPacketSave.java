@@ -45,7 +45,7 @@ public class MemoPacketSave implements CustomPacketPayload {
     public static void handle(final MemoPacketSave packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (Dist.CLIENT.isClient()) {
-                ClientSetup.clientCache.put(packet.key, packet.content);
+                ClientSetup.clientContentCache.put(packet.key, packet.content);
             }
         });
     }

@@ -50,6 +50,8 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private static final int ENTRY_HEIGHT = 16;
     private static int TOTAL_HEIGHT;
     // 输入框
+    private static Button editButton;
+    private static Button deleteButton;
     private EditBox nameInput;
     // 按键常量
     private static final int BUTTON_WIDTH = 80;
@@ -102,18 +104,18 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private void renderButton() {
         // 切换来源
         CycleButton<MemoSource> sourceChange = CycleButton.<MemoSource>builder(
-                        (value) -> {
-                            String name = "";
-                            switch (value) {
-                                case BUILT_IN ->
-                                        name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.built_in");
-                                case CLIENT ->
-                                        name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.client");
-                                case SERVER ->
-                                        name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.server");
-                            }
-                            return Component.literal(name);
-                        })
+                (value) -> {
+                    String name = "";
+                    switch (value) {
+                        case BUILT_IN ->
+                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.built_in");
+                        case CLIENT ->
+                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.client");
+                        case SERVER ->
+                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.server");
+                    }
+                    return Component.literal(name);
+                })
                 .withValues(MemoSource.values())
                 .create(
                         leftPos - BUTTON_WIDTH - 5,  topPos + 28,
@@ -129,7 +131,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         addRenderableWidget(sourceChange);
 
         // 编辑按钮
-        Button editButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
+        editButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
                         button -> {
                             if (memoSource.equals(MemoSource.SERVER)) { return; }
                             ClientSetup.clientConfig.getMemoList().get(selectIndex).setMemoName(nameInput.getValue());
@@ -140,6 +142,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         editButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit.tooltip")));
+        if (!memoSource.equals(MemoSource.CLIENT)) { editButton.active = false; }
         addRenderableWidget(editButton);
 
         // 导出按钮
@@ -161,7 +164,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         addRenderableWidget(reloadButton);
 
         // 删除按钮
-        Button deleteButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
+        deleteButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete"),
                         button -> {
                             if (memoSource.equals(MemoSource.CLIENT) && MemoLoader.deleteLocalFiles(selectedMemo)) {
                                 refreshMemoList();
@@ -171,6 +174,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         deleteButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete.tooltip")));
+        if (!memoSource.equals(MemoSource.CLIENT)) { deleteButton.active = false; }
         addRenderableWidget(deleteButton);
     }
 
@@ -302,12 +306,22 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     // 刷新文件列表
     private void refreshMemoList() {
         switch (memoSource) {
-            case BUILT_IN -> memoList = ClientSetup.builtInMemos;
+            case BUILT_IN -> {
+                memoList = ClientSetup.builtInMemos;
+                editButton.active = false;
+                deleteButton.active = false;
+            }
             case CLIENT -> {
                 ClientSetup.clientConfig.reload();
                 memoList = ClientSetup.clientConfig.getMemoList();
+                editButton.active = true;
+                deleteButton.active = true;
             }
-            case SERVER -> Channel.getMemoList();
+            case SERVER -> {
+                Channel.getMemoList();
+                editButton.active = false;
+                deleteButton.active = false;
+            }
         }
         memoListScroll = 0;
     }

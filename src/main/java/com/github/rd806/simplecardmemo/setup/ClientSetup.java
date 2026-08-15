@@ -8,7 +8,8 @@ import com.github.rd806.simplecardmemo.init.ModMenus;
 import com.github.rd806.simplecardmemo.init.container.screen.MailScreen;
 import com.github.rd806.simplecardmemo.init.container.screen.ManagerScreen;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.cache.MemoCache;
+import com.github.rd806.simplecardmemo.memo.cache.MemoContentCache;
+import com.github.rd806.simplecardmemo.memo.cache.MemoScreenCache;
 import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import net.neoforged.api.distmarker.Dist;
@@ -28,7 +29,9 @@ import java.util.List;
 public class ClientSetup {
 
     public static MemoConfig clientConfig;
-    public static MemoCache clientCache;
+    public static MemoContentCache clientContentCache;
+    public static MemoScreenCache clientScreenCache;
+
     // 内置文件列表
     public static List<MemoInfo> builtInMemos = new ArrayList<>();
 
@@ -43,12 +46,13 @@ public class ClientSetup {
         MemoLoader.createTempFile();
         // 客户端配置文件
         clientConfig = new MemoConfig();
-        clientCache = new MemoCache();
+        clientContentCache = new MemoContentCache();
+        clientScreenCache = new MemoScreenCache();
+        // 预加载文件
         if (CommonConfig.PRELOAD_FILES.get()) {
-            clientConfig.preloadFiles(clientCache);
+            clientConfig.preloadFiles(clientContentCache);
             SimpleCardMemo.LOGGER.info("Preload Files on the client!");
         }
-        clientCache.setLastMemo(ModCreativeModeTabs.memoGuide());
         ModCreativeModeTabs.builtInMemo();
     }
 

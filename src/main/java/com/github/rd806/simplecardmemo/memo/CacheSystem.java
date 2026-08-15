@@ -1,7 +1,7 @@
-package com.github.rd806.simplecardmemo.memo.cache;
+package com.github.rd806.simplecardmemo.memo;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import com.github.rd806.simplecardmemo.memo.cache.MemoContentCache;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import net.minecraft.ChatFormatting;
@@ -23,8 +23,8 @@ import java.util.Set;
 @OnlyIn(Dist.CLIENT)
 public class CacheSystem {
     // 查看缓存
-    public static void getInfo() {
-        MemoCache memoCache = ClientSetup.clientCache;
+    public static void getCache() {
+        MemoContentCache memoCache = ClientSetup.clientContentCache;
         Set<String> set = memoCache.getCache().keySet();
         Player player = Minecraft.getInstance().player;
         if (player == null) { return; }
@@ -45,8 +45,14 @@ public class CacheSystem {
         }
     }
 
+    // 清理缓存
+    public static void clearCache() {
+        ClientSetup.clientContentCache.clear();
+        ClientSetup.clientScreenCache.clear();
+    }
+
     // 带缓存的加载
-    public static String getMemoContentWithCache(MemoInfo memoInfo, MemoCache memoCache) {
+    public static String getMemoContentWithCache(MemoInfo memoInfo, MemoContentCache memoCache) {
         String filePath = memoInfo.getMemoPath();
         // 使用 LRU 缓存机制
         String content = memoCache.get(filePath);
@@ -67,7 +73,7 @@ public class CacheSystem {
     }
 
     // 不带缓存的加载
-    public static String getMemoContent(MemoInfo memoInfo, MemoCache memoCache) {
+    public static String getMemoContent(MemoInfo memoInfo, MemoContentCache memoCache) {
         String filePath = memoInfo.getMemoPath();
         String content;
         // 先从本地加载

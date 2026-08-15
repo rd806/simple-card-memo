@@ -41,7 +41,7 @@ public class ModCreativeModeTabs {
     public static void register(IEventBus eventBus){ CREATIVE_MODE_TABS.register(eventBus); }
 
     // 新的备忘录
-    public static ItemStack newMemo() { return new ItemStack(ModItems.MEMO_VIEWER); }
+    public static ItemStack newMemo() { return new ItemStack(ModItems.MEMO_VIEWER.value()); }
 
     // 教程文件
     public static ItemStack memoGuide() {
@@ -52,6 +52,7 @@ public class ModCreativeModeTabs {
         MemoViewerItem.setDisplayName(item, "Guide");
         MemoViewerItem.setTextSource(item, false);
         MemoViewerItem.setAuthor(item, "RunicDolphin806");
+        MemoViewerItem.setLastModified(item, 0);
         return item;
     }
 
@@ -64,6 +65,7 @@ public class ModCreativeModeTabs {
         MemoViewerItem.setDisplayName(item, "Minecraft Server");
         MemoViewerItem.setTextSource(item, false);
         MemoViewerItem.setAuthor(item, "From Internet");
+        MemoViewerItem.setLastModified(item, 0);
         return item;
     }
 

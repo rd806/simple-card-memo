@@ -2,7 +2,7 @@ package com.github.rd806.simplecardmemo.memo.manage;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.cache.MemoCache;
+import com.github.rd806.simplecardmemo.memo.cache.MemoContentCache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.neoforged.fml.loading.FMLPaths;
@@ -118,7 +118,7 @@ public class MemoConfig {
     }
 
     // 预加载文件
-    public void preloadFiles(MemoCache memoCache) {
+    public void preloadFiles(MemoContentCache memoCache) {
         for (MemoInfo info : MEMO_LIST) {
             String content = MemoLoader.loadText(info);
             if (content != null) {
