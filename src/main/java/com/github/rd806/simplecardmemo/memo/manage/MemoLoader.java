@@ -23,63 +23,72 @@ public class MemoLoader {
             return null;
         }
         if (isUrl(filePath)) {
-            try {
-                // 再尝试网络加载
-                URI uri = new URI(filePath);
-                URL url = uri.toURL();
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setConnectTimeout(5000);
-                connection.setReadTimeout(30000);
-                connection.setRequestProperty("User-Agent", "SimpleCardMemo");
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode != HttpURLConnection.HTTP_OK) {
-                    SimpleCardMemo.LOGGER.error("HTTP error: {} - {}", responseCode, connection.getResponseMessage());
-                    return null;
-                }
-                // 获取内容类型和编码
-                String contentType = connection.getContentType();
-                String charset = "UTF-8"; // 默认编码
-                if (contentType != null) {
-                    String[] parts = contentType.split(";");
-                    for (String part : parts) {
-                        part = part.trim();
-                        if (part.startsWith("charset=")) {
-                            charset = part.substring(8);
-                            break;
-                        }
-                    }
-                }
-                // 读取内容
-                StringBuilder content = new StringBuilder();
-                try (InputStream inputStream = connection.getInputStream();
-                     BufferedReader reader = new BufferedReader(
-                             new InputStreamReader(inputStream, charset))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        content.append(line).append("\n");
-                    }
-                }
-                return content.toString();
-            } catch (Exception e) {
-                SimpleCardMemo.LOGGER.error("Failed to load file from url: {}", filePath, e);
-                return null;
-            }
+            return loadFromURL(memoInfo);
         } else {
-            try {
-                Path path = SimpleCardMemo.DATA_DIR.resolve(filePath);
-                if (Files.exists(path)) {
-                    return Files.readString(path);
-                }
-            } catch (IOException e) {
-                SimpleCardMemo.LOGGER.error("Failed to load file from local: {}", filePath, e);
+            return loadFromFile(memoInfo);
+        }
+    }
+
+    // 从网络加载
+    private static String loadFromURL(MemoInfo memoInfo) {
+        String filePath = memoInfo.getMemoPath();
+        try {
+            // 尝试网络加载
+            URI uri = new URI(filePath);
+            URL url = uri.toURL();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(30000);
+            connection.setRequestProperty("User-Agent", "SimpleCardMemo");
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                SimpleCardMemo.LOGGER.error("HTTP error: {} - {}", responseCode, connection.getResponseMessage());
                 return null;
             }
+            // 获取内容类型和编码
+            String contentType = connection.getContentType();
+            String charset = "UTF-8"; // 默认编码
+            if (contentType != null) {
+                String[] parts = contentType.split(";");
+                for (String part : parts) {
+                    part = part.trim();
+                    if (part.startsWith("charset=")) {
+                        charset = part.substring(8);
+                        break;
+                    }
+                }
+            }
+            // 读取内容
+            StringBuilder content = new StringBuilder();
+            try (InputStream inputStream = connection.getInputStream();
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, charset))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.append(line).append("\n");
+                }
+            }
+            return content.toString();
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Failed to load file from url: {}", filePath, e);
+            return null;
         }
-        return null;
     }
-    
+
+    // 从本地加载
+    private static String loadFromFile(MemoInfo memoInfo) {
+        String filePath = memoInfo.getMemoPath();
+        try {
+            Path path = SimpleCardMemo.DATA_DIR.resolve(filePath);
+            if (Files.exists(path)) { return Files.readString(path); }
+            return null;
+        } catch (IOException e) {
+            SimpleCardMemo.LOGGER.error("Failed to load file from local: {}", filePath, e);
+            return null;
+        }
+    }
+
     // 保存到本地文件
     public static boolean saveToLocal(String text, MemoInfo memoInfo) {
         String filepath = memoInfo.getMemoPath();

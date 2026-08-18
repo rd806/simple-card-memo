@@ -17,13 +17,6 @@ All the memos have detailed information which is stored in `simplecardmemo-memo.
 {
   "memos": [
     {
-      "name": "temp",
-      "path": "temp.md",
-      "author": "Default",
-      "isExternal": true,
-      "lastModified": 1785244599788
-    },
-    {
       "name": "test1",
       "path": "test1.md",
       "author": "RunicDolphin806",

@@ -2,13 +2,12 @@ package com.github.rd806.simplecardmemo.init.container.screen;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
-import com.github.rd806.simplecardmemo.memo.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.manage.MemoContent;
 import com.github.rd806.simplecardmemo.init.value.MailStatus;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.network.mail.MailReceive;
-import com.github.rd806.simplecardmemo.network.mail.MailSend;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
@@ -27,8 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.CompletableFuture;
-
 public class MailScreen extends AbstractContainerScreen<MailMenu> {
 
     // 背景GUI图片
@@ -44,8 +41,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     private EditBox nameInput;
 
     private static String target;
-    private static MailStatus status;
-    private static String content;
+    private static MailStatus mailStatus;
     private static String message;
 
     public MailScreen(MailMenu menu, Inventory inventory, Component title) {
@@ -55,7 +51,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         this.mailMenu = menu;
         this.imageWidth = 175;
         this.imageHeight = 210;
-        status = MailStatus.DEFAULT;
+        mailStatus = MailStatus.DEFAULT;
     }
 
     @Override
@@ -118,24 +114,24 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 绘制界面背景
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
-        renderHint(graphics, status);
+        renderHint(graphics, mailStatus);
         // 渲染物品提示
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     // 发送信件
     private void sendMemo() {
-        status = MailStatus.DEFAULT;
+        mailStatus = MailStatus.DEFAULT;
         target = nameInput.getValue();
         if (target.isEmpty()) {
-            status = MailStatus.NO_TARGET;
+            mailStatus = MailStatus.NO_TARGET;
             return;
         }
         // 获取发送的文件
         ItemStack stack = mailMenu.getItemStackHandler().getStackInSlot(MailMenu.INPUT_SLOT);
         if (stack.equals(ItemStack.EMPTY)) {
             SimpleCardMemo.LOGGER.warn("The memo sent is empty!");
-            status = MailStatus.EMPTY_SEND;
+            mailStatus = MailStatus.EMPTY_SEND;
             return;
         }
         // 构造发送信息
@@ -145,22 +141,12 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         }
         // 获取发送的内容
         MemoInfo memoInfo = MemoViewerItem.getMemoInfo(stack);
-        // 异步加载
-        CompletableFuture.runAsync(() -> content = CacheSystem.getMemoContentWithCache(memoInfo, ClientSetup.clientContentCache))
-                .thenAccept(data -> Minecraft.getInstance().execute(() ->
-                        Channel.CHANNEL.send(
-                                PacketDistributor.SERVER.noArg(),
-                                new MailSend(content, target, message)
-                        )))
-                .exceptionally(e -> {
-                            SimpleCardMemo.LOGGER.error("Error on sending mail", e);
-                            return null;
-                        });
+        MemoContent.sendMailContent(memoInfo, target, message, ClientSetup.clientContentCache);
     }
 
     // 接收信件
     private void receiveMemo() {
-        status = MailStatus.DEFAULT;
+        mailStatus = MailStatus.DEFAULT;
         target = nameInput.getValue();
         Channel.CHANNEL.send(
                 PacketDistributor.SERVER.noArg(),
@@ -205,5 +191,5 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         }
     }
 
-    public static void setStatus(MailStatus mailStatus) { status = mailStatus; }
+    public static void setMailStatus(MailStatus mailStatus) { MailScreen.mailStatus = mailStatus; }
 }

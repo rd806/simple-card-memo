@@ -23,6 +23,7 @@ public class ServerSetup {
     public static void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         SimpleCardMemo.LOGGER.info("Start SimpleCardMemo on the server!");
+        // 加载服务端列表
         serverConfig = new MemoConfig();
         serverCache = new MemoContentCache();
         serverConfig.preloadFiles(serverCache);

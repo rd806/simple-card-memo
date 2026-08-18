@@ -55,7 +55,7 @@
     "simplecardmemo.gui.manager_screen.input": "Name Input Box",
     "simplecardmemo.gui.manager_screen.input.hint": "Input new name",
     "simplecardmemo.gui.manager_screen.input.tooltip": "Change the selected memo's name",
-    "simplecardmemo.gui.manager_screen.source": "Source",
+    "simplecardmemo.gui.manager_screen.source": "From",
     "simplecardmemo.gui.manager_screen.source.built_in": "Built-in",
     "simplecardmemo.gui.manager_screen.source.client": "Client",
     "simplecardmemo.gui.manager_screen.source.server": "Server",

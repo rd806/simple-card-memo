@@ -28,7 +28,7 @@ public class MailStatusSend {
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MailScreen.setStatus(status)));
+        context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MailScreen.setMailStatus(status)));
         context.setPacketHandled(true);
     }
 }

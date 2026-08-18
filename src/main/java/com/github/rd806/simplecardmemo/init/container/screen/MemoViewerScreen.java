@@ -3,7 +3,7 @@ package com.github.rd806.simplecardmemo.init.container.screen;
 import com.github.rd806.simplecardmemo.config.ClientConfig;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.manage.MemoContent;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import dev.dediamondpro.minemark.minecraft.MineMarkDrawable;
 import net.minecraft.client.gui.GuiGraphics;
@@ -46,10 +46,11 @@ public class MemoViewerScreen extends Screen {
         }
     }
 
-    private void reload(MemoInfo memoInfo) {
-        this.renderedText = CacheSystem.getMemoContent(memoInfo, ClientSetup.clientContentCache);
+    // 重新加载内容
+    public void reload() {
+        renderedText = MemoContent.content;
         try {
-            this.markdownText = new MineMarkDrawable(renderedText);
+            markdownText = new MineMarkDrawable(renderedText);
         } catch (Exception e) {
             renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
             SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
@@ -99,7 +100,7 @@ public class MemoViewerScreen extends Screen {
         resetContent();
         calculateScrollOffset();
         this.addRenderableWidget(new Button.Builder(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.reload"),
-                button -> reload(memoInfo))
+                button -> MemoContent.reloadMemoScreen(memoInfo, ClientSetup.clientContentCache))
                 .pos(this.width / 2 - 50, this.height - footer + 10)
                 .size(100, 20)
                 .build()

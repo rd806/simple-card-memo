@@ -56,9 +56,7 @@ public class MemoConfig {
         try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
             String defaultConfig = """
                     {
-                      "memos": [
-                    
-                      ]
+                      "memos": []
                     }
                     """;
             writer.write(defaultConfig);

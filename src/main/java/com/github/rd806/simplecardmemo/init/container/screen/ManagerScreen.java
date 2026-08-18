@@ -4,6 +4,7 @@ import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.value.MemoSource;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import com.github.rd806.simplecardmemo.memo.BuiltInList;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
@@ -142,6 +143,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         editButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit.tooltip")));
+        if (!memoSource.equals(MemoSource.CLIENT)) { editButton.active = false; }
         addRenderableWidget(editButton);
 
         // 导出按钮
@@ -172,6 +174,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
         deleteButton.setTooltip(Tooltip.create(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.delete.tooltip")));
+        if (!memoSource.equals(MemoSource.CLIENT)) { deleteButton.active = false; }
         addRenderableWidget(deleteButton);
     }
 
@@ -304,7 +307,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private void refreshMemoList() {
         switch (memoSource) {
             case BUILT_IN -> {
-                memoList = ClientSetup.builtInMemos;
+                memoList = BuiltInList.BUILT_IN_MEMOS;
                 editButton.active = false;
                 deleteButton.active = false;
             }

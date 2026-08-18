@@ -1,8 +1,9 @@
 package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
-import com.github.rd806.simplecardmemo.setup.ClientSetup;
+import com.github.rd806.simplecardmemo.memo.GetExistMemo;
+import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import com.github.rd806.simplecardmemo.memo.BuiltInList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -30,8 +31,11 @@ public class ModCreativeModeTabs {
                                 output.accept(ModItems.MEMO_MANAGER.get());
                                 output.accept(ModItems.MEMO_MAIL.get());
                                 output.accept(newMemo());
-                                output.accept(memoGuide());
-                                output.accept(hostServer());
+                                // 加载内置列表
+                                for (MemoInfo memoInfo : BuiltInList.BUILT_IN_MEMOS) {
+                                    ItemStack item = GetExistMemo.setMemo(memoInfo);
+                                    output.accept(item);
+                                }
                             })
                             // 构建最终的 CreativeModeTab 实例
                             .build());
@@ -41,34 +45,4 @@ public class ModCreativeModeTabs {
 
     // 新的备忘录
     public static ItemStack newMemo() { return new ItemStack(ModItems.MEMO_VIEWER.get()); }
-
-    // 教程文件
-    public static ItemStack memoGuide() {
-        ItemStack item = new ItemStack(ModItems.MEMO_VIEWER.get());
-        item.setHoverName(Component.translatable(SimpleCardMemo.MODID + ".item.memo_guide")
-                .withStyle(style -> style.withItalic(false)));
-        MemoViewerItem.setFilePath(item, SimpleCardMemo.MODID + ":sample/guide.md");
-        MemoViewerItem.setDisplayName(item, "Guide");
-        MemoViewerItem.setTextSource(item, false);
-        MemoViewerItem.setAuthor(item, "RunicDolphin806");
-        return item;
-    }
-
-    // Minecraft Java 开服教程
-    private static ItemStack hostServer() {
-        ItemStack item = new ItemStack(ModItems.MEMO_VIEWER.get());
-        item.setHoverName(Component.translatable(SimpleCardMemo.MODID + ".item.minecraft_server")
-                .withStyle(style -> style.withItalic(false)));
-        MemoViewerItem.setFilePath(item, SimpleCardMemo.MODID + ":sample/minecraft_server.md");
-        MemoViewerItem.setDisplayName(item, "Minecraft Server");
-        MemoViewerItem.setTextSource(item, false);
-        MemoViewerItem.setAuthor(item, "From Internet");
-        return item;
-    }
-
-    // 添加到内置列表
-    public static void builtInMemo() {
-        ClientSetup.builtInMemos.add(MemoViewerItem.getMemoInfo(memoGuide()));
-        ClientSetup.builtInMemos.add(MemoViewerItem.getMemoInfo(hostServer()));
-    }
 }
