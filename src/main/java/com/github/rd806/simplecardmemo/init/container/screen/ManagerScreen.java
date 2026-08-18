@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.init.container.screen;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import com.github.rd806.simplecardmemo.init.value.MemoSource;
+import com.github.rd806.simplecardmemo.memo.BuiltInList;
 import com.github.rd806.simplecardmemo.memo.GetExistMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
@@ -25,11 +26,12 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     // 背景GUI图片
     private static final ResourceLocation MANAGER_GUI =
-            ResourceLocation.parse(SimpleCardMemo.MODID + ":textures/container/manager.png");
+            ResourceLocation.tryBuild(SimpleCardMemo.MODID ,"textures/container/manager.png");
 
     // 文件信息
     private static List<MemoInfo> memoList = ClientSetup.clientConfig.getMemoList();
@@ -185,7 +187,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 设置颜色（RGBA），1 表示不改变原贴图颜色
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         // 绑定要绘制的纹理
-        RenderSystem.setShaderTexture(0, MANAGER_GUI);
+        RenderSystem.setShaderTexture(0, Objects.requireNonNull(MANAGER_GUI));
         // 绘制贴图
         guiGraphics.blit(MANAGER_GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
@@ -307,7 +309,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     private void refreshMemoList() {
         switch (memoSource) {
             case BUILT_IN -> {
-                memoList = ClientSetup.builtInMemos;
+                memoList = BuiltInList.BUILT_IN_MEMOS;
                 editButton.active = false;
                 deleteButton.active = false;
             }

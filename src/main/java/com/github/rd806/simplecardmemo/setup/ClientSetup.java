@@ -3,15 +3,15 @@ package com.github.rd806.simplecardmemo.setup;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.compat.ConfigMenu;
 import com.github.rd806.simplecardmemo.config.CommonConfig;
-import com.github.rd806.simplecardmemo.init.ModCreativeModeTabs;
 import com.github.rd806.simplecardmemo.init.ModMenus;
 import com.github.rd806.simplecardmemo.init.container.screen.MailScreen;
 import com.github.rd806.simplecardmemo.init.container.screen.ManagerScreen;
-import com.github.rd806.simplecardmemo.memo.MemoInfo;
+import com.github.rd806.simplecardmemo.memo.BuiltInList;
 import com.github.rd806.simplecardmemo.memo.cache.MemoContentCache;
 import com.github.rd806.simplecardmemo.memo.cache.MemoScreenCache;
 import com.github.rd806.simplecardmemo.memo.manage.MemoConfig;
 import com.github.rd806.simplecardmemo.memo.manage.MemoLoader;
+import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -21,9 +21,6 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Mod(value = SimpleCardMemo.MODID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = SimpleCardMemo.MODID, value = Dist.CLIENT)
 public class ClientSetup {
@@ -31,9 +28,6 @@ public class ClientSetup {
     public static MemoConfig clientConfig;
     public static MemoContentCache clientContentCache;
     public static MemoScreenCache clientScreenCache;
-
-    // 内置文件列表
-    public static List<MemoInfo> builtInMemos = new ArrayList<>();
 
     public ClientSetup(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, (container1, parent) ->
@@ -44,6 +38,8 @@ public class ClientSetup {
     public static void onClientSetup(FMLClientSetupEvent event) {
         // 创建临时文件
         MemoLoader.createTempFile();
+        // 内置列表
+        BuiltInList.loadBuiltInMemos(Minecraft.getInstance().getResourceManager());
         // 客户端配置文件
         clientConfig = new MemoConfig();
         clientContentCache = new MemoContentCache();
@@ -53,7 +49,6 @@ public class ClientSetup {
             clientConfig.preloadFiles(clientContentCache);
             SimpleCardMemo.LOGGER.info("Preload Files on the client!");
         }
-        ModCreativeModeTabs.builtInMemo();
     }
 
     // 注册GUI

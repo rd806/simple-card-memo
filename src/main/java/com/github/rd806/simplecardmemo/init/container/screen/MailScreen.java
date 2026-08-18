@@ -5,7 +5,7 @@ import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.init.value.MailStatus;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
-import com.github.rd806.simplecardmemo.memo.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.manage.MemoContent;
 import com.github.rd806.simplecardmemo.network.Channel;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -24,12 +24,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.Objects;
 
 public class MailScreen extends AbstractContainerScreen<MailMenu> {
     // 背景GUI图片
     private static final ResourceLocation MAIL_GUI =
-            ResourceLocation.parse(SimpleCardMemo.MODID + ":textures/container/mail.png");
+            ResourceLocation.tryBuild(SimpleCardMemo.MODID, "textures/container/mail.png");
 
     private final MailMenu mailMenu;
 
@@ -41,7 +41,6 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
 
     private static String target;
     private static MailStatus status;
-    private static String content;
     private static String message;
 
     public MailScreen(MailMenu menu, Inventory inventory, Component title) {
@@ -104,7 +103,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 设置颜色（RGBA），1 表示不改变原贴图颜色
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         // 绑定要绘制的纹理
-        RenderSystem.setShaderTexture(0, MAIL_GUI);
+        RenderSystem.setShaderTexture(0, Objects.requireNonNull(MAIL_GUI));
         // 绘制贴图
         guiGraphics.blit(MAIL_GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
@@ -139,15 +138,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         }
         // 获取发送的内容
         MemoInfo memoInfo = MemoViewerItem.getMemoInfo(stack);
-        // 异步加载
-        CompletableFuture.runAsync(() -> content = CacheSystem.getMemoContentWithCache(memoInfo, ClientSetup.clientContentCache))
-                .thenAccept(data -> Minecraft.getInstance().execute(() ->
-                        Channel.sendMail(content, target, message)
-                ))
-                .exceptionally(e -> {
-                    SimpleCardMemo.LOGGER.error("Error on sending mail", e);
-                    return null;
-                });
+        MemoContent.sendMailContent(memoInfo, target, message, ClientSetup.clientContentCache);
     }
 
     // 接收信件

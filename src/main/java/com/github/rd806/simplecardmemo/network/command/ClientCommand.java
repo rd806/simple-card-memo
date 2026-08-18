@@ -1,7 +1,7 @@
 package com.github.rd806.simplecardmemo.network.command;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
-import com.github.rd806.simplecardmemo.memo.CacheSystem;
+import com.github.rd806.simplecardmemo.memo.manage.MemoContent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -40,8 +40,8 @@ public class ClientCommand implements CustomPacketPayload {
         context.enqueueWork(() -> {
             if (Dist.CLIENT.isClient()) {
                 switch (packet.commandType) {
-                    case CACHE_INFO -> CacheSystem.getCache();
-                    case CACHE_CLEAR -> CacheSystem.clearCache();
+                    case CACHE_INFO -> MemoContent.getCache();
+                    case CACHE_CLEAR -> MemoContent.clearCache();
                 }
             }
         });
