@@ -30,7 +30,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
 
     // 背景GUI图片
     private static final ResourceLocation MAIL_GUI =
-            ResourceLocation.parse(SimpleCardMemo.MODID + ":textures/container/mail.png");
+            ResourceLocation.tryBuild(SimpleCardMemo.MODID, "textures/container/mail.png");
 
     private final MailMenu mailMenu;
 

@@ -17,7 +17,8 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 public class Channel {
 
-    private static final String PROTOCOL_VERSION = "1";
+    // 通道 ID 保持与版本一致
+    private static final String PROTOCOL_VERSION = "1.2.0";
     // 网络通道
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             ResourceLocation.parse(SimpleCardMemo.MODID + ":main"),
@@ -63,23 +64,28 @@ public class Channel {
                 ClientCommand.class, ClientCommand::encode, ClientCommand::decode, ClientCommand::handle);
     }
 
+    // 获取服务端列表
+    public static void getMemoList() {
+        CHANNEL.send(PacketDistributor.SERVER.noArg(), new MemoListGet());
+    }
+
     // 获取物品
     public static void getMemoItem(MemoInfo selectedMemo, MemoSource source) {
-        Channel.CHANNEL.send(PacketDistributor.SERVER.noArg(), new MemoPacketGet(selectedMemo, source));
+        CHANNEL.send(PacketDistributor.SERVER.noArg(), new MemoPacketGet(selectedMemo, source));
     }
 
     // 发送信件状态信息
     public static void sendMailStatus(ServerPlayer player, MailStatus status) {
-        Channel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MailStatusSend(status));
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MailStatusSend(status));
     }
 
     // 发送到客户端缓存
     public static void sendToClientCache(ServerPlayer player, String key, String value) {
-        Channel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MemoPacketSave(key, value));
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MemoPacketSave(key, value));
     }
 
     // 发送命令
     public static void sendCommand(ServerPlayer player, CommandType commandType) {
-        Channel.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ClientCommand(commandType));
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ClientCommand(commandType));
     }
 }
