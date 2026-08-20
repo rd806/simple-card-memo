@@ -109,12 +109,9 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 (value) -> {
                     String name = "";
                     switch (value) {
-                        case BUILT_IN ->
-                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.built_in");
-                        case CLIENT ->
-                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.client");
-                        case SERVER ->
-                                name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.server");
+                        case BUILTIN -> name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.built_in");
+                        case CLIENT -> name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.client");
+                        case SERVER -> name = I18n.get(SimpleCardMemo.MODID + ".gui.manager_screen.source.server");
                     }
                     return Component.literal(name);
                 })
@@ -134,12 +131,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
 
         // 编辑按钮
         editButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.edit"),
-                        button -> {
-                            if (memoSource.equals(MemoSource.SERVER)) { return; }
-                            ClientSetup.clientConfig.getMemoList().get(selectIndex).setMemoName(nameInput.getValue());
-                            ClientSetup.clientConfig.saveToConfig();
-                            refreshMemoList();
-                        })
+                        button -> editMemoName())
                 .pos(leftPos - BUTTON_WIDTH - 5, sourceChange.getY() + BUTTON_HEIGHT + 5)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .build();
@@ -206,7 +198,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
 
     // 绘制文件列表
     private void renderFileList(GuiGraphics graphics) {
-        if (memoList == null) {
+        if (memoList.isEmpty()) {
             graphics.drawString(
                     this.font, Component.translatable(SimpleCardMemo.MODID + ".gui.manager_screen.memo_list"),
                     PADDING, HEADER,
@@ -217,14 +209,30 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
         // 计算最大滚动
         int totalEntries = memoList.size();
         int visibleEntries = FILE_LIST_HEIGHT / ENTRY_HEIGHT;
+
         memoListMaxScroll = Math.max(0, totalEntries - visibleEntries);
         if (memoListScroll > memoListMaxScroll) {
             memoListScroll = memoListMaxScroll;
         }
+
+        // 使用裁剪
+        graphics.enableScissor(
+                PADDING, HEADER,
+                PADDING + FILE_LIST_WIDTH, HEADER + FILE_LIST_HEIGHT
+        );
+        graphics.pose().pushPose();
+
+        // 绘制时应用滚动偏移
+        int scrollOffset = memoListScroll * ENTRY_HEIGHT;
         // 绘制文件条目
-        for (int i = memoListScroll; i < Math.min(totalEntries, memoListScroll + visibleEntries); i++) {
+        for (int i = 0; i < totalEntries; i++) {
             MemoInfo info = memoList.get(i);
-            int y = HEADER + (i - memoListScroll) * ENTRY_HEIGHT;
+            // 这里减去偏移量，实现向上滚动
+            int y = HEADER + i * ENTRY_HEIGHT - scrollOffset;
+            // 不在可视区域的条目跳过不绘制
+            if (y + ENTRY_HEIGHT < HEADER || y > HEADER + FILE_LIST_HEIGHT) {
+                continue;
+            }
             // 高亮选中的文件
             if (selectedMemo != null && info.getMemoPath().equals(selectedMemo.getMemoPath())) {
                 graphics.fill(PADDING, y, PADDING + FILE_LIST_WIDTH, y + ENTRY_HEIGHT, 0x4466CC66);
@@ -236,6 +244,9 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                     0x3F3F3F, false
             );
         }
+
+        graphics.pose().popPose();
+        graphics.disableScissor();
     }
 
     // 悬浮提示信息
@@ -247,10 +258,7 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
                 // 获取对应的物品
                 ItemStack stack = GetExistMemo.setMemo(memoList.get(index));
                 // 显示单行文本
-                graphics.renderTooltip(
-                        this.font, stack,
-                        (int) mouseX, (int) mouseY
-                );
+                graphics.renderTooltip(this.font, stack, (int) mouseX, (int) mouseY);
             }
         }
     }
@@ -305,10 +313,19 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
     // 获取文件列表
     public static void setMemoList(List<MemoInfo> list) { memoList = list; }
 
+    // 编辑文件名称
+    private void editMemoName() {
+        String name = nameInput.getValue();
+        if (!memoSource.equals(MemoSource.CLIENT) || name.isEmpty()) { return; }
+        ClientSetup.clientConfig.getMemoList().get(selectIndex).setMemoName(name);
+        ClientSetup.clientConfig.saveToConfig();
+        refreshMemoList();
+    }
+
     // 刷新文件列表
     private void refreshMemoList() {
         switch (memoSource) {
-            case BUILT_IN -> {
+            case BUILTIN -> {
                 memoList = BuiltInList.BUILT_IN_MEMOS;
                 editButton.active = false;
                 deleteButton.active = false;
