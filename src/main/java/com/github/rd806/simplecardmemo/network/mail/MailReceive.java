@@ -77,7 +77,7 @@ public class MailReceive implements CustomPacketPayload {
                     return;
                 }
                 mailMenu.getItemStackHandler().setStackInSlot(MailMenu.OUTPUT_SLOT, output);
-                Channel.saveMemoPacket(player, filePath, content);
+                Channel.sendMemoItem(player, filePath, content);
                 Channel.sendMailStatus(player, MailStatus.SUCCESS_RECEIVE);
             }
         });

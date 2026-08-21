@@ -11,9 +11,9 @@ import com.github.rd806.simplecardmemo.network.mail.MailReceive;
 import com.github.rd806.simplecardmemo.network.mail.MailSend;
 import com.github.rd806.simplecardmemo.network.mail.MailStatusSend;
 import com.github.rd806.simplecardmemo.network.manager.MemoListGet;
-import com.github.rd806.simplecardmemo.network.manager.MemoListReceive;
-import com.github.rd806.simplecardmemo.network.manager.MemoPacketGet;
-import com.github.rd806.simplecardmemo.network.manager.MemoPacketSave;
+import com.github.rd806.simplecardmemo.network.manager.MemoListSend;
+import com.github.rd806.simplecardmemo.network.manager.MemoItemGet;
+import com.github.rd806.simplecardmemo.network.manager.MemoItemSend;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -31,16 +31,16 @@ public class Channel {
     public static void register(final RegisterPayloadHandlersEvent event) {
         // 获取注册器
         final PayloadRegistrar registrar = event.registrar(CHANNEL_ID.getNamespace())
-                .versioned("1")
+                .versioned("1.2.1")
                 .optional();
 
         registrar.playToServer(NewMemo.TYPE, NewMemo.STREAM_CODEC, NewMemo::handle);
 
         registrar.playToServer(MemoListGet.TYPE, MemoListGet.STREAM_CODEC, MemoListGet::handle);
-        registrar.playToClient(MemoListReceive.TYPE, MemoListReceive.STREAM_CODEC, MemoListReceive::handle);
+        registrar.playToClient(MemoListSend.TYPE, MemoListSend.STREAM_CODEC, MemoListSend::handle);
 
-        registrar.playToServer(MemoPacketGet.TYPE, MemoPacketGet.STREAM_CODEC, MemoPacketGet::handle);
-        registrar.playToClient(MemoPacketSave.TYPE, MemoPacketSave.STREAM_CODEC, MemoPacketSave::handle);
+        registrar.playToServer(MemoItemGet.TYPE, MemoItemGet.STREAM_CODEC, MemoItemGet::handle);
+        registrar.playToClient(MemoItemSend.TYPE, MemoItemSend.STREAM_CODEC, MemoItemSend::handle);
 
         registrar.playToServer(MailSend.TYPE, MailSend.STREAM_CODEC, MailSend::handle);
         registrar.playToServer(MailReceive.TYPE, MailReceive.STREAM_CODEC, MailReceive::handle);
@@ -54,14 +54,14 @@ public class Channel {
     // 文件列表
     public static void getMemoList() { PacketDistributor.sendToServer(new MemoListGet()); }
     public static void sendMemoList(ServerPlayer player, List<MemoInfo> memoList) {
-        PacketDistributor.sendToPlayer(player, new MemoListReceive(memoList));
+        PacketDistributor.sendToPlayer(player, new MemoListSend(memoList));
     }
     // 获取物品
-    public static void getMemoPacket(MemoInfo memo, MemoSource source) {
-        PacketDistributor.sendToServer(new MemoPacketGet(memo, source));
+    public static void getMemoItem(MemoInfo memo, MemoSource source) {
+        PacketDistributor.sendToServer(new MemoItemGet(memo, source));
     }
-    public static void saveMemoPacket(ServerPlayer player, String key, String content) {
-        PacketDistributor.sendToPlayer(player, new MemoPacketSave(key, content));
+    public static void sendMemoItem(ServerPlayer player, String key, String content) {
+        PacketDistributor.sendToPlayer(player, new MemoItemSend(key, content));
     }
 
     // 信件系统

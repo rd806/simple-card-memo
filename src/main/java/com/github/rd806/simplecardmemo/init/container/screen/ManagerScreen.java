@@ -352,6 +352,6 @@ public class ManagerScreen extends AbstractContainerScreen<ManagerMenu> {
             return;
         }
         // 发送网络包
-        Channel.getMemoPacket(selectedMemo, memoSource);
+        Channel.getMemoItem(selectedMemo, memoSource);
     }
 }

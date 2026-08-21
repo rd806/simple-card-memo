@@ -17,22 +17,22 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public class MemoPacketGet implements CustomPacketPayload {
+public class MemoItemGet implements CustomPacketPayload {
 
-    public static final Type<MemoPacketGet> TYPE =
+    public static final Type<MemoItemGet> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(SimpleCardMemo.MODID, "memo_packet_get"));
 
     private final MemoInfo memoInfo;
     private final MemoSource memoSource;
 
-    public MemoPacketGet(MemoInfo memoInfo, MemoSource memoSource) {
+    public MemoItemGet(MemoInfo memoInfo, MemoSource memoSource) {
         this.memoInfo = memoInfo;
         this.memoSource = memoSource;
     }
 
-    public static final StreamCodec<FriendlyByteBuf, MemoPacketGet> STREAM_CODEC = new StreamCodec<>() {
+    public static final StreamCodec<FriendlyByteBuf, MemoItemGet> STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public void encode(FriendlyByteBuf buf, MemoPacketGet packet) {
+        public void encode(FriendlyByteBuf buf, MemoItemGet packet) {
             buf.writeUtf(packet.memoInfo.getMemoName());
             buf.writeUtf(packet.memoInfo.getMemoPath());
             buf.writeUtf(packet.memoInfo.getMemoAuthor());
@@ -42,7 +42,7 @@ public class MemoPacketGet implements CustomPacketPayload {
         }
 
         @Override
-        public @NotNull MemoPacketGet decode(FriendlyByteBuf buf) {
+        public @NotNull MemoItemGet decode(FriendlyByteBuf buf) {
             String memoName = buf.readUtf();
             String memoPath = buf.readUtf();
             String author = buf.readUtf();
@@ -50,7 +50,7 @@ public class MemoPacketGet implements CustomPacketPayload {
             long lastModified = buf.readLong();
             MemoInfo memoInfo = new MemoInfo(memoName, memoPath, author, external, lastModified);
             MemoSource memoSource = buf.readEnum(MemoSource.class);
-            return new MemoPacketGet(memoInfo, memoSource);
+            return new MemoItemGet(memoInfo, memoSource);
         }
     };
 
@@ -58,7 +58,7 @@ public class MemoPacketGet implements CustomPacketPayload {
     public @NotNull Type<? extends CustomPacketPayload> type() { return TYPE; }
 
     // 处理数据包
-    public static void handle(final MemoPacketGet packet, final IPayloadContext context) {
+    public static void handle(final MemoItemGet packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
                 // 检查是否为管理器界面
@@ -83,7 +83,7 @@ public class MemoPacketGet implements CustomPacketPayload {
                     if (content == null) {
                         content = MemoLoader.loadText(packet.memoInfo);
                     }
-                    Channel.saveMemoPacket(player, filePath, content);
+                    Channel.sendMemoItem(player, filePath, content);
                 }
                 // 消耗和产出物品
                 input.shrink(1);

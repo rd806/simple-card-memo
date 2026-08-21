@@ -14,18 +14,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemoListReceive implements CustomPacketPayload {
+public class MemoListSend implements CustomPacketPayload {
 
-    public static final Type<MemoListReceive> TYPE =
+    public static final Type<MemoListSend> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(SimpleCardMemo.MODID, "memo_list_receive"));
 
     private final List<MemoInfo> memoList;
 
-    public MemoListReceive(List<MemoInfo> memoList) { this.memoList = memoList; }
+    public MemoListSend(List<MemoInfo> memoList) { this.memoList = memoList; }
 
-    public static final StreamCodec<FriendlyByteBuf, MemoListReceive> STREAM_CODEC = new StreamCodec<>() {
+    public static final StreamCodec<FriendlyByteBuf, MemoListSend> STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public void encode(FriendlyByteBuf buf, MemoListReceive packet) {
+        public void encode(FriendlyByteBuf buf, MemoListSend packet) {
             buf.writeInt(packet.memoList.size());
             for (MemoInfo memo : packet.memoList) {
                 buf.writeUtf(memo.getMemoName());
@@ -37,7 +37,7 @@ public class MemoListReceive implements CustomPacketPayload {
         }
 
         @Override
-        public @NotNull MemoListReceive decode(FriendlyByteBuf buf) {
+        public @NotNull MemoListSend decode(FriendlyByteBuf buf) {
             List<MemoInfo> memoList = new ArrayList<>();
             int size = buf.readInt();
             for (int i = 0; i < size; i++) {
@@ -49,7 +49,7 @@ public class MemoListReceive implements CustomPacketPayload {
                 MemoInfo memoInfo = new MemoInfo(memoName, memoPath, memoAuthor, external, modified);
                 memoList.add(memoInfo);
             }
-            return new MemoListReceive(memoList);
+            return new MemoListSend(memoList);
         }
     };
 
@@ -57,7 +57,7 @@ public class MemoListReceive implements CustomPacketPayload {
     public @NotNull Type<? extends CustomPacketPayload> type() { return TYPE; }
 
     // 处理数据包
-    public static void handle(final MemoListReceive packet, final IPayloadContext context) {
+    public static void handle(final MemoListSend packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (Dist.CLIENT.isClient()) {
                 List<MemoInfo> memoList = packet.memoList;

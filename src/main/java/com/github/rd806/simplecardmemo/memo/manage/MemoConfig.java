@@ -57,9 +57,7 @@ public class MemoConfig {
         try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
             String defaultConfig = """
                     {
-                      "memos": [
-                    
-                      ]
+                      "memos": []
                     }
                     """;
             writer.write(defaultConfig);
@@ -77,7 +75,6 @@ public class MemoConfig {
                 MEMO_MAP.clear();
                 for (MemoInfo info : json.memos) {
                     MEMO_MAP.put(info.getMemoPath(), info);
-                    SimpleCardMemo.LOGGER.info("Loading Memo: {}", info.getMemoName());
                 }
             }
         } catch (Exception e) {
@@ -111,7 +108,6 @@ public class MemoConfig {
                 }
             }
             saveToConfig();
-            SimpleCardMemo.LOGGER.info("Loaded memos from {}", SimpleCardMemo.DATA_DIR);
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error("Failed to load local memos", e);
         }
