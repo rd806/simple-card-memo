@@ -148,10 +148,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
     private void receiveMemo() {
         mailStatus = MailStatus.DEFAULT;
         target = nameInput.getValue();
-        Channel.CHANNEL.send(
-                PacketDistributor.SERVER.noArg(),
-                new MailReceive(target)
-        );
+        Channel.receiveMail(target);
     }
 
     // 渲染屏幕提示文字

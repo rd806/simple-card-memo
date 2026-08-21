@@ -67,7 +67,7 @@ public class MailReceive {
                 return;
             }
             mailMenu.getItemStackHandler().setStackInSlot(MailMenu.OUTPUT_SLOT, output);
-            Channel.sendToClientCache(receiver, filePath, content);
+            Channel.sendMemoItem(receiver, filePath, content);
             Channel.sendMailStatus(receiver, MailStatus.SUCCESS_RECEIVE);
         });
         context.setPacketHandled(true);

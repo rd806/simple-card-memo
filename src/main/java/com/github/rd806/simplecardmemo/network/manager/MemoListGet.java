@@ -1,11 +1,9 @@
 package com.github.rd806.simplecardmemo.network.manager;
 
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.setup.ServerSetup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
@@ -22,10 +20,7 @@ public class MemoListGet {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
-            Channel.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> player),
-                    new MemoListReceive(ServerSetup.serverConfig.getMemoList())
-            );
+            Channel.sendMemoList(player);
         });
         context.setPacketHandled(true);
     }

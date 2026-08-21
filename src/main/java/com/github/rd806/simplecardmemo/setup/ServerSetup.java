@@ -37,7 +37,7 @@ public class ServerSetup {
             for (Map.Entry<String, String> entry :serverCache.getCache().entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                Channel.sendToClientCache(serverPlayer, key, value);
+                Channel.sendMemoItem(serverPlayer, key, value);
             }
             serverPlayer.displayClientMessage(
                     Component.translatable(SimpleCardMemo.MODID + ".message.login"),

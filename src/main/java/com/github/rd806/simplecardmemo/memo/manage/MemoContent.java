@@ -6,7 +6,6 @@ import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.memo.cache.MemoContentCache;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.mail.MailSend;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -19,7 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -48,10 +46,7 @@ public class MemoContent {
     public static void sendMailContent(MemoInfo memoInfo, String target, String message, MemoContentCache memoCache) {
         getMemoContentWithCache(memoInfo, memoCache);
         CompletableFuture.allOf(contentFuture).thenAccept(
-                ignore -> Minecraft.getInstance().execute(() -> Channel.CHANNEL.send(
-                        PacketDistributor.SERVER.noArg(),
-                        new MailSend(content, target, message)
-                ))
+                ignore -> Minecraft.getInstance().execute(() -> Channel.sendMail(content, target, message))
         );
     }
 

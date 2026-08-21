@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class MemoListReceive {
+public class MemoListSend {
 
     private final List<MemoInfo> memoList;
 
-    public MemoListReceive(List<MemoInfo> memoList) {
+    public MemoListSend(List<MemoInfo> memoList) {
         this.memoList = memoList;
     }
 
@@ -30,7 +30,7 @@ public class MemoListReceive {
         }
     }
 
-    public static MemoListReceive decode(FriendlyByteBuf buf) {
+    public static MemoListSend decode(FriendlyByteBuf buf) {
         List<MemoInfo> memoList = new ArrayList<>();
         int size = buf.readInt();
         for (int i = 0; i < size; i++) {
@@ -42,7 +42,7 @@ public class MemoListReceive {
             MemoInfo memoInfo = new MemoInfo(memoName, memoPath, memoAuthor, external, lastModified);
             memoList.add(memoInfo);
         }
-        return new MemoListReceive(memoList);
+        return new MemoListSend(memoList);
     }
 
     // 处理方法

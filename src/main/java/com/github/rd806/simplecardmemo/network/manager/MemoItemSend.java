@@ -8,12 +8,12 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MemoPacketSave {
+public class MemoItemSend {
 
     private final String key;
     private final String content;
 
-    public MemoPacketSave(String key, String content) {
+    public MemoItemSend(String key, String content) {
         this.key = key;
         this.content = content;
     }
@@ -23,10 +23,10 @@ public class MemoPacketSave {
         buffer.writeUtf(content);
     }
 
-    public static MemoPacketSave decode(FriendlyByteBuf buffer) {
+    public static MemoItemSend decode(FriendlyByteBuf buffer) {
         String key = buffer.readUtf();
         String content = buffer.readUtf();
-        return new MemoPacketSave(key, content);
+        return new MemoItemSend(key, content);
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {

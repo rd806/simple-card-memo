@@ -12,16 +12,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
-public class MemoPacketGet {
+public class MemoItemGet {
 
     private final MemoInfo memoInfo;
     private final MemoSource memoSource;
 
-    public MemoPacketGet(MemoInfo memoInfo, MemoSource memoSource) {
+    public MemoItemGet(MemoInfo memoInfo, MemoSource memoSource) {
         this.memoInfo = memoInfo;
         this.memoSource = memoSource;
     }
@@ -37,7 +36,7 @@ public class MemoPacketGet {
     }
 
     // 解码：从网络缓冲区读取数据
-    public static MemoPacketGet decode(FriendlyByteBuf buffer) {
+    public static MemoItemGet decode(FriendlyByteBuf buffer) {
         String memoName = buffer.readUtf();
         String memoPath = buffer.readUtf();
         String author = buffer.readUtf();
@@ -45,7 +44,7 @@ public class MemoPacketGet {
         long lastModified = buffer.readLong();
         MemoInfo memoInfo = new MemoInfo(memoName, memoPath, author, external, lastModified);
         MemoSource memoSource = buffer.readEnum(MemoSource.class);
-        return new MemoPacketGet(memoInfo, memoSource);
+        return new MemoItemGet(memoInfo, memoSource);
     }
 
     // 处理方法
@@ -72,10 +71,7 @@ public class MemoPacketGet {
                 if (content == null) {
                     content = MemoLoader.loadText(memoInfo);
                 }
-                Channel.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> player),
-                        new MemoPacketSave(filePath, content)
-                );
+                Channel.sendMemoItem(player, filePath, content);
             }
             // 消耗和产出物品
             input.shrink(1);

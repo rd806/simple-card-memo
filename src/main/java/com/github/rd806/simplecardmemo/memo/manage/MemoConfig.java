@@ -32,7 +32,7 @@ public class MemoConfig {
 
     public MemoConfig() {
         generateConfig();
-        SimpleCardMemo.LOGGER.info("Successfully loaded from config: {}", CONFIG);
+        SimpleCardMemo.LOGGER.info("Successfully load from from: {}", CONFIG);
     }
 
     // 生成配置文件
@@ -46,8 +46,7 @@ public class MemoConfig {
             localFilesToJson();
             SimpleCardMemo.LOGGER.info("Loaded {} memos", MEMO_MAP.size());
         } catch (Exception e) {
-            SimpleCardMemo.LOGGER.error("Couldn't create directory at {}", CONFIG_PATH);
-            SimpleCardMemo.LOGGER.error(e.getMessage());
+            SimpleCardMemo.LOGGER.error("Couldn't create directory at {}", CONFIG_PATH, e);
         }
     }
 
@@ -74,7 +73,6 @@ public class MemoConfig {
                 MEMO_MAP.clear();
                 for (MemoInfo info : json.memos) {
                     MEMO_MAP.put(info.getMemoPath(), info);
-                    SimpleCardMemo.LOGGER.info("Loading Memo: {}", info.getMemoName());
                 }
             }
         } catch (Exception e) {
@@ -108,7 +106,6 @@ public class MemoConfig {
                 }
             }
             saveToConfig();
-            SimpleCardMemo.LOGGER.info("Loaded memos from {}", SimpleCardMemo.DATA_DIR);
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error("Failed to load local memos", e);
         }
