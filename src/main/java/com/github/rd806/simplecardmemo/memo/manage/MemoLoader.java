@@ -3,6 +3,9 @@ package com.github.rd806.simplecardmemo.memo.manage;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,13 +14,52 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MemoLoader {
 
+    // 从资源包中加载
+    public static String loadFromResource(MemoInfo memoInfo, String lang, ResourceManager res) {
+        String rawPath = memoInfo.getMemoPath();
+        String filePath = memoInfo.getMemoPath();
+        if (rawPath == null) {
+            SimpleCardMemo.LOGGER.error("The Memo Path is null!");
+            return null;
+        }
+        try {
+            // 从资源包中加载
+            filePath = parseString(rawPath, lang);
+            // 获取文件
+            ResourceLocation location = ResourceLocation.parse(filePath);
+            Resource resource = res.getResource(location).orElse(null);
+            // 检查来源
+            if (resource != null) {
+                StringBuilder content = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        content.append(line).append("\n");
+                    }
+                }
+                return content.toString();
+            }
+        } catch (Exception e) {
+            SimpleCardMemo.LOGGER.error("Failed to load file from resources: {}", filePath);
+        }
+        return null;
+    }
+
+    // 转换路径
+    private static String parseString(String rawPath, String lang) {
+        String replace = "/" + lang + "/";
+        return rawPath.replaceFirst("/(?!.*/)", replace);
+    }
+
     // 从外部文件中获取
-    public static String loadText(MemoInfo memoInfo) {
+    public static String loadFromExternal(MemoInfo memoInfo) {
         String filePath = memoInfo.getMemoPath();
         if (filePath == null) {
             SimpleCardMemo.LOGGER.error("The Memo path is null!");

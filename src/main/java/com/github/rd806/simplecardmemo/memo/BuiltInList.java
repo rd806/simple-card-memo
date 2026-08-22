@@ -22,7 +22,7 @@ public class BuiltInList {
     // 加载内置列表
     public static void loadBuiltInMemos(ResourceManager manager) {
         InputStream stream;
-        ResourceLocation res = ResourceLocation.tryBuild(SimpleCardMemo.MODID, "memos.json");
+        ResourceLocation res = ResourceLocation.tryBuild(SimpleCardMemo.MODID, "memos/memos.json");
         Resource optional;
         if (res == null) {
             SimpleCardMemo.LOGGER.warn("memos.json not found!");

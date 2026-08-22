@@ -33,7 +33,7 @@ public class ConfigMenu {
     private static void buildTextSettings(ConfigEntryBuilder entryBuilder, ConfigCategory textSettings) {
         // 页边距
         textSettings.addEntry(
-                entryBuilder.startEnumSelector(Component.translatable(SimpleCardMemo.MODID + ".config.page_margin"), ClientConfig.Margin.class, ClientConfig.Margin.MEDIUM)
+                entryBuilder.startEnumSelector(Component.translatable(SimpleCardMemo.MODID + ".config.page_margin"), ClientConfig.Margin.class, ClientConfig.PAGE_MARGIN.get())
                         .setDefaultValue(ClientConfig.Margin.MEDIUM)
                         .setTooltip(Component.translatable(SimpleCardMemo.MODID + ".config.page_margin.tooltip"))
                         .setSaveConsumer(pageMargin -> ClientConfig.PAGE_MARGIN.set(pageMargin))
@@ -58,7 +58,7 @@ public class ConfigMenu {
     private static void buildCommonSettings(ConfigEntryBuilder entryBuilder, ConfigCategory commonSettings) {
         // 日期风格
         commonSettings.addEntry(
-                entryBuilder.startEnumSelector(Component.translatable(SimpleCardMemo.MODID + ".config.date_format"), CommonConfig.DateFormat.class, CommonConfig.DateFormat.ISO_LOCAL_DATE)
+                entryBuilder.startEnumSelector(Component.translatable(SimpleCardMemo.MODID + ".config.date_format"), CommonConfig.DateFormat.class, CommonConfig.DATE_FORMAT.get())
                         .setDefaultValue(CommonConfig.DateFormat.ISO_LOCAL_DATE)
                         .setTooltip(Component.translatable(SimpleCardMemo.MODID + ".config.date_format.tooltip"))
                         .setSaveConsumer(dateFormat -> CommonConfig.DATE_FORMAT.set(dateFormat))

@@ -1,31 +1,31 @@
 {
     "simplecardmemo.tab.simplecardmemo": "Simple Card Memo",
 
-    "simplecardmemo.item.general.tooltip": "Right click",
+    "item.simplecardmemo.general.tooltip": "Right click",
 
     "item.simplecardmemo.memo_viewer": "New Memo",
-    "simplecardmemo.item.memo_viewer.tooltip.default": "The last opened memo",
-    "simplecardmemo.item.memo_viewer.tooltip.more": "Hold down [Shift] to view details",
-    "simplecardmemo.item.memo_viewer.tooltip.author": "Author: ",
-    "simplecardmemo.item.memo_viewer.tooltip.source": "Source: ",
-    "simplecardmemo.item.memo_viewer.tooltip.time": "Modified: ",
-    "simplecardmemo.item.memo_viewer.tooltip.external": "External File",
-    "simplecardmemo.item.memo_viewer.tooltip.resource": "Resource File",
-    "simplecardmemo.item.memo_viewer.no_screen": "No memo has been opened!",
+    "item.simplecardmemo.memo_viewer.tooltip.default": "The last opened memo",
+    "item.simplecardmemo.memo_viewer.tooltip.more": "Hold down [Shift] to view details",
+    "item.simplecardmemo.memo_viewer.tooltip.author": "Author: ",
+    "item.simplecardmemo.memo_viewer.tooltip.source": "Source: ",
+    "item.simplecardmemo.memo_viewer.tooltip.time": "Modified: ",
+    "item.simplecardmemo.memo_viewer.tooltip.external": "External File",
+    "item.simplecardmemo.memo_viewer.tooltip.resource": "Resource File",
+    "item.simplecardmemo.memo_viewer.no_screen": "No memo has been opened!",
+
+    "item.simplecardmemo.memo_viewer.memo_guide": "Guide",
+    "item.simplecardmemo.memo_viewer.minecraft_server": "How to Host a Minecraft Server",
 
     "item.simplecardmemo.memo_editor": "Memo Editor",
-    "simplecardmemo.item.memo_editor.tooltip": "Edit a new memo",
+    "item.simplecardmemo.memo_editor.tooltip": "Edit a new memo",
 
     "item.simplecardmemo.memo_manager": "Memo Manager",
-    "simplecardmemo.item.memo_manager.tooltip": "Manage local memo files",
-    "simplecardmemo.item.memo_manager.screen": "Memo Manager",
+    "item.simplecardmemo.memo_manager.tooltip": "Manage local memo files",
+    "item.simplecardmemo.memo_manager.screen": "Memo Manager",
 
     "item.simplecardmemo.memo_mail": "Memo Mail",
-    "simplecardmemo.item.memo_mail.tooltip": "Send and receive memos",
-    "simplecardmemo.item.memo_mail.screen": "Memo Mail",
-
-    "simplecardmemo.item.memo_guide": "Guide",
-    "simplecardmemo.item.minecraft_server": "How to Host a Minecraft Server",
+    "item.simplecardmemo.memo_mail.tooltip": "Send and receive memos",
+    "item.simplecardmemo.memo_mail.screen": "Memo Mail",
 
     "simplecardmemo.gui.viewer_screen": "View Screen",
     "simplecardmemo.gui.viewer_screen.reload": "Reload text",

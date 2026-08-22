@@ -116,7 +116,7 @@ public class MemoConfig {
     // 预加载文件
     public void preloadFiles(MemoContentCache memoCache) {
         for (MemoInfo info : MEMO_LIST) {
-            String content = MemoLoader.loadText(info);
+            String content = MemoLoader.loadFromExternal(info);
             if (content != null) {
                 memoCache.getCache().put(info.getMemoPath(), content);
             }

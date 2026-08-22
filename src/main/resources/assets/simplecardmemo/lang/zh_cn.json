@@ -1,31 +1,31 @@
 {
     "simplecardmemo.tab.simplecardmemo": "简易备忘录",
 
-    "simplecardmemo.item.general.tooltip": "右键打开",
+    "item.simplecardmemo.general.tooltip": "右键打开",
 
     "item.simplecardmemo.memo_viewer": "新的备忘录",
-    "simplecardmemo.item.memo_viewer.tooltip.default": "最近一次打开的备忘录",
-    "simplecardmemo.item.memo_viewer.tooltip.more": "按下 [Shift] 键显示详情",
-    "simplecardmemo.item.memo_viewer.tooltip.author": "作者：",
-    "simplecardmemo.item.memo_viewer.tooltip.source": "来源：",
-    "simplecardmemo.item.memo_viewer.tooltip.time": "修改：",
-    "simplecardmemo.item.memo_viewer.tooltip.external": "外部文件",
-    "simplecardmemo.item.memo_viewer.tooltip.resource": "资源文件",
-    "simplecardmemo.item.memo_viewer.no_screen": "暂无打开的备忘录！",
+    "item.simplecardmemo.memo_viewer.tooltip.default": "最近一次打开的备忘录",
+    "item.simplecardmemo.memo_viewer.tooltip.more": "按下 [Shift] 键显示详情",
+    "item.simplecardmemo.memo_viewer.tooltip.author": "作者：",
+    "item.simplecardmemo.memo_viewer.tooltip.source": "来源：",
+    "item.simplecardmemo.memo_viewer.tooltip.time": "修改：",
+    "item.simplecardmemo.memo_viewer.tooltip.external": "外部文件",
+    "item.simplecardmemo.memo_viewer.tooltip.resource": "资源文件",
+    "item.simplecardmemo.memo_viewer.no_screen": "暂无打开的备忘录！",
+
+    "item.simplecardmemo.memo_viewer.memo_guide": "简易备忘录教程",
+    "item.simplecardmemo.memo_viewer.minecraft_server": "如何开设Minecraft服务器",
 
     "item.simplecardmemo.memo_editor": "备忘录编辑器",
-    "simplecardmemo.item.memo_editor.tooltip": "编辑新的备忘录",
+    "item.simplecardmemo.memo_editor.tooltip": "编辑新的备忘录",
 
     "item.simplecardmemo.memo_manager": "备忘录管理器",
-    "simplecardmemo.item.memo_manager.tooltip": "管理本地备忘录文件",
-    "simplecardmemo.item.memo_manager.screen": "备忘录管理器",
+    "item.simplecardmemo.memo_manager.tooltip": "管理本地备忘录文件",
+    "item.simplecardmemo.memo_manager.screen": "备忘录管理器",
 
     "item.simplecardmemo.memo_mail": "信箱",
-    "simplecardmemo.item.memo_mail.tooltip": "发送和接收备忘录",
-    "simplecardmemo.item.memo_mail.screen": "信箱",
-
-    "simplecardmemo.item.memo_guide": "简易备忘录教程",
-    "simplecardmemo.item.minecraft_server": "如何开设Minecraft服务器",
+    "item.simplecardmemo.memo_mail.tooltip": "发送和接收备忘录",
+    "item.simplecardmemo.memo_mail.screen": "信箱",
 
     "simplecardmemo.gui.viewer_screen": "查看界面",
     "simplecardmemo.gui.viewer_screen.reload": "重新加载",

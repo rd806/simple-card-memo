@@ -81,7 +81,7 @@ public class MemoItemGet implements CustomPacketPayload {
                     String filePath = packet.memoInfo.getMemoPath();
                     String content = ServerSetup.serverCache.get(filePath);
                     if (content == null) {
-                        content = MemoLoader.loadText(packet.memoInfo);
+                        content = MemoLoader.loadFromExternal(packet.memoInfo);
                     }
                     Channel.sendMemoItem(player, filePath, content);
                 }
