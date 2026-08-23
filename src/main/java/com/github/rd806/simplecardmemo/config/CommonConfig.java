@@ -31,15 +31,15 @@ public class CommonConfig {
     public static ModConfigSpec init() {
         BUILDER.push("Common").translation(SimpleCardMemo.MODID + ".gui.config.common");
         DATE_FORMAT = BUILDER
-                .translation(SimpleCardMemo.MODID + ".config.date_format")
+                .translation("config.simplecardmemo.date_format")
                 .comment("Date format for the memos")
                 .defineEnum("DateFormat", DateFormat.ISO_LOCAL_DATE);
         PRELOAD_FILES = BUILDER
-                .translation(SimpleCardMemo.MODID + ".config.load_local_files")
+                .translation("config.simplecardmemo.load_local_files")
                 .comment("Preload local memos when start games")
                 .define("PreloadFiles", true);
         CACHE_SIZE = BUILDER
-                .translation(SimpleCardMemo.MODID + ".config.cache")
+                .translation("config.simplecardmemo.cache")
                 .comment("Define how many memos' content will be cached during the game")
                 .defineInRange("CacheSize", 20, 5, 100);
         BUILDER.pop();

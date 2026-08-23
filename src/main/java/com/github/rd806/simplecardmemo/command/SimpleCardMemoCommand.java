@@ -79,7 +79,7 @@ public class SimpleCardMemoCommand {
                 Channel.sendCommand(player, CommandType.CACHE_CLEAR);
             }
             context.getSource().sendSuccess(
-                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.client_cache.clear")
+                    () -> Component.translatable("message.simplecardmemo.command.client_cache.clear")
                             .withStyle(ChatFormatting.GRAY),
                     false
             );
@@ -96,11 +96,11 @@ public class SimpleCardMemoCommand {
             // 显示列表
             if (sets.isEmpty()) {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.server_cache.empty"),
+                        () -> Component.translatable("message.simplecardmemo.command.server_cache.empty"),
                         false);
             } else {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.server_cache.info")
+                        () -> Component.translatable("message.simplecardmemo.command.server_cache.info")
                                 .withStyle(ChatFormatting.GREEN),
                         false);
                 // 显示列表
@@ -120,7 +120,7 @@ public class SimpleCardMemoCommand {
         try {
             ServerSetup.serverCache.clear();
             context.getSource().sendSuccess(
-                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.server_cache.clear")
+                    () -> Component.translatable("message.simplecardmemo.command.server_cache.clear")
                             .withStyle(ChatFormatting.GRAY),
                     false
             );
@@ -137,11 +137,11 @@ public class SimpleCardMemoCommand {
             // 显示列表
             if (sets.isEmpty()) {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.empty"),
+                        () -> Component.translatable("message.simplecardmemo.command.mail.empty"),
                         false);
             } else {
                 context.getSource().sendSuccess(
-                        () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.info")
+                        () -> Component.translatable("message.simplecardmemo.command.mail.info")
                                 .withStyle(ChatFormatting.GRAY),
                         false);
                 // 显示列表
@@ -166,8 +166,7 @@ public class SimpleCardMemoCommand {
     private static int clearMail(CommandContext<CommandSourceStack> context) {
         try {
             context.getSource().sendSuccess(
-                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.mail.clear")
-                            .withStyle(ChatFormatting.GRAY),
+                    () -> Component.translatable("message.simplecardmemo.command.mail.clear").withStyle(ChatFormatting.GRAY),
                     false);
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());
@@ -181,13 +180,11 @@ public class SimpleCardMemoCommand {
             ServerSetup.serverConfig.reload();
             ServerSetup.serverConfig.preloadFiles(ServerSetup.serverCache);
             context.getSource().sendSuccess(
-                    () -> Component.translatable(SimpleCardMemo.MODID + ".command.reload")
-                            .withStyle(ChatFormatting.GRAY),
+                    () -> Component.translatable("message.simplecardmemo.command.reload").withStyle(ChatFormatting.GRAY),
                     false);
         } catch (Exception e) {
             SimpleCardMemo.LOGGER.error(e.getMessage());
         }
         return Command.SINGLE_SUCCESS;
     }
-
 }

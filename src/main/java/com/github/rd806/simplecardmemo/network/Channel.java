@@ -7,6 +7,8 @@ import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.network.command.ClientCommand;
 import com.github.rd806.simplecardmemo.network.command.CommandType;
 import com.github.rd806.simplecardmemo.network.editor.NewMemo;
+import com.github.rd806.simplecardmemo.network.editor.OpenInfo;
+import com.github.rd806.simplecardmemo.network.editor.OpenManager;
 import com.github.rd806.simplecardmemo.network.mail.MailReceive;
 import com.github.rd806.simplecardmemo.network.mail.MailSend;
 import com.github.rd806.simplecardmemo.network.mail.MailStatusSend;
@@ -35,6 +37,8 @@ public class Channel {
                 .optional();
 
         registrar.playToServer(NewMemo.TYPE, NewMemo.STREAM_CODEC, NewMemo::handle);
+        registrar.playToServer(OpenInfo.TYPE, OpenInfo.STREAM_CODEC, OpenInfo::handle);
+        registrar.playToServer(OpenManager.TYPE, OpenManager.STREAM_CODEC, OpenManager::handle);
 
         registrar.playToServer(MemoListGet.TYPE, MemoListGet.STREAM_CODEC, MemoListGet::handle);
         registrar.playToClient(MemoListSend.TYPE, MemoListSend.STREAM_CODEC, MemoListSend::handle);
@@ -56,6 +60,9 @@ public class Channel {
     public static void sendMemoList(ServerPlayer player, List<MemoInfo> memoList) {
         PacketDistributor.sendToPlayer(player, new MemoListSend(memoList));
     }
+    public static void openInfoMenu(int index) { PacketDistributor.sendToServer(new OpenInfo(index)); }
+    public static void openManagerMenu() { PacketDistributor.sendToServer(new OpenManager()); }
+
     // 获取物品
     public static void getMemoItem(MemoInfo memo, MemoSource source) {
         PacketDistributor.sendToServer(new MemoItemGet(memo, source));

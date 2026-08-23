@@ -45,7 +45,7 @@ public class MemoMailItem extends Item implements MenuProvider {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.translatable("item.simplecardmemo.memo_mail.screen");
+        return Component.translatable("gui.simplecardmemo.mail_screen.title");
     }
 
     // 当玩家打开界面时创建 Menu

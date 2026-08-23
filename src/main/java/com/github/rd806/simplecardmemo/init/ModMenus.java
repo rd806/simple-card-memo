@@ -1,6 +1,7 @@
 package com.github.rd806.simplecardmemo.init;
 
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
+import com.github.rd806.simplecardmemo.init.container.menu.InfoMenu;
 import com.github.rd806.simplecardmemo.init.container.menu.MailMenu;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,9 +20,10 @@ public class ModMenus {
     // 使用 DeferredHolder
     public static final DeferredHolder<MenuType<?>, MenuType<MailMenu>> MAIL_MENU =
             registerMenuType("mail_menu", MailMenu::new);
-
     public static final DeferredHolder<MenuType<?>, MenuType<ManagerMenu>> MANAGER_MENU =
             registerMenuType("manager_menu", ManagerMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<InfoMenu>> INFO_MENU =
+            registerMenuType("info_menu", InfoMenu::new);
 
     // 抽象构造方法
     private static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(

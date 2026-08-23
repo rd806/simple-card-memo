@@ -41,7 +41,7 @@ public class ServerSetup {
                 Channel.sendMemoItem(serverPlayer, key, value);
             }
             serverPlayer.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".message.login"),
+                    Component.translatable("message.simplecardmemo.player.login"),
                     false
             );
         }

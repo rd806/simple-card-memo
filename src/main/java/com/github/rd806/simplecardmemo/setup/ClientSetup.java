@@ -4,6 +4,7 @@ import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.compat.ConfigMenu;
 import com.github.rd806.simplecardmemo.config.CommonConfig;
 import com.github.rd806.simplecardmemo.init.ModMenus;
+import com.github.rd806.simplecardmemo.init.container.screen.InfoScreen;
 import com.github.rd806.simplecardmemo.init.container.screen.MailScreen;
 import com.github.rd806.simplecardmemo.init.container.screen.ManagerScreen;
 import com.github.rd806.simplecardmemo.memo.BuiltInList;
@@ -56,5 +57,6 @@ public class ClientSetup {
     private static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenus.MANAGER_MENU.get(), ManagerScreen::new);
         event.register(ModMenus.MAIL_MENU.get(), MailScreen::new);
+        event.register(ModMenus.INFO_MENU.get(), InfoScreen::new);
     }
 }

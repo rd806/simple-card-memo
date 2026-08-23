@@ -78,7 +78,8 @@ public class MailSend implements CustomPacketPayload {
                 input.shrink(1);
                 // 发送成功消息
                 Channel.sendMailStatus(player, MailStatus.SUCCESS_SEND);
-                sendMessage(player, packet.receiver, packet.message);}
+                sendMessage(player, packet.receiver, packet.message);
+            }
         });
     }
 

@@ -1,6 +1,5 @@
 package com.github.rd806.simplecardmemo.memo.manage;
 
-import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.screen.MemoViewerScreen;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
@@ -89,7 +88,7 @@ public class MemoContent {
             }
             // 更新缓冲区
             if (content == null) {
-                content = I18n.get(SimpleCardMemo.MODID + ".gui.viewer_screen.error", filePath);
+                content = I18n.get("gui.simplecardmemo.viewer_screen.error", filePath);
             } else {
                 memoCache.put(filePath, content);
             }
@@ -114,7 +113,7 @@ public class MemoContent {
                 // 获取缓存
                 content = memoCache.get(filePath);
                 if (content == null) {
-                    content = I18n.get(SimpleCardMemo.MODID + ".gui.viewer_screen.error", filePath);
+                    content = I18n.get("gui.simplecardmemo.viewer_screen.error", filePath);
                 }
             } else {
                 memoCache.put(filePath, content);
@@ -130,12 +129,12 @@ public class MemoContent {
         if (player == null) { return; }
         if (set.isEmpty()) {
             player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".command.client_cache.empty"),
+                    Component.translatable("message.simplecardmemo.command.client_cache.empty"),
                     false
             );
         } else {
             player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".command.client_cache.info")
+                    Component.translatable("message.simplecardmemo.command.client_cache.info")
                             .withStyle(ChatFormatting.GREEN),
                     false
             );
