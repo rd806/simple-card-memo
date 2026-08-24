@@ -1,0 +1,16 @@
+[
+  {
+    "name": "item.simplecardmemo.memo_viewer.memo_guide",
+    "path": "simplecardmemo:memos/guide.md",
+    "author": "RunicDolphin806",
+    "isExternal": false,
+    "lastModified": 1785595410237
+  },
+  {
+    "name": "item.simplecardmemo.memo_viewer.minecraft_server",
+    "path": "simplecardmemo:memos/minecraft_server.md",
+    "author": "From Internet",
+    "isExternal": false,
+    "lastModified": 1785595410237
+  }
+]

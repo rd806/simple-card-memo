@@ -34,14 +34,14 @@ public class MemoViewerScreen extends Screen {
 
     public MemoViewerScreen(String content, MemoInfo memoInfo) {
         // 界面的标题
-        super(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen"));
+        super(Component.translatable("gui.simplecardmemo.viewer_screen.title"));
         // 初始化数据
         this.renderedText = content;
         this.memoInfo = memoInfo;
         try {
             this.markdownText = new MineMarkDrawable(renderedText);
         } catch (Exception e) {
-            renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
+            renderedText = Component.translatable("gui.simplecardmemo.viewer_screen.error").toString();
             SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
         }
     }
@@ -52,7 +52,7 @@ public class MemoViewerScreen extends Screen {
         try {
             markdownText = new MineMarkDrawable(renderedText);
         } catch (Exception e) {
-            renderedText = Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error").toString();
+            renderedText = Component.translatable("gui.simplecardmemo.viewer_screen.error").toString();
             SimpleCardMemo.LOGGER.error("Couldn't load markdown text!", e);
         }
     }
@@ -99,7 +99,7 @@ public class MemoViewerScreen extends Screen {
         // 重新计算
         resetContent();
         calculateScrollOffset();
-        this.addRenderableWidget(new Button.Builder(Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.reload"),
+        this.addRenderableWidget(new Button.Builder(Component.translatable("gui.simplecardmemo.viewer_screen.reload"),
                 button -> MemoContent.reloadMemoScreen(memoInfo, ClientSetup.clientContentCache))
                 .pos(this.width / 2 - 50, this.height - footer + 10)
                 .size(100, 20)
@@ -140,8 +140,7 @@ public class MemoViewerScreen extends Screen {
         if (this.renderedText == null) {
             graphics.drawCenteredString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.viewer_screen.error")
-                            .append(memoInfo.getMemoPath()),
+                    Component.translatable("gui.simplecardmemo.viewer_screen.error", memoInfo.getMemoPath()),
                     20, contentY, 0xFFFFFF);
             return;
         }

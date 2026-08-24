@@ -48,9 +48,9 @@ public class MemoViewerItem extends Item {
         // 为空展示默认信息
         if (stack.equals(ModCreativeModeTabs.newMemo(), false)) {
             // 使用方法
-            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
+            tooltipComponents.add(Component.translatable("item.simplecardmemo.general.tooltip")
                     .withStyle(ChatFormatting.GRAY));
-            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.default")
+            tooltipComponents.add(Component.translatable("item.simplecardmemo.memo_viewer.tooltip.default")
                     .withStyle(ChatFormatting.GRAY));
             return;
         }
@@ -63,17 +63,17 @@ public class MemoViewerItem extends Item {
             // 修改日期
             long timestamp = getLastModified(stack);
             if (timestamp > 0) {
-                String time = prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.time")
+                String time = prefix + I18n.get("item.simplecardmemo.memo_viewer.tooltip.time")
                                 + "§r" + CommonConfig.getDateString(timestamp);
 
                 tooltipComponents.add(Component.literal(time));
             }
         } else {
             // 使用方法
-            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
+            tooltipComponents.add(Component.translatable("item.simplecardmemo.general.tooltip")
                     .withStyle(ChatFormatting.GRAY));
             // 显示提示
-            tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.more")
+            tooltipComponents.add(Component.translatable("item.simplecardmemo.memo_viewer.tooltip.more")
                     .withStyle(ChatFormatting.GRAY));
         }
     }
@@ -88,7 +88,7 @@ public class MemoViewerItem extends Item {
             if (stack.equals(ModCreativeModeTabs.newMemo(), false)) {
                 if (MemoContent.memoViewerScreen == null) {
                     player.displayClientMessage(
-                            Component.translatable(SimpleCardMemo.MODID + ".item.memo_viewer.no_screen"),
+                            Component.translatable("item.simplecardmemo.memo_viewer.no_screen"),
                             false);
                 } else {
                     Minecraft.getInstance().execute(() -> Minecraft.getInstance().setScreen(MemoContent.memoViewerScreen));
@@ -169,18 +169,26 @@ public class MemoViewerItem extends Item {
         stack.getOrCreateTag().putString(DISPLAY_NAME, displayName);
     }
     // 设置文件作者
-    public static void setAuthor(ItemStack stack, String author) {
-        stack.getOrCreateTag().putString(AUTHOR, author);
-    }
+    public static void setAuthor(ItemStack stack, String author) { stack.getOrCreateTag().putString(AUTHOR, author); }
     // 设置修改日期
     public static void setLastModified(ItemStack stack, long lastModified) {
         stack.getOrCreateTag().putLong(LAST_MODIFIED, lastModified);
+    }
+    // 设置名称，有固定组件 CUSTOM_NAME
+    public static void setItemName(ItemStack stack, String itemName, boolean isExternal) {
+        if (isExternal) {
+            // 外部文件直接转换
+            stack.setHoverName(Component.literal(itemName));
+        } else {
+            // 资源文件使用翻译键
+            stack.setHoverName(Component.translatable(itemName));
+        }
     }
 
     // 获取文件作者信息
     @OnlyIn(Dist.CLIENT)
     private String getAuthorString(ItemStack stack) {
-        String author = I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.author") + "§r" + getAuthor(stack);
+        String author = I18n.get("item.simplecardmemo.memo_viewer.tooltip.author") + "§r" + getAuthor(stack);
         return prefix + author;
     }
     // 获取文件来源信息
@@ -188,8 +196,8 @@ public class MemoViewerItem extends Item {
     private String getSourceString(ItemStack stack) {
         // 数据来源
         String source = getTextSource(stack) ?
-                I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.external") :
-                I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.resource");
-        return prefix + I18n.get(SimpleCardMemo.MODID + ".item.memo_viewer.tooltip.source") + "§r" + source;
+                I18n.get("item.simplecardmemo.memo_viewer.tooltip.external") :
+                I18n.get("item.simplecardmemo.memo_viewer.tooltip.resource");
+        return prefix + I18n.get("item.simplecardmemo.memo_viewer.tooltip.source") + "§r" + source;
     }
 }

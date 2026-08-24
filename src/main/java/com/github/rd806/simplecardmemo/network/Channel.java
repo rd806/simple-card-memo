@@ -7,6 +7,8 @@ import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.network.command.CommandType;
 import com.github.rd806.simplecardmemo.network.command.ClientCommand;
 import com.github.rd806.simplecardmemo.network.editor.NewMemo;
+import com.github.rd806.simplecardmemo.network.editor.OpenInfo;
+import com.github.rd806.simplecardmemo.network.editor.OpenManager;
 import com.github.rd806.simplecardmemo.network.manager.*;
 import com.github.rd806.simplecardmemo.network.mail.*;
 import com.github.rd806.simplecardmemo.setup.ServerSetup;
@@ -22,7 +24,7 @@ public class Channel {
     private static final String PROTOCOL_VERSION = "1.2.1";
     // 网络通道
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            ResourceLocation.parse(SimpleCardMemo.MODID + ":main"),
+            ResourceLocation.tryBuild(SimpleCardMemo.MODID, "main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals
@@ -55,6 +57,12 @@ public class Channel {
         CHANNEL.registerMessage(
                 packetId++,
                 MemoListSend.class, MemoListSend::encode, MemoListSend::decode, MemoListSend::handle);
+        CHANNEL.registerMessage(
+                packetId++,
+                OpenInfo.class, OpenInfo::encode, OpenInfo::decode, OpenInfo::handle);
+        CHANNEL.registerMessage(
+                packetId++,
+                OpenManager.class, OpenManager::encode, OpenManager::decode, OpenManager::handle);
         // 缓存数据包
         CHANNEL.registerMessage(
                 packetId++,
@@ -67,29 +75,28 @@ public class Channel {
 
     // 获取服务端列表
     public static void getMemoList() { CHANNEL.send(PacketDistributor.SERVER.noArg(), new MemoListGet()); }
-    // 发送服务端列表
     public static void sendMemoList(ServerPlayer player) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MemoListSend(ServerSetup.serverConfig.getMemoList()));
     }
+    public static void openInfoMenu(int index) { CHANNEL.send(PacketDistributor.SERVER.noArg(), new OpenInfo(index));}
+    public static void openManagerMenu() { CHANNEL.send(PacketDistributor.SERVER.noArg(), new OpenManager()); }
+
 
     // 获取物品
     public static void getMemoItem(MemoInfo selectedMemo, MemoSource source) {
         CHANNEL.send(PacketDistributor.SERVER.noArg(), new MemoItemGet(selectedMemo, source));
     }
-    // 发送到客户端缓存
     public static void sendMemoItem(ServerPlayer player, String key, String value) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MemoItemSend(key, value));
     }
 
-    // 发送信件
+    // 信件系统
     public static void sendMail(String content, String target, String message) {
         CHANNEL.send(PacketDistributor.SERVER.noArg(), new MailSend(content, target, message));
     }
-    // 接收信件
     public static void receiveMail(String target) {
         CHANNEL.send(PacketDistributor.SERVER.noArg(), new MailReceive(target));
     }
-    // 发送信件状态信息
     public static void sendMailStatus(ServerPlayer player, MailStatus status) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new MailStatusSend(status));
     }

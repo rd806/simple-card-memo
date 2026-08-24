@@ -25,15 +25,15 @@ public class ClientConfig {
     public static ForgeConfigSpec init() {
         BUILDER.push("Text").translation(SimpleCardMemo.MODID + ".gui.config.text");
         PAGE_MARGIN = BUILDER
-                .translation(SimpleCardMemo.MODID + ".config.page_margin")
+                .translation("config.simplecardmemo.page_margin")
                 .comment("Page Margin: WIDE/MIDDLE/NARROW")
                 .defineEnum("PageMargin", Margin.MEDIUM);
         TEXT_BACKGROUND = BUILDER
-                .translation(SimpleCardMemo.MODID + ".config.text_background")
+                .translation("config.simplecardmemo.text_background")
                 .comment("Enable text background when viewing")
                 .define("TextBackground", false);
         BACKGROUND_COLOR = BUILDER
-                .translation(SimpleCardMemo.MODID + ".config.background_color")
+                .translation("config.simplecardmemo.background_color")
                 .comment("Color for the text background")
                 .define("BackgroundColor", 0xFF020619);
         BUILDER.pop();

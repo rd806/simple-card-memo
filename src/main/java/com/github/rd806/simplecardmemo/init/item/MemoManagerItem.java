@@ -1,6 +1,5 @@
 package com.github.rd806.simplecardmemo.init.item;
 
-import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.menu.ManagerMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -27,9 +26,9 @@ public class MemoManagerItem extends Item implements MenuProvider {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
+        tooltipComponents.add(Component.translatable("item.simplecardmemo.general.tooltip")
                 .withStyle(ChatFormatting.GRAY));
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_manager.tooltip")
+        tooltipComponents.add(Component.translatable("item.simplecardmemo.memo_manager.tooltip")
                 .withStyle(ChatFormatting.GRAY));
     }
 
@@ -46,7 +45,7 @@ public class MemoManagerItem extends Item implements MenuProvider {
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.translatable(SimpleCardMemo.MODID + ".item.memo_manager.screen");
+        return Component.translatable("gui.simplecardmemo.manager_screen.title");
     }
 
     // 当玩家打开界面时创建 Menu

@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BuiltInList {
 
@@ -22,14 +23,12 @@ public class BuiltInList {
     // 加载内置列表
     public static void loadBuiltInMemos(ResourceManager manager) {
         InputStream stream;
-        ResourceLocation res = ResourceLocation.parse(SimpleCardMemo.MODID + ":memos.json");
-        Resource optional = manager.getResource(res).orElse(null);
-
+        ResourceLocation res = ResourceLocation.tryBuild(SimpleCardMemo.MODID , "memos/memos.json");
+        Resource optional = manager.getResource(Objects.requireNonNull(res)).orElse(null);
         if (optional == null) {
             SimpleCardMemo.LOGGER.warn("Failed to load built-in memos. Skipping...");
             return;
         }
-
         try {
             stream = optional.open();
         } catch (Exception e) {

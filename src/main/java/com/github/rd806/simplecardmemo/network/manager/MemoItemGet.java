@@ -69,7 +69,7 @@ public class MemoItemGet {
                 String filePath = memoInfo.getMemoPath();
                 String content = ServerSetup.serverCache.get(filePath);
                 if (content == null) {
-                    content = MemoLoader.loadText(memoInfo);
+                    content = MemoLoader.loadFromExternal(memoInfo);
                 }
                 Channel.sendMemoItem(player, filePath, content);
             }

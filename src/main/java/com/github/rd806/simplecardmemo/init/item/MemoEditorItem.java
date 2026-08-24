@@ -1,6 +1,5 @@
 package com.github.rd806.simplecardmemo.init.item;
 
-import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.screen.EditorScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -27,9 +26,9 @@ public class MemoEditorItem extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag flag) {
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.general.tooltip")
+        tooltipComponents.add(Component.translatable("item.simplecardmemo.general.tooltip")
                 .withStyle(ChatFormatting.GRAY));
-        tooltipComponents.add(Component.translatable(SimpleCardMemo.MODID + ".item.memo_editor.tooltip")
+        tooltipComponents.add(Component.translatable("item.simplecardmemo.memo_editor.tooltip")
                 .withStyle(ChatFormatting.GRAY));
     }
 

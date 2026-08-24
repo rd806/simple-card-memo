@@ -7,7 +7,6 @@ import com.github.rd806.simplecardmemo.init.value.MailStatus;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
 import com.github.rd806.simplecardmemo.network.Channel;
-import com.github.rd806.simplecardmemo.network.mail.MailReceive;
 import com.github.rd806.simplecardmemo.setup.ClientSetup;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
@@ -23,7 +22,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 public class MailScreen extends AbstractContainerScreen<MailMenu> {
@@ -73,23 +71,23 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
                 topPos + 21,
                 90,
                 18,
-                Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.input")
+                Component.translatable("gui.simplecardmemo.mail_screen.input")
         );
         nameInput.setMaxLength(256);
         nameInput.setBordered(false);
-        nameInput.setHint(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.input.hint")
+        nameInput.setHint(Component.translatable("gui.simplecardmemo.mail_screen.input.hint")
                 .withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
         nameInput.setTextColor(0xF3EFE0);
         addRenderableWidget(nameInput);
         // 发送按钮
-        Button sendButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.send"),
+        Button sendButton = Button.builder(Component.translatable("gui.simplecardmemo.mail_screen.send"),
                         button -> sendMemo())
                 .pos(leftPos + 97, topPos + 46)
                 .size(50, 18)
                 .build();
         addRenderableWidget(sendButton);
         // 接收按钮
-        Button receiveButton = Button.builder(Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.receive"),
+        Button receiveButton = Button.builder(Component.translatable("gui.simplecardmemo.mail_screen.receive"),
                         button -> receiveMemo())
                 .pos(leftPos + 97, topPos + 75)
                 .size(50, 18)
@@ -137,7 +135,7 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         // 构造发送信息
         Player player = Minecraft.getInstance().player;
         if (player != null) {
-            message =  I18n.get(SimpleCardMemo.MODID + ".message.memo_mail.send", player.getName().getString());
+            message =  I18n.get("message.simplecardmemo.player.memo_mail.send", player.getName().getString());
         }
         // 获取发送的内容
         MemoInfo memoInfo = MemoViewerItem.getMemoInfo(stack);
@@ -156,31 +154,31 @@ public class MailScreen extends AbstractContainerScreen<MailMenu> {
         switch (cases) {
             case SUCCESS_SEND -> graphics.drawString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.success_send"),
+                    Component.translatable("message.simplecardmemo.mail_screen.success_send"),
                     leftPos + 43, topPos + 100,
                     0x008000, false
             );
             case SUCCESS_RECEIVE -> graphics.drawString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.success_receive"),
+                    Component.translatable("message.simplecardmemo.mail_screen.success_receive"),
                     leftPos + 43, topPos + 100,
                     0x008000, false
             );
             case EMPTY_SEND -> graphics.drawString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.empty_send"),
+                    Component.translatable("message.simplecardmemo.mail_screen.empty_send"),
                     leftPos + 43, topPos + 100,
                     0xFF5555, false
             );
             case EMPTY_RECEIVE -> graphics.drawString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.empty_receive"),
+                    Component.translatable("message.simplecardmemo.mail_screen.empty_receive"),
                     leftPos + 43, topPos + 100,
                     0xFF5555, false
             );
             case NO_TARGET -> graphics.drawString(
                     this.font,
-                    Component.translatable(SimpleCardMemo.MODID + ".gui.mail_screen.message.no_target"),
+                    Component.translatable("message.simplecardmemo.mail_screen.no_target"),
                     leftPos + 43, topPos + 100,
                     0xFF5555, false
             );

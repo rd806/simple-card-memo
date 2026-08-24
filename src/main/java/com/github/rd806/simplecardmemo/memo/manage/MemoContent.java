@@ -1,6 +1,5 @@
 package com.github.rd806.simplecardmemo.memo.manage;
 
-import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.init.container.screen.MemoViewerScreen;
 import com.github.rd806.simplecardmemo.init.item.MemoViewerItem;
 import com.github.rd806.simplecardmemo.memo.MemoInfo;
@@ -11,17 +10,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -85,14 +79,17 @@ public class MemoContent {
             if (content == null) {
                 // 未命中则加载
                 if (memoInfo.isExternal()) {
-                    content = MemoLoader.loadText(memoInfo);
+                    content = MemoLoader.loadFromExternal(memoInfo);
                 } else {
-                    content = getResourceString(memoInfo);
+                    Minecraft mc = Minecraft.getInstance();
+                    String lang = mc.getLanguageManager().getSelected();
+                    ResourceManager res = mc.getResourceManager();
+                    content = MemoLoader.loadFromResource(memoInfo, lang, res);
                 }
             }
             // 更新缓冲区
             if (content == null) {
-                content = I18n.get(SimpleCardMemo.MODID + ".gui.viewer_screen.error", filePath);
+                content = I18n.get("gui.simplecardmemo.viewer_screen.error", filePath);
             } else {
                 memoCache.put(filePath, content);
             }
@@ -105,51 +102,24 @@ public class MemoContent {
             String filePath = memoInfo.getMemoPath();
             // 先从本地加载
             if (memoInfo.isExternal()) {
-                content = MemoLoader.loadText(memoInfo);
+                content = MemoLoader.loadFromExternal(memoInfo);
             } else {
-                content = getResourceString(memoInfo);
+                Minecraft mc = Minecraft.getInstance();
+                String lang = mc.getLanguageManager().getSelected();
+                ResourceManager res = mc.getResourceManager();
+                content = MemoLoader.loadFromResource(memoInfo, lang, res);
             }
             // 本地加载失败则访问缓存
             if (content == null) {
                 // 获取缓存
                 content = memoCache.get(filePath);
                 if (content == null) {
-                    content = I18n.get(SimpleCardMemo.MODID + ".gui.viewer_screen.error", filePath);
+                    content = I18n.get("gui.simplecardmemo.viewer_screen.error", filePath);
                 }
             } else {
                 memoCache.put(filePath, content);
             }
         }, CONTENT_LOADER);
-    }
-
-    // 从资源包中加载
-    private static String getResourceString(MemoInfo memoInfo) {
-        String filepath = memoInfo.getMemoPath();
-        if (filepath == null) {
-            SimpleCardMemo.LOGGER.error("The Memo Path is null!");
-            return null;
-        }
-        try {
-            // 从资源包中加载
-            ResourceLocation location = ResourceLocation.parse(filepath);
-            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-            Resource resource = resourceManager.getResource(location).orElse(null);
-            // 检查来源
-            if (resource != null) {
-                StringBuilder content = new StringBuilder();
-                try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        content.append(line).append("\n");
-                    }
-                }
-                return content.toString();
-            }
-        } catch (Exception e) {
-            SimpleCardMemo.LOGGER.error("Failed to load file from resources: {}", filepath);
-        }
-        return null;
     }
 
     // 查看缓存
@@ -160,12 +130,12 @@ public class MemoContent {
         if (player == null) { return; }
         if (set.isEmpty()) {
             player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".command.client_cache.empty"),
+                    Component.translatable("message.simplecardmemo.command.client_cache.empty"),
                     false
             );
         } else {
             player.displayClientMessage(
-                    Component.translatable(SimpleCardMemo.MODID + ".command.client_cache.info")
+                    Component.translatable("message.simplecardmemo.command.client_cache.info")
                             .withStyle(ChatFormatting.GREEN),
                     false
             );

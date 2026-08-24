@@ -3,6 +3,7 @@ package com.github.rd806.simplecardmemo.setup;
 import com.github.rd806.simplecardmemo.SimpleCardMemo;
 import com.github.rd806.simplecardmemo.compat.ConfigMenu;
 import com.github.rd806.simplecardmemo.config.CommonConfig;
+import com.github.rd806.simplecardmemo.init.container.screen.InfoScreen;
 import com.github.rd806.simplecardmemo.init.container.screen.MailScreen;
 import com.github.rd806.simplecardmemo.init.container.screen.ManagerScreen;
 import com.github.rd806.simplecardmemo.init.ModMenus;
@@ -54,13 +55,8 @@ public class ClientSetup {
 
     // 注册GUI
     private static void registerScreens() {
-        MenuScreens.register(
-                ModMenus.MAIL_MENU.get(),
-                MailScreen::new
-        );
-        MenuScreens.register(
-                ModMenus.MANAGER_MENU.get(),
-                ManagerScreen::new
-        );
+        MenuScreens.register(ModMenus.MAIL_MENU.get(), MailScreen::new);
+        MenuScreens.register(ModMenus.MANAGER_MENU.get(), ManagerScreen::new);
+        MenuScreens.register(ModMenus.INFO_MENU.get(), InfoScreen::new);
     }
 }
